@@ -14,6 +14,8 @@ const isConnected = ref(false)
 const isWaitingForResponse = ref(false)
 const message = ref('')
 const messages = reactive([])
+const queryResults = ref('')
+const hasQueryResults = ref(false)
 
 const connect = () => {
   try {
@@ -28,10 +30,16 @@ const connect = () => {
       try {
         const parsed = JSON.parse(event.data)
         if (parsed.type && parsed.message) {
-          addMessage(parsed.message, parsed.type)
-          // Turn off loading indicator for server responses
-          if (parsed.type === 'server') {
-            isWaitingForResponse.value = false
+          // Handle query results separately
+          if (parsed.type === 'results') {
+            queryResults.value = marked(parsed.message)
+            hasQueryResults.value = true
+          } else {
+            addMessage(parsed.message, parsed.type)
+            // Turn off loading indicator for server responses
+            if (parsed.type === 'server') {
+              isWaitingForResponse.value = false
+            }
           }
         } else {
           addMessage(event.data, 'server')
@@ -121,6 +129,8 @@ onMounted(() => {
 
 const clearMessages = () => {
   messages.length = 0
+  queryResults.value = ''
+  hasQueryResults.value = false
 }
 
 onUnmounted(() => {
@@ -177,6 +187,15 @@ onUnmounted(() => {
         </div>
       </form>
     </main>
+
+    <!-- Query Results Section -->
+    <div v-if="hasQueryResults" class="query-results-section">
+      <div class="query-results-header">
+        <h3>Query Results</h3>
+        <button @click="hasQueryResults = false; queryResults = ''" class="close-results-btn">×</button>
+      </div>
+      <div class="query-results-content" v-html="queryResults"></div>
+    </div>
   </div>
 </template>
 
@@ -559,5 +578,137 @@ onUnmounted(() => {
 
 .send-button:hover:not(:disabled) .send-icon {
   transform: translateX(2px);
+}
+
+/* Query Results Section */
+.query-results-section {
+  margin-top: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  max-height: 400px;
+  overflow: hidden;
+}
+
+.query-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.query-results-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.close-results-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-results-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.query-results-content {
+  padding: 16px;
+  max-height: 350px;
+  overflow-y: auto;
+  color: #ffffff;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Style tables in query results */
+.query-results-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.query-results-content th,
+.query-results-content td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s ease;
+}
+
+.query-results-content th {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(99, 102, 241, 0.4));
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  font-size: 0.95em;
+  text-transform: uppercase;
+}
+
+.query-results-content td {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.query-results-content tr:hover td {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.query-results-content tr:last-child td {
+  border-bottom: none;
+}
+
+.query-results-content tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.query-results-content tr:nth-child(even):hover td {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.query-results-content pre {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 0;
+  overflow-x: auto;
+}
+
+.query-results-content code {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: inherit;
+}
+
+.query-results-content pre code {
+  background: none;
+  padding: 0;
 }
 </style>

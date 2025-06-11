@@ -260,12 +260,15 @@ async def call_claude(prompt_text, timeout=30):
     """Call Claude API with the given prompt"""
     client = get_claude_client()
     
+    # Get model from environment variable with fallback
+    model = os.getenv('CLAUDE_MODEL', 'claude-3-5-haiku-20241022')
+    
     # Wrap the synchronous call in asyncio.wait_for for timeout
     response = await asyncio.wait_for(
         asyncio.get_event_loop().run_in_executor(
             None,
             lambda: client.messages.create(
-                model="claude-sonnet-4-20250514", #"claude-3-5-haiku-20241022",
+                model=model,
                 max_tokens=1000,
                 messages=[
                     {"role": "user", "content": prompt_text}
@@ -635,8 +638,9 @@ def log_query_results(cypher_query, result, websocket=None):
         if websocket:
             import asyncio
             import json
-            # Schedule sending the table output
-            asyncio.create_task(websocket.send_text(json.dumps({
+            # Create a future to send the table output
+            loop = asyncio.get_event_loop()
+            loop.create_task(websocket.send_text(json.dumps({
                 "type": "results",
                 "message": table_output
             })))
@@ -647,7 +651,8 @@ def log_query_results(cypher_query, result, websocket=None):
         if websocket:
             import asyncio
             import json
-            asyncio.create_task(websocket.send_text(json.dumps({
+            loop = asyncio.get_event_loop()
+            loop.create_task(websocket.send_text(json.dumps({
                 "type": "error", 
                 "message": error_msg
             })))
@@ -777,6 +782,81 @@ async def execute_custom_query(user_message, websocket=None):
                 else:
                     row_data = {"result": row[0] if len(row) == 1 else row}
                 results.append(row_data)
+        
+        # Check if we need to retry with a fallback query
+        if not result.result_set:  # No results found
+            if websocket:
+                await websocket.send_text(json.dumps({
+                    "type": "info",
+                    "message": "🔄 No results found, trying a broader search approach..."
+                }))
+            
+            # Generate fallback query
+            fallback_prompt = load_prompt("fallback_query", user_message=user_message, previous_query=cypher_query)
+            fallback_query = await call_ai_model(fallback_prompt, websocket)
+            
+            # Clean up fallback query
+            fallback_query = fallback_query.strip()
+            if "```" in fallback_query:
+                start = fallback_query.find("```")
+                if start >= 0:
+                    start = fallback_query.find("\n", start) + 1
+                    end = fallback_query.find("```", start)
+                    if end > start:
+                        fallback_query = fallback_query[start:end].strip()
+            
+            if websocket:
+                await websocket.send_text(json.dumps({
+                    "type": "query",
+                    "message": f"**Fallback Query:** `{fallback_query}`"
+                }))
+            
+            # Execute fallback query
+            def execute_fallback_query():
+                falkor = get_falkor_client()
+                db = falkor.select_graph("agent_poc")
+                return db.query(fallback_query)
+            
+            try:
+                fallback_result = await asyncio.wait_for(
+                    asyncio.get_event_loop().run_in_executor(None, execute_fallback_query),
+                    timeout=15
+                )
+                
+                # Use fallback results if they exist
+                if fallback_result.result_set:
+                    result = fallback_result
+                    cypher_query = fallback_query  # Update for logging
+                    
+                    # Re-format results with fallback data
+                    results = []
+                    columns = [col[1] for col in result.header] if result.header else []
+                    for row in result.result_set:
+                        if len(columns) > 0:
+                            row_data = dict(zip(columns, row))
+                        else:
+                            row_data = {"result": row[0] if len(row) == 1 else row}
+                        results.append(row_data)
+                    
+                    if websocket:
+                        await websocket.send_text(json.dumps({
+                            "type": "info",
+                            "message": f"✅ Found {len(results)} results with broader search"
+                        }))
+                else:
+                    if websocket:
+                        await websocket.send_text(json.dumps({
+                            "type": "info",
+                            "message": "❌ No results found even with broader search"
+                        }))
+                        
+            except Exception as fallback_error:
+                print(f"Fallback query error: {str(fallback_error)}")
+                if websocket:
+                    await websocket.send_text(json.dumps({
+                        "type": "info",
+                        "message": "⚠️ Fallback query also failed, showing original results"
+                    }))
         
         # Log results in tabular form
         log_query_results(cypher_query, result, websocket)
