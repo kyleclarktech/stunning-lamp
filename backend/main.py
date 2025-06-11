@@ -182,14 +182,36 @@ async def call_ai_model(prompt_text, websocket=None, timeout=30):
         if websocket:
             # Determine message based on prompt content
             if "generate_query" in prompt_text:
+                # Extract user message from generate_query prompt for detailed reasoning
+                user_message = None
+                if 'User request: "' in prompt_text:
+                    start = prompt_text.find('User request: "') + len('User request: "')
+                    end = prompt_text.find('"', start)
+                    if end > start:
+                        user_message = prompt_text[start:end]
+                
+                if user_message:
+                    reasoning, policy = analyze_query_reasoning(user_message)
+                    message = f"Generating database query based on: {reasoning}"
+                    if policy:
+                        message += f" (applying policy: {policy})"
+                    message += "..."
+                else:
+                    message = "Preparing database query..."
+                    
                 await websocket.send_text(json.dumps({
                     "type": "info",
-                    "message": "🔍 Crafting database query..."
+                    "message": message
+                }))
+            elif "analyze_message" in prompt_text:
+                await websocket.send_text(json.dumps({
+                    "type": "info",
+                    "message": "Analyzing request to determine the most appropriate response approach..."
                 }))
             elif "format_results" in prompt_text:
                 await websocket.send_text(json.dumps({
                     "type": "info", 
-                    "message": "📊 Formatting results..."
+                    "message": "Processing and formatting query results for display..."
                 }))
         
         if provider == 'ollama':
@@ -243,7 +265,7 @@ async def call_claude(prompt_text, timeout=30):
         asyncio.get_event_loop().run_in_executor(
             None,
             lambda: client.messages.create(
-                model="claude-3-5-haiku-20241022",
+                model="claude-sonnet-4-20250514", #"claude-3-5-haiku-20241022",
                 max_tokens=1000,
                 messages=[
                     {"role": "user", "content": prompt_text}
@@ -553,13 +575,146 @@ async def search_database(query, websocket=None):
             "messages": []
         }
 
+def log_query_results(cypher_query, result, websocket=None):
+    """Log query results in a formatted table similar to how the query is displayed"""
+    try:
+        if not result.result_set:
+            table_output = "**Query Results:** No results returned"
+        else:
+            # Get column headers
+            columns = [col[1] for col in result.header] if result.header else []
+            if not columns:
+                # Fallback for queries without headers
+                columns = [f"col_{i}" for i in range(len(result.result_set[0]))]
+            
+            # Calculate column widths
+            col_widths = [len(col) for col in columns]
+            for row in result.result_set:
+                for i, cell in enumerate(row):
+                    if i < len(col_widths):
+                        cell_str = str(cell) if cell is not None else "NULL"
+                        col_widths[i] = max(col_widths[i], len(cell_str))
+            
+            # Limit column width for readability
+            max_width = 50
+            col_widths = [min(w, max_width) for w in col_widths]
+            
+            # Build table
+            lines = []
+            
+            # Header row
+            header_row = "| " + " | ".join(col.ljust(col_widths[i]) for i, col in enumerate(columns)) + " |"
+            lines.append(header_row)
+            
+            # Separator row
+            separator = "|" + "|".join("-" * (w + 2) for w in col_widths) + "|"
+            lines.append(separator)
+            
+            # Data rows
+            for row in result.result_set:
+                row_cells = []
+                for i, cell in enumerate(row):
+                    if i < len(col_widths):
+                        cell_str = str(cell) if cell is not None else "NULL"
+                        # Truncate if too long
+                        if len(cell_str) > max_width:
+                            cell_str = cell_str[:max_width-3] + "..."
+                        row_cells.append(cell_str.ljust(col_widths[i]))
+                data_row = "| " + " | ".join(row_cells) + " |"
+                lines.append(data_row)
+            
+            table_output = f"**Query Results:** ({len(result.result_set)} rows)\n\n```\n" + "\n".join(lines) + "\n```"
+        
+        # Log to console
+        print(f"\n=== QUERY RESULTS ===")
+        print(f"Query: {cypher_query}")
+        print(table_output.replace("**Query Results:**", "Results:").replace("```", ""))
+        print("=" * 50)
+        
+        # Send to websocket if available
+        if websocket:
+            import asyncio
+            import json
+            # Schedule sending the table output
+            asyncio.create_task(websocket.send_text(json.dumps({
+                "type": "results",
+                "message": table_output
+            })))
+            
+    except Exception as e:
+        error_msg = f"Error formatting query results: {str(e)}"
+        print(error_msg)
+        if websocket:
+            import asyncio
+            import json
+            asyncio.create_task(websocket.send_text(json.dumps({
+                "type": "error", 
+                "message": error_msg
+            })))
+
+def analyze_query_reasoning(user_message):
+    """Analyze user message to determine query reasoning and applicable policies"""
+    message_lower = user_message.lower()
+    
+    # Policy discovery patterns
+    policy_keywords = {
+        'security': 'Security Policy Framework',
+        'data protection': 'Data Privacy Policy',
+        'privacy': 'Data Privacy Policy', 
+        'compliance': 'Compliance Management Policy',
+        'access': 'Identity & Access Management Policy',
+        'encryption': 'Data Encryption Policy',
+        'incident': 'Security Incident Response Policy',
+        'code review': 'Code Review Policy',
+        'change management': 'Change Management Policy',
+        'third party': 'Third Party Risk Management Policy'
+    }
+    
+    # Reasoning patterns
+    reasoning_patterns = {
+        'who owns': 'Finding policy ownership and responsible parties',
+        'who manages': 'Identifying management hierarchy and reporting structure', 
+        'who leads': 'Locating team leads and organizational leadership',
+        'who is responsible': 'Determining accountability chains and ownership',
+        'approval': 'Mapping approval workflows and stakeholder chains',
+        'implement': 'Identifying key contacts for implementation support',
+        'team': 'Analyzing team structure and membership',
+        'policy': 'Applying policy discovery and ownership patterns',
+        'department': 'Using departmental organizational analysis',
+        'manager': 'Leveraging management hierarchy patterns',
+        'compliance': 'Applying compliance and regulatory frameworks'
+    }
+    
+    # Find applicable policy
+    applicable_policy = None
+    for keyword, policy in policy_keywords.items():
+        if keyword in message_lower:
+            applicable_policy = policy
+            break
+    
+    # Find reasoning pattern
+    reasoning = "Query pattern matching and organizational analysis"
+    for pattern, description in reasoning_patterns.items():
+        if pattern in message_lower:
+            reasoning = description
+            break
+    
+    return reasoning, applicable_policy
+
 async def execute_custom_query(user_message, websocket=None):
     """Generate and execute a custom Cypher query based on user request"""
     try:
         if websocket:
+            reasoning, policy = analyze_query_reasoning(user_message)
+            
+            message = f"🔍 Crafting database query using {reasoning}"
+            if policy:
+                message += f" (citing {policy})"
+            message += "..."
+            
             await websocket.send_text(json.dumps({
                 "type": "info",
-                "message": "🔍 Crafting database query..."
+                "message": message
             }))
         
         # Get AI model to generate the Cypher query
@@ -622,6 +777,9 @@ async def execute_custom_query(user_message, websocket=None):
                 else:
                     row_data = {"result": row[0] if len(row) == 1 else row}
                 results.append(row_data)
+        
+        # Log results in tabular form
+        log_query_results(cypher_query, result, websocket)
         
         return {
             "query": cypher_query,

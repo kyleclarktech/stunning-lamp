@@ -20,7 +20,7 @@ Relationships:
 PRIORITY PATTERNS FOR TASK-ORIENTED QUERIES:
 
 POLICY DISCOVERY & OWNERSHIP:
-- Find relevant policies by topic: MATCH (pol:Policy) WHERE toLower(pol.name) CONTAINS toLower('keyword') OR toLower(pol.description) CONTAINS toLower('keyword') OR toLower(pol.category) CONTAINS toLower('keyword') RETURN pol.name, pol.category, pol.severity, pol.description ORDER BY pol.severity DESC LIMIT 10
+- Find relevant policies by topic: MATCH (pol:Policy) WHERE toLower(pol.name) CONTAINS toLower('keyword') OR toLower(pol.description) CONTAINS toLower('keyword') OR toLower(pol.category) CONTAINS toLower('keyword') RETURN pol.name, pol.category, pol.severity, pol.description ORDER BY pol.severity DESC
 - Find all policies for specific work area: MATCH (pol:Policy) WHERE toLower(pol.category) = toLower('category') RETURN pol.name, pol.severity, pol.description ORDER BY pol.severity DESC
 - Find high-priority policies: MATCH (pol:Policy) WHERE pol.severity IN ['critical', 'high'] RETURN pol.name, pol.category, pol.severity, pol.description ORDER BY pol.severity DESC, pol.name
 
@@ -61,13 +61,13 @@ DEPARTMENT & ORGANIZATIONAL METRICS:
 - People count by department: MATCH (p:Person) RETURN p.department, count(p) as people_count ORDER BY people_count DESC
 - Teams per department: MATCH (t:Team) RETURN t.department, count(t) as team_count ORDER BY team_count DESC
 - Average team size: MATCH (t:Team)<-[:MEMBER_OF]-(p:Person) RETURN t.name, t.department, count(p) as team_size ORDER BY team_size DESC
-- Find people in same department as someone: MATCH (p1:Person), (p2:Person) WHERE toLower(p1.name) CONTAINS toLower('name') AND p1.department = p2.department AND p1 <> p2 RETURN p2.name, p2.role, p2.email LIMIT 10
+- Find people in same department as someone: MATCH (p1:Person), (p2:Person) WHERE toLower(p1.name) CONTAINS toLower('name') AND p1.department = p2.department AND p1 <> p2 RETURN p2.name, p2.role, p2.email
 
 Generate a Cypher query that answers the user's request. Return ONLY the Cypher query without explanation.
 
 QUERY OPTIMIZATION GUIDELINES:
 - Use case-insensitive matching: toLower(field) CONTAINS toLower('search_term')
-- Always include LIMIT for large result sets (default 10-20)
+- Only include LIMIT when the user explicitly asks to limit results (e.g., "show me the top 5", "first 10 results")
 - Use DISTINCT when needed to avoid duplicates
 - Order results logically (by severity for policies, by role hierarchy for people, etc.)
 - For name searches, use partial matching with CONTAINS
