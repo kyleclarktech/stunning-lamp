@@ -4,10 +4,13 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      falkordb:
-        condition: service_healthy
+      - falkordb
+      - ollama
     env_file:
       - ./backend/.env
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=granite3.3:8b
     volumes:
       - ./backend:/app
     working_dir: /app
@@ -38,21 +41,28 @@ services:
       retries: 30
     restart: unless-stopped
 
-  # Ollama service (uncomment to enable local AI)
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   ports:
-  #     - "11434:11434"
-  #   volumes:
-  #     - ollama_data:/root/.ollama
-  #   environment:
-  #     - OLLAMA_HOST=0.0.0.0
-  #   restart: unless-stopped
-  #   # Uncomment if you have GPU support
-  #   # runtime: nvidia
-  #   # environment:
-  #   #   - NVIDIA_VISIBLE_DEVICES=all
+  ollama:
+    build:
+      context: ./backend
+      dockerfile: ollama.Dockerfile
+    # Pull and serve granite3.3:8b on startup
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - OLLAMA_HOST=0.0.0.0:11434
+    entrypoint: /app/start-ollama.sh
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./backend/start-ollama.sh:/app/start-ollama.sh
+    runtime: nvidia
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
 
 volumes:
   falkor_data:
-  # ollama_data:
+  ollama_data:

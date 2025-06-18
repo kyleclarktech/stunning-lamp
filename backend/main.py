@@ -1,21 +1,27 @@
 import asyncio
 import json
 import os
+import traceback
+from datetime import datetime
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import falkordb
 import re
-import anthropic
-import ollama
+import httpx
 from jinja2 import Template
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import datetime
 from seed_data import seed_database
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
 
 app = FastAPI()
+
+# Set global logging level
+logging.basicConfig(level=logging.DEBUG)
 
 # Add CORS middleware to allow frontend connections
 app.add_middleware(
@@ -37,37 +43,11 @@ async def startup_event():
         print(f"❌ Database initialization failed: {e}")
         # Don't raise to prevent app from failing to start
 
-def get_ai_provider():
-    """Determine which AI provider to use based on environment variables"""
-    use_ollama = os.getenv('USE_OLLAMA', '').lower() in ('true', '1', 'yes')
-    return 'ollama' if use_ollama else 'claude'
-
-def get_claude_client():
-    api_key = os.getenv('ANTHROPIC_API_KEY')
-    if not api_key:
-        raise ValueError("ANTHROPIC_API_KEY environment variable not set")
-    return anthropic.Anthropic(api_key=api_key)
-
 def get_ollama_client():
     """Get Ollama client and configuration"""
-    host = os.getenv('OLLAMA_HOST', 'http://localhost:11434')
-    model = os.getenv('OLLAMA_MODEL', 'llama2')
-    
-    client = ollama.Client(host=host)
-    
-    # Test connection by trying to list models
-    try:
-        models = client.list()
-        available_models = [m['name'] for m in models['models']]
-        if model not in available_models:
-            print(f"Warning: Model '{model}' not found. Available models: {available_models}")
-            if available_models:
-                model = available_models[0]
-                print(f"Using first available model: {model}")
-    except Exception as e:
-        print(f"Warning: Could not connect to Ollama at {host}: {e}")
-    
-    return client, model
+    host = os.getenv('OLLAMA_HOST', 'http://ollama:11434')
+    model = os.getenv('OLLAMA_MODEL', 'granite-3.3:8b')
+    return host, model
 
 def get_falkor_client():
     host = os.getenv('FALKOR_HOST', 'falkordb')  # Use Docker service name
@@ -174,132 +154,56 @@ def load_prompt(prompt_name, **kwargs):
     rendered = template.render(**kwargs)
     return rendered
 
-async def call_ai_model(prompt_text, websocket=None, timeout=30):
-    """Call AI model (Claude or Ollama) with the given prompt"""
-    provider = get_ai_provider()
-    
+async def call_ai_model(prompt_text, websocket=None, timeout=60):
+    """Call Ollama HTTP API direct for chat completions, handling streaming response"""
+    host, model = get_ollama_client()
+    url = f"{host}/api/chat"
+    full_response = ""
     try:
-        if websocket:
-            # Determine message based on prompt content
-            if "generate_query" in prompt_text:
-                # Extract user message from generate_query prompt for detailed reasoning
-                user_message = None
-                if 'User request: "' in prompt_text:
-                    start = prompt_text.find('User request: "') + len('User request: "')
-                    end = prompt_text.find('"', start)
-                    if end > start:
-                        user_message = prompt_text[start:end]
-                
-                if user_message:
-                    reasoning, policy = analyze_query_reasoning(user_message)
-                    message = f"Generating database query based on: {reasoning}"
-                    if policy:
-                        message += f" (applying policy: {policy})"
-                    message += "..."
-                else:
-                    message = "Preparing database query..."
-                    
-                await websocket.send_text(json.dumps({
-                    "type": "info",
-                    "message": message
-                }))
-            elif "analyze_message" in prompt_text:
-                await websocket.send_text(json.dumps({
-                    "type": "info",
-                    "message": "Analyzing request to determine the most appropriate response approach..."
-                }))
-            elif "format_results" in prompt_text:
-                await websocket.send_text(json.dumps({
-                    "type": "info", 
-                    "message": "Processing and formatting query results for display..."
-                }))
-        
-        if provider == 'ollama':
-            return await call_ollama(prompt_text, timeout)
-        else:
-            return await call_claude(prompt_text, timeout)
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            payload = {
+                "model": model,
+                "messages": [{"role": "user", "content": prompt_text}],
+                "stream": False  # Disable streaming from Ollama
+            }
+            logging.debug(f"Sending request to Ollama: {payload}")
+            resp = await client.post(url, json=payload)
             
-    except asyncio.TimeoutError:
-        # Timeout errors are handled by caller
-        raise Exception(f"AI model timeout after {timeout} seconds")
-    except Exception as e:
-        # Check for specific API errors
-        error_message = str(e)
-        
-        # Handle 529 Overloaded response (Claude)
-        if "529" in error_message or "overloaded" in error_message.lower():
-            raise Exception("🚦 AI service is experiencing high demand right now. Please try again in a few moments.")
-        
-        # Handle rate limiting
-        if "429" in error_message or "rate limit" in error_message.lower():
-            raise Exception("⏳ Too many requests. Please wait a moment before trying again.")
-        
-        # Handle authentication errors
-        if "401" in error_message or "unauthorized" in error_message.lower():
-            raise Exception("🔑 Authentication issue with AI service. Please contact support.")
-        
-        # Handle quota/billing errors
-        if "402" in error_message or "quota" in error_message.lower() or "billing" in error_message.lower():
-            raise Exception("💳 AI service quota exceeded. Please contact support.")
-        
-        # Handle connection errors (Ollama)
-        if "connection" in error_message.lower() or "refused" in error_message.lower():
-            if provider == 'ollama':
-                raise Exception("🔌 Local AI service is not available. Please ensure Ollama is running.")
+            # Check for non-200 responses
+            if resp.status_code != 200:
+                error_content = await resp.aread()
+                logging.error(f"Ollama API returned status {resp.status_code}: {error_content.decode()}")
+                if websocket:
+                    await websocket.send_text(json.dumps({
+                        "type": "error", 
+                        "message": f"AI request failed with status {resp.status_code}",
+                        "debug": error_content.decode()
+                    }))
+                resp.raise_for_status() # Will raise an exception
+
+            data = resp.json()
+            logging.debug(f"Received response from Ollama: {data}")
+            
+            # Extract content from the non-streaming response
+            if data.get('message') and data['message'].get('content'):
+                full_response = data['message']['content']
             else:
-                raise Exception("🌐 AI service temporarily unavailable. Please try again in a moment.")
-        
-        # Handle generic API errors
-        if "api" in error_message.lower() or "http" in error_message.lower():
-            raise Exception("🌐 AI service temporarily unavailable. Please try again in a moment.")
-        
-        # For unknown errors, pass through
+                logging.warning("Ollama response did not contain expected content.")
+                full_response = "" # Return empty string if no content found
+
+        return full_response
+
+    except httpx.ReadTimeout:
+        logging.error(f"Timeout error calling Ollama at {url}")
+        if websocket:
+            await websocket.send_text(json.dumps({"type": "error", "message": "AI request timed out after 60 seconds."}))
+        raise
+    except Exception as e:
+        tb = traceback.format_exc()
+        logging.error(f"Error calling Ollama HTTP API at {url}: {e}\n{tb}")
+        if websocket:
+            await websocket.send_text(json.dumps({"type": "error", "message": f"AI request failed: {e}", "debug": tb}))
         raise e
-
-async def call_claude(prompt_text, timeout=30):
-    """Call Claude API with the given prompt"""
-    client = get_claude_client()
-    
-    # Get model from environment variable with fallback
-    model = os.getenv('CLAUDE_MODEL', 'claude-3-5-haiku-20241022')
-    
-    # Wrap the synchronous call in asyncio.wait_for for timeout
-    response = await asyncio.wait_for(
-        asyncio.get_event_loop().run_in_executor(
-            None,
-            lambda: client.messages.create(
-                model=model,
-                max_tokens=1000,
-                messages=[
-                    {"role": "user", "content": prompt_text}
-                ]
-            )
-        ),
-        timeout=timeout
-    )
-    
-    response_text = response.content[0].text
-    return response_text
-
-async def call_ollama(prompt_text, timeout=30):
-    """Call Ollama API with the given prompt"""
-    client, model = get_ollama_client()
-    
-    # Wrap the synchronous call in asyncio.wait_for for timeout
-    response = await asyncio.wait_for(
-        asyncio.get_event_loop().run_in_executor(
-            None,
-            lambda: client.chat(
-                model=model,
-                messages=[
-                    {"role": "user", "content": prompt_text}
-                ]
-            )
-        ),
-        timeout=timeout
-    )
-    
-    return response['message']['content']
 
 async def get_database_context():
     """Get sample data from the database to provide context"""
@@ -423,20 +327,25 @@ async def search_database(query, websocket=None):
                 )
                 return result
             except asyncio.TimeoutError:
+                msg = f"Timeout: {query_desc} did not respond within 8s.\nQuery: {cypher_query}"
                 if websocket:
                     await websocket.send_text(json.dumps({
                         "type": "error",
-                        "message": f"Search query timeout for {query_desc}: {cypher_query}"
+                        "message": msg,
+                        "hint": "Check database connectivity or simplify your query."
                     }))
-                print(f"Search query timeout for {query_desc}: {cypher_query}")
+                print(f"[TIMEOUT] {msg}")
                 return None
             except Exception as e:
+                tb = traceback.format_exc()
+                msg = f"Error: {query_desc} failed with {e}\nQuery: {cypher_query}"
                 if websocket:
                     await websocket.send_text(json.dumps({
-                        "type": "error", 
-                        "message": f"Search query error for {query_desc}: {str(e)} - Query: {cypher_query}"
+                        "type": "error",
+                        "message": msg,
+                        "debug": tb.splitlines()[-3:]
                     }))
-                print(f"Search query error for {query_desc}: {str(e)} - Query: {cypher_query}")
+                print(f"[ERROR] {msg}\n{tb}")
                 return None
         
         # Helper function for executing parameterized search queries with timeout
@@ -868,9 +777,19 @@ async def execute_custom_query(user_message, websocket=None):
         }
         
     except Exception as e:
-        # Error already sent to websocket in inner exception handlers
-        # Re-raise to stop further processing
-        raise e
+        # Log full traceback
+        import traceback
+        tb = traceback.format_exc()
+        print(f"[search_database error] {e}\n{tb}")
+        # Send simplified error to client
+        if websocket:
+            await websocket.send_text(json.dumps({
+                "type": "error",
+                "message": "Database search failed: " + str(e),
+                "debug": {"trace": tb.splitlines()[-3:]}
+            }))
+        # Return structured empty result with error info
+        return {"people": [], "teams": [], "groups": [], "policies": [], "messages": [], "error": str(e)}
 
 async def execute_tools(tools, user_message, websocket):
     """Execute the specified tools based on Claude's recommendations"""
@@ -1131,33 +1050,34 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_text(final_response)
                 
             except Exception as e:
-                error_msg = str(e)
-                print(f"Websocket error: {error_msg}")
+                # Detailed error logging with timestamp and traceback
                 import traceback
-                traceback.print_exc()
+                from datetime import datetime
+                ts = datetime.utcnow().isoformat()
+                tb = traceback.format_exc()
+                print(f"[{ts}] WebSocket exception processing message '{data}': {e}\n{tb}")
                 
-                # Send user-friendly error message
-                if "🚦" in error_msg or "🌐" in error_msg or "⏳" in error_msg or "🔑" in error_msg or "💳" in error_msg:
-                    # This is already a user-friendly error message
-                    await websocket.send_text(json.dumps({
-                        "type": "error",
-                        "message": error_msg
-                    }))
-                else:
-                    # Generic error - provide fallback message
-                    await websocket.send_text(json.dumps({
-                        "type": "error",
-                        "message": "💥 Something went wrong. Please try again."
-                    }))
+                # Send concise error notice to client with debug details
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "message": "An unexpected error occurred while processing your request.",
+                    "debug": {
+                        "timestamp": ts,
+                        "error": str(e),
+                        "recent_trace": tb.splitlines()[-3:]
+                    }
+                }))
                 
-                # Fallback to original pig latin behavior
-                pig_latin_response = to_pig_latin(data)
-                final_response = f"**Pig Latin Translation (error fallback):**\n\n{pig_latin_response}"
-                await websocket.send_text(final_response)
+                # Guide user on next steps
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "message": "Please check your query or try again later. If the issue persists, contact support with the above error details."
+                }))
             
     except WebSocketDisconnect:
         print("Client disconnected")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Run with debug logging
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="debug")

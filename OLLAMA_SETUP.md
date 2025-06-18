@@ -12,7 +12,7 @@ USE_OLLAMA=true
 
 # Ollama server configuration
 OLLAMA_HOST=http://localhost:11434  # Default Ollama host
-OLLAMA_MODEL=llama2                 # Model to use
+OLLAMA_MODEL=granite-3.3:8b                 # Model to use
 
 # Keep Claude key for fallback (optional)
 ANTHROPIC_API_KEY=your_key_here
@@ -49,7 +49,7 @@ volumes:
 ```bash
 USE_OLLAMA=true
 OLLAMA_HOST=http://ollama:11434
-OLLAMA_MODEL=llama2
+OLLAMA_MODEL=granite-3.3:8b
 ```
 
 4. Start the services:
@@ -85,6 +85,8 @@ Common models that work well with this application:
 - `llama2:13b` - Larger, more capable version
 - `mistral` - Alternative model
 - `codellama` - Optimized for code understanding
+
+*(We now default to `granite-3.3:8b` for best GPU performance.)*
 
 ## Model Management
 
@@ -147,4 +149,4 @@ To switch back to Claude:
 2. Ensure `ANTHROPIC_API_KEY` is set
 3. Restart the application
 
-The application will automatically detect the change and use Claude instead.
+*(Claude support has been removed — Ollama only.)*
