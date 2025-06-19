@@ -10,7 +10,7 @@ services:
       - ./backend/.env
     environment:
       - OLLAMA_HOST=http://ollama:11434
-      - OLLAMA_MODEL=granite3.3:8b
+      - OLLAMA_MODEL=granite3.3:8b-largectx
     volumes:
       - ./backend:/app
     working_dir: /app

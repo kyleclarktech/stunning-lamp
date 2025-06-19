@@ -306,173 +306,57 @@ async def search_database(query, websocket=None):
             timeout=10
         )
         
-        search_results = {
+        # Create a full-text search query
+        query = f"""CALL db.idx.fulltext.queryNodes('all_text_search', '{query}') YIELD node, score
+        RETURN node, score, labels(node) as labels
+        LIMIT 25"""
+        
+        logging.info(f"Executing full-text search query: {query}")
+        results = db.query(query)
+        
+        # Organize results by label
+        organized_results = {
             "people": [],
             "teams": [],
             "groups": [],
             "policies": [],
+            "projects": [],
+            "repositories": [],
+            "pull_requests": [],
+            "issues": [],
+            "documents": [],
+            "calendar_events": [],
             "messages": []
         }
         
-        query_lower = query.lower()
-        
-        # Helper function for executing search queries with timeout
-        async def execute_search_query(query_desc, cypher_query):
-            try:
-                result = await asyncio.wait_for(
-                    asyncio.get_event_loop().run_in_executor(
-                        None, lambda: db.query(cypher_query)
-                    ),
-                    timeout=8
-                )
-                return result
-            except asyncio.TimeoutError:
-                msg = f"Timeout: {query_desc} did not respond within 8s.\nQuery: {cypher_query}"
-                if websocket:
-                    await websocket.send_text(json.dumps({
-                        "type": "error",
-                        "message": msg,
-                        "hint": "Check database connectivity or simplify your query."
-                    }))
-                print(f"[TIMEOUT] {msg}")
-                return None
-            except Exception as e:
-                tb = traceback.format_exc()
-                msg = f"Error: {query_desc} failed with {e}\nQuery: {cypher_query}"
-                if websocket:
-                    await websocket.send_text(json.dumps({
-                        "type": "error",
-                        "message": msg,
-                        "debug": tb.splitlines()[-3:]
-                    }))
-                print(f"[ERROR] {msg}\n{tb}")
-                return None
-        
-        # Helper function for executing parameterized search queries with timeout
-        async def execute_search_query_with_params(query_desc, cypher_query, params):
-            try:
-                result = await asyncio.wait_for(
-                    asyncio.get_event_loop().run_in_executor(
-                        None, lambda: db.query(cypher_query, params)
-                    ),
-                    timeout=8
-                )
-                return result
-            except asyncio.TimeoutError:
-                if websocket:
-                    await websocket.send_text(json.dumps({
-                        "type": "error",
-                        "message": f"Search query timeout for {query_desc}: {cypher_query}"
-                    }))
-                print(f"Search query timeout for {query_desc}: {cypher_query}")
-                return None
-            except Exception as e:
-                if websocket:
-                    await websocket.send_text(json.dumps({
-                        "type": "error", 
-                        "message": f"Search query error for {query_desc}: {str(e)} - Query: {cypher_query}"
-                    }))
-                print(f"Search query error for {query_desc}: {str(e)} - Query: {cypher_query}")
-                return None
-        
-        # Search people
-        try:
-            cypher_query = "MATCH (p:Person) WHERE toLower(p.name) CONTAINS $query OR toLower(p.role) CONTAINS $query OR toLower(p.department) CONTAINS $query RETURN p.name, p.role, p.department, p.email LIMIT 5"
-            result = await execute_search_query_with_params("people", cypher_query, {"query": query_lower})
-            if result and result.result_set:
-                for record in result.result_set:
-                    search_results["people"].append({
-                        "name": record[0],
-                        "role": record[1],
-                        "department": record[2],
-                        "email": record[3]
-                    })
-        except Exception as e:
-            if websocket:
-                await websocket.send_text(json.dumps({
-                    "type": "error",
-                    "message": f"People search error: {str(e)}"
-                }))
-            print(f"People search error: {str(e)}")
-        
-        # Search teams
-        try:
-            cypher_query = "MATCH (t:Team) WHERE toLower(t.name) CONTAINS $query OR toLower(t.department) CONTAINS $query OR toLower(t.focus) CONTAINS $query RETURN t.name, t.department, t.focus LIMIT 5"
-            result = await execute_search_query_with_params("teams", cypher_query, {"query": query_lower})
-            if result and result.result_set:
-                for record in result.result_set:
-                    search_results["teams"].append({
-                        "name": record[0],
-                        "department": record[1],
-                        "focus": record[2]
-                    })
-        except Exception as e:
-            if websocket:
-                await websocket.send_text(json.dumps({
-                    "type": "error",
-                    "message": f"Teams search error: {str(e)}"
-                }))
-            print(f"Teams search error: {str(e)}")
-        
-        # Search groups
-        try:
-            cypher_query = "MATCH (g:Group) WHERE toLower(g.name) CONTAINS $query OR toLower(g.description) CONTAINS $query OR toLower(g.type) CONTAINS $query RETURN g.name, g.type, g.description LIMIT 5"
-            result = await execute_search_query_with_params("groups", cypher_query, {"query": query_lower})
-            if result and result.result_set:
-                for record in result.result_set:
-                    search_results["groups"].append({
-                        "name": record[0],
-                        "type": record[1],
-                        "description": record[2]
-                    })
-        except Exception as e:
-            if websocket:
-                await websocket.send_text(json.dumps({
-                    "type": "error",
-                    "message": f"Groups search error: {str(e)}"
-                }))
-            print(f"Groups search error: {str(e)}")
-        
-        # Search policies
-        try:
-            cypher_query = "MATCH (p:Policy) WHERE toLower(p.name) CONTAINS $query OR toLower(p.description) CONTAINS $query OR toLower(p.category) CONTAINS $query RETURN p.name, p.category, p.severity, p.description LIMIT 5"
-            result = await execute_search_query_with_params("policies", cypher_query, {"query": query_lower})
-            if result and result.result_set:
-                for record in result.result_set:
-                    search_results["policies"].append({
-                        "name": record[0],
-                        "category": record[1],
-                        "severity": record[2],
-                        "description": record[3]
-                    })
-        except Exception as e:
-            if websocket:
-                await websocket.send_text(json.dumps({
-                    "type": "error",
-                    "message": f"Policies search error: {str(e)}"
-                }))
-            print(f"Policies search error: {str(e)}")
-        
-        # Search messages
-        try:
-            cypher_query = "MATCH (m:Message) WHERE toLower(m.original) CONTAINS $query RETURN m.original, m.pig_latin ORDER BY m.timestamp DESC LIMIT 5"
-            result = await execute_search_query_with_params("messages", cypher_query, {"query": query_lower})
-            if result and result.result_set:
-                for record in result.result_set:
-                    search_results["messages"].append({
-                        "original": record[0],
-                        "pig_latin": record[1]
-                    })
-        except Exception as e:
-            if websocket:
-                await websocket.send_text(json.dumps({
-                    "type": "error",
-                    "message": f"Messages search error: {str(e)}"
-                }))
-            print(f"Messages search error: {str(e)}")
-        
-        total_results = sum(len(results) for results in search_results.values())
-        return search_results
+        for record in results:
+            node = record['node']
+            labels = record['labels']
+            
+            if "Person" in labels:
+                organized_results["people"].append(node)
+            elif "Team" in labels:
+                organized_results["teams"].append(node)
+            elif "Group" in labels:
+                organized_results["groups"].append(node)
+            elif "Policy" in labels:
+                organized_results["policies"].append(node)
+            elif "Project" in labels:
+                organized_results["projects"].append(node)
+            elif "Repository" in labels:
+                organized_results["repositories"].append(node)
+            elif "PullRequest" in labels:
+                organized_results["pull_requests"].append(node)
+            elif "Issue" in labels:
+                organized_results["issues"].append(node)
+            elif "Document" in labels:
+                organized_results["documents"].append(node)
+            elif "CalendarEvent" in labels:
+                organized_results["calendar_events"].append(node)
+            elif "Message" in labels:
+                organized_results["messages"].append(node)
+
+        return organized_results
     except Exception as e:
         if websocket:
             await websocket.send_text(json.dumps({
@@ -633,6 +517,10 @@ async def execute_custom_query(user_message, websocket=None):
         
         # Get AI model to generate the Cypher query
         prompt = load_prompt("generate_query", user_message=user_message)
+        
+        # Add the user's question to the prompt
+        prompt += f"\n\nQuestion: \"{user_message}\"\nQuery:"
+        
         cypher_query = await call_ai_model(prompt, websocket)
         
         # Clean up the query (remove any extra text)

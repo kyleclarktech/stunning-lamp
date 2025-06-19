@@ -1,48 +1,30 @@
-You are helping to search a corporate database containing organizational information and message history.
+You are an expert in generating Cypher queries.
+Your task is to create a query that searches for entities in a graph database based on the search type provided.
+The graph contains the following node labels and properties:
 
-User request: "{{ user_message }}"
+Nodes:
+- Person: id, name, email, department, role, location, manager_id, hire_date
+- Team: id, name, department, focus
+- Group: id, name, type, description
+- Policy: id, name, category, description, severity
+- Message: id, sender_id, content, channel, timestamp
 
-SEARCH RESULTS:
-{% if search_results.people %}
-People found ({{ search_results.people|length }}):
-{% for person in search_results.people %}
-- {{ person.name }} - {{ person.role }} in {{ person.department }} ({{ person.email }})
-{% endfor %}
+Relationships:
+- (Person)-[:MEMBER_OF]->(Team)
+- (Person)-[:MEMBER_OF]->(Group)
+- (Person)-[:REPORTS_TO]->(Person)
+- (Team)-[:RESPONSIBLE_FOR]->(Policy)
+- (Group)-[:RESPONSIBLE_FOR]->(Policy)
 
-{% endif %}
-{% if search_results.teams %}
-Teams found ({{ search_results.teams|length }}):
-{% for team in search_results.teams %}
-- {{ team.name }} ({{ team.department }}) - {{ team.focus }}
-{% endfor %}
+Search Type: {{ search_type }}
+Search Terms: {{ search_terms }}
 
-{% endif %}
-{% if search_results.groups %}
-Groups found ({{ search_results.groups|length }}):
-{% for group in search_results.groups %}
-- {{ group.name }} ({{ group.type }}) - {{ group.description }}
-{% endfor %}
+Generate a Cypher query based on the search type:
+- For "people": Search Person nodes by name containing the search terms
+- For "teams": Search Team nodes by name or department containing the search terms
+- For "groups": Search Group nodes by name or type containing the search terms
+- For "policies": Search Policy nodes by name or category containing the search terms
+- For "messages": Search Message nodes by content containing the search terms
 
-{% endif %}
-{% if search_results.policies %}
-Policies found ({{ search_results.policies|length }}):
-{% for policy in search_results.policies %}
-- {{ policy.name }} ({{ policy.category }}, {{ policy.severity }}) - {{ policy.description }}
-{% endfor %}
-
-{% endif %}
-{% if search_results.messages %}
-Previous messages found ({{ search_results.messages|length }}):
-{% for message in search_results.messages %}
-- "{{ message.original }}"
-{% endfor %}
-
-{% endif %}
-
-Based on the user's request and the search results above, provide a helpful response about what was found in the corporate database. 
-
-**If no relevant results were found:**
-- Simply state "No results were found matching your search."
-- DO NOT suggest alternative search terms or provide generic information
-- DO NOT make up or hallucinate information
-- Keep the response brief and factual
+Use case-insensitive matching with the =~ operator and (?i) flag.
+Do not generate any comments or explanations, only the Cypher query.
