@@ -9,7 +9,7 @@ async def test_query():
     try:
         async with websockets.connect(uri) as websocket:
             # Send a question that should trigger a database query
-            question = "who is in the platform team?"
+            question = "how many people in engineering?"
             print(f"> Sending question: {question}")
             await websocket.send(question)
             

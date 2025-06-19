@@ -126,10 +126,10 @@ class QueryDebugger:
         # Call Ollama
         try:
             response = httpx.post(
-                f"{self.ollama_host}/api/chat",
+                f"{self.ollama_host}/api/generate",
                 json={
                     "model": self.ollama_model,
-                    "messages": [{"role": "user", "content": prompt}],
+                    "prompt": prompt,
                     "stream": False
                 },
                 timeout=30
@@ -137,7 +137,7 @@ class QueryDebugger:
             
             if response.status_code == 200:
                 data = response.json()
-                generated_query = data.get('message', {}).get('content', '')
+                generated_query = data.get('response', '')
                 
                 # Clean up the query
                 if "```" in generated_query:

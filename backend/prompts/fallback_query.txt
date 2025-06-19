@@ -3,6 +3,12 @@ You are a FalkorDB Cypher query generator. The previous query returned no result
 Original user request: "{{ user_message }}"
 Previous query that returned no results: {{ previous_query }}
 
+IMPORTANT SCHEMA REMINDERS:
+- Person node properties: id, name, email, department, role (SINGULAR, not roles), location, manager_id, hire_date
+- All properties are strings, NOT arrays. Do NOT use ANY() or array operations.
+- role is a SINGLE string property (e.g., "Software Engineer"), not an array
+- To search within a property, use CONTAINS directly: WHERE p.role CONTAINS 'engineer'
+
 ANALYSIS: The previous query was too specific. Generate a broader query using these strategies:
 
 FALLBACK STRATEGIES:
@@ -32,6 +38,10 @@ EXAMPLE TRANSFORMATIONS:
 - "Human Resources Manager" → "Human" or "HR" or "Manager" or "People"
 - Specific policy names → policy categories or keywords
 - Exact department matches → partial department matching
+
+CORRECT QUERY EXAMPLES:
+- To find engineers: MATCH (p:Person) WHERE p.role CONTAINS 'engineer' OR p.department CONTAINS 'engineering' RETURN p.id, p.name, p.email, p.department, p.role, labels(p) as labels LIMIT 25
+- NEVER use: WHERE ANY(x IN p.roles...) - this is INCORRECT as role is not an array
 
 Generate a single, broader Cypher query that has a higher chance of returning relevant results. Return ONLY the Cypher query without explanation.
 

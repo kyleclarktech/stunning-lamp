@@ -14,6 +14,9 @@ from dotenv import load_dotenv
 from datetime import datetime
 from seed_data import seed_database
 import logging
+from query_patterns import match_and_generate_query
+from error_handler import handle_query_error
+from streaming_utils import ResponseStreamer, StreamingFormatter, create_progress_messages
 
 # Load environment variables from .env file
 load_dotenv()
@@ -157,14 +160,15 @@ def load_prompt(prompt_name, **kwargs):
 async def call_ai_model(prompt_text, websocket=None, timeout=60):
     """Call Ollama HTTP API direct for chat completions, handling streaming response"""
     host, model = get_ollama_client()
-    url = f"{host}/api/chat"
+    url = f"{host}/api/generate"
     full_response = ""
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:
             payload = {
                 "model": model,
-                "messages": [{"role": "user", "content": prompt_text}],
-                "stream": False  # Disable streaming from Ollama
+                "prompt": prompt_text,
+                "stream": False,  # Disable streaming from Ollama
+                "context": []  # Force empty context for each call - no history maintained
             }
             logging.debug(f"Sending request to Ollama: {payload}")
             resp = await client.post(url, json=payload)
@@ -185,8 +189,8 @@ async def call_ai_model(prompt_text, websocket=None, timeout=60):
             logging.debug(f"Received response from Ollama: {data}")
             
             # Extract content from the non-streaming response
-            if data.get('message') and data['message'].get('content'):
-                full_response = data['message']['content']
+            if data.get('response'):
+                full_response = data['response']
             else:
                 logging.warning("Ollama response did not contain expected content.")
                 full_response = "" # Return empty string if no content found
@@ -499,40 +503,56 @@ def analyze_query_reasoning(user_message):
     
     return reasoning, applicable_policy
 
-async def execute_custom_query(user_message, websocket=None):
+async def execute_custom_query(user_message, websocket=None, enable_streaming=True):
     """Generate and execute a custom Cypher query based on user request"""
     try:
-        if websocket:
-            reasoning, policy = analyze_query_reasoning(user_message)
+        # Initialize streamer if websocket is available
+        streamer = ResponseStreamer(websocket) if websocket and enable_streaming else None
+        # First, try to match against pre-compiled patterns
+        cypher_query = match_and_generate_query(user_message)
+        pattern_matched = cypher_query is not None
+        
+        if pattern_matched:
+            # Pattern matched - use pre-compiled query
+            if websocket:
+                await websocket.send_text(json.dumps({
+                    "type": "info",
+                    "message": "⚡ Using optimized query pattern..."
+                }))
+            logging.info(f"Using pre-compiled pattern for query: {user_message}")
+        else:
+            # No pattern match - fall back to AI generation
+            if websocket:
+                reasoning, policy = analyze_query_reasoning(user_message)
+                
+                message = f"🔍 Crafting database query using {reasoning}"
+                if policy:
+                    message += f" (citing {policy})"
+                message += "..."
+                
+                await websocket.send_text(json.dumps({
+                    "type": "info",
+                    "message": message
+                }))
             
-            message = f"🔍 Crafting database query using {reasoning}"
-            if policy:
-                message += f" (citing {policy})"
-            message += "..."
+            # Get AI model to generate the Cypher query
+            prompt = load_prompt("generate_query", user_message=user_message)
             
-            await websocket.send_text(json.dumps({
-                "type": "info",
-                "message": message
-            }))
-        
-        # Get AI model to generate the Cypher query
-        prompt = load_prompt("generate_query", user_message=user_message)
-        
-        # Add the user's question to the prompt
-        prompt += f"\n\nQuestion: \"{user_message}\"\nQuery:"
-        
-        cypher_query = await call_ai_model(prompt, websocket)
-        
-        # Clean up the query (remove any extra text)
-        cypher_query = cypher_query.strip()
-        if "```" in cypher_query:
-            # Extract query from code blocks
-            start = cypher_query.find("```")
-            if start >= 0:
-                start = cypher_query.find("\n", start) + 1
-                end = cypher_query.find("```", start)
-                if end > start:
-                    cypher_query = cypher_query[start:end].strip()
+            # Add the user's question to the prompt
+            prompt += f"\n\nQuestion: \"{user_message}\"\nQuery:"
+            
+            cypher_query = await call_ai_model(prompt, websocket)
+            
+            # Clean up the AI-generated query (remove any extra text)
+            cypher_query = cypher_query.strip()
+            if "```" in cypher_query:
+                # Extract query from code blocks
+                start = cypher_query.find("```")
+                if start >= 0:
+                    start = cypher_query.find("\n", start) + 1
+                    end = cypher_query.find("```", start)
+                    if end > start:
+                        cypher_query = cypher_query[start:end].strip()
         
         if websocket:
             await websocket.send_text(json.dumps({
@@ -561,13 +581,28 @@ async def execute_custom_query(user_message, websocket=None):
                 }))
             raise Exception(error_msg)
         except Exception as e:
-            error_msg = f"Database query error: {str(e)} - Query: {cypher_query}"
+            # Use enhanced error handler
+            error_response = handle_query_error(e, user_message, cypher_query)
+            
             if websocket:
+                # Send user-friendly error message
                 await websocket.send_text(json.dumps({
                     "type": "error",
-                    "message": error_msg
+                    "message": error_response["message"],
+                    "help": error_response.get("help", {})
                 }))
-            raise Exception(error_msg)
+                
+                # Send suggestions if available
+                if error_response.get("help", {}).get("alternative_queries"):
+                    suggestions_text = "Try these queries instead:\n" + "\n".join(
+                        f"• {q}" for q in error_response["help"]["alternative_queries"]
+                    )
+                    await websocket.send_text(json.dumps({
+                        "type": "info",
+                        "message": suggestions_text
+                    }))
+            
+            raise Exception(error_response["message"])
         
         # Format results
         results = []
