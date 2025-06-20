@@ -11,11 +11,20 @@ The database contains corporate organizational data with:
 
 FALKORDB SCHEMA:
 Node Types:
-- Person: id, name, email, department, role, hire_date, location, manager_id
+- Person: id, name, email, department, role, hire_date, location, manager_id, timezone
 - Team: id, name, department, focus
 - Group: id, name, description, type, lead_department  
 - Policy: id, name, description, category, severity, responsible_type, compliance_frameworks
 - Message: original, pig_latin, timestamp
+- Office: id, name, city, country, region, timezone, business_hours_start/end, languages, data_residency_zone
+- Language: id, code, name, native_name, is_business_language
+- Holiday: id, name, date, type, offices, impact, coverage_required
+- Compliance: id, framework, version, jurisdiction, geographic_scope, type, requirements, penalties, status
+- DataResidency: id, zone, countries, regulations, storage_locations, transfer_restrictions, encryption_required
+- Schedule: id, type, timezone, start_datetime, end_datetime, recurring_pattern, coverage_type, office_id, region, severity_focus
+- Incident: id, severity, status, description, affected_regions, affected_services, created_at, resolved_at, mttr_minutes, root_cause
+- Visa: id, type, name, country, issued_date, expiry_date, restrictions, allows_client_site, max_duration_years, renewable
+- Metric: id, type, service, region, value, unit, timestamp, percentile
 
 Relationships:
 - (Person)-[:MEMBER_OF {role, is_lead}]->(Team)
@@ -23,6 +32,18 @@ Relationships:
 - (Person)-[:REPORTS_TO]->(Person)
 - (Team)-[:RESPONSIBLE_FOR {responsibility_type, assigned_date}]->(Policy)
 - (Group)-[:RESPONSIBLE_FOR {responsibility_type, assigned_date}]->(Policy)
+- (Person)-[:WORKS_AT {start_date, is_remote, desk_location}]->(Office)
+- (Person)-[:SPEAKS {proficiency, is_primary, certified}]->(Language)
+- (Holiday)-[:OBSERVED_BY]->(Office)
+- (Office)-[:COLLABORATES_WITH {overlap_hours, preferred_meeting_times}]->(Office)
+- (Office)-[:OPERATES_UNDER {since, attestation_date, next_audit}]->(Compliance)
+- (Client)-[:REQUIRES_COMPLIANCE {contractual, sla_impact}]->(Compliance)
+- (Office)-[:ENFORCES]->(DataResidency)
+- (Project)-[:STORES_DATA_IN]->(DataResidency)
+- (Person)-[:ON_CALL {role, reachable_via}]->(Schedule)
+- (Person)-[:RESPONDED_TO {response_time_minutes, role}]->(Incident)
+- (Team)-[:HANDS_OFF_TO {handoff_time, handoff_type}]->(Team)
+- (Person)-[:HAS_VISA {status, sponsor}]->(Visa)
 
 Based on this message, decide what actions should be taken. You can recommend one or more of the following tools:
 
@@ -55,6 +76,45 @@ POLICY & COMPLIANCE DISCOVERY:
 - Policy searches: "find security policies", "data privacy requirements", "development standards"
 - Responsibility mapping: "who handles X", "what team owns Y", "responsible parties for Z"
 - Process guidance: "approval workflow for X", "steps to implement Y", "who to contact for Z"
+
+COMPLIANCE & DATA GOVERNANCE QUERIES:
+- Compliance frameworks: "what compliance frameworks apply", "GDPR requirements", "SOC2 audit status", "HIPAA compliance"
+- Office compliance: "compliance for London office", "which offices need GDPR", "SOC2 certified locations"
+- Client requirements: "compliance for healthcare clients", "financial client requirements", "EU client compliance"
+- Data residency: "where can we store EU data", "data residency for Japan", "cross-border data transfers"
+- Audit status: "upcoming compliance audits", "last SOC2 attestation", "compliance renewal dates"
+- Violation checks: "data residency violations", "non-compliant projects", "compliance gaps"
+
+GLOBAL OPERATIONS QUERIES:
+- Office/region queries: "who works in London", "people in EMEA", "show Tokyo office team"
+- Timezone queries: "find experts available during US hours", "24/7 coverage analysis", "overlap between offices"
+- Language queries: "German-speaking engineers", "multilingual support", "who speaks French"
+- Holiday/availability: "offices open on Christmas", "holiday schedules", "availability next week"
+- Cross-office collaboration: "teams across timezones", "global project resources", "regional distribution"
+
+24/7 OPERATIONS & INCIDENT QUERIES:
+- On-call status: "who's on call", "current on-call", "on-call schedule", "P0 coverage", "escalation path"
+- Schedule queries: "on-call schedule for EMEA", "next week's coverage", "weekend on-call", "coverage gaps"
+- Incident queries: "recent incidents", "P0 incidents", "open incidents", "incident history", "incidents today"
+- Response metrics: "incident response times", "MTTR by severity", "top responders", "response statistics"
+- Service reliability: "services with most incidents", "incident trends", "root cause analysis", "affected services"
+- Team handoffs: "handoff schedule", "team transitions", "follow-the-sun coverage", "regional handoffs"
+- Coverage analysis: "24/7 coverage", "timezone coverage", "coverage verification", "support gaps"
+
+VISA & WORK AUTHORIZATION QUERIES:
+- Visa status: "visa holders", "H-1B employees", "work visas", "visa expiry", "expiring visas"
+- Work authorization: "work permits", "who can work in US", "visa sponsorship", "work authorization"
+- Travel readiness: "business visas", "who can travel to", "client site visas", "international travel"
+- Immigration status: "permanent residents", "green card holders", "visa renewals", "immigration status"
+- Country-specific: "UK visa holders", "EU work permits", "APAC visas", "visa by country"
+
+PERFORMANCE METRICS QUERIES:
+- Service performance: "API performance", "service availability", "response times", "service metrics"
+- Regional metrics: "performance by region", "EMEA metrics", "regional latency", "availability by region"
+- SLA tracking: "SLA achievement", "service level", "uptime metrics", "availability stats"
+- Performance trends: "performance over time", "metric trends", "service degradation", "performance history"
+- Anomalies: "performance anomalies", "service issues", "unusual metrics", "performance spikes"
+- Resource utilization: "CPU usage", "memory utilization", "resource metrics", "capacity metrics"
 
 USE "search_database" for these patterns:
 - Simple name lookups: "find John Smith", "show me Sarah", "lookup Danny"

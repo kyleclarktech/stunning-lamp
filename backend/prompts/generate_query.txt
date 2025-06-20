@@ -13,6 +13,15 @@ Nodes:
 - Client: id, name, industry, tier, annual_value, relationship_start
 - Sprint: id, name, sprint_number, start_date, end_date, status, velocity
 - Technology: name (created dynamically for specializations)
+- Office: id, name, city, country, country_code, region, timezone, timezone_offset, business_hours_start, business_hours_end, business_hours_start_utc, business_hours_end_utc, languages, currency, data_residency_zone, is_headquarters, established_date
+- Language: id, code, name, native_name, script, direction, is_business_language
+- Holiday: id, name, date, type, recurring, offices, impact, coverage_required
+- Compliance: id, framework, version, jurisdiction, geographic_scope, type, requirements, penalties, effective_date, last_updated, status
+- DataResidency: id, zone, countries, regulations, storage_locations, transfer_restrictions, encryption_required
+- Schedule: id, type, timezone, start_datetime, end_datetime, recurring_pattern, coverage_type, office_id, region, severity_focus
+- Incident: id, severity, status, description, affected_regions, affected_services, created_at, resolved_at, mttr_minutes, root_cause
+- Visa: id, type, name, country, issued_date, expiry_date, restrictions, allows_client_site, max_duration_years, renewable
+- Metric: id, type, service, region, value, unit, timestamp, percentile
 
 Relationships:
 - (Person)-[:MEMBER_OF]->(Team)
@@ -29,6 +38,18 @@ Relationships:
 - (Person)-[:BACKUP_FOR {coverage_type, readiness_level}]->(Person)
 - (Project)-[:FOR_CLIENT]->(Client)
 - (Sprint)-[:PART_OF]->(Project)
+- (Person)-[:WORKS_AT {start_date, is_remote, desk_location}]->(Office)
+- (Person)-[:SPEAKS {proficiency, is_primary, certified, certification_date}]->(Language)
+- (Holiday)-[:OBSERVED_BY]->(Office)
+- (Office)-[:COLLABORATES_WITH {overlap_hours, preferred_meeting_times}]->(Office)
+- (Office)-[:OPERATES_UNDER {since, attestation_date, next_audit}]->(Compliance)
+- (Client)-[:REQUIRES_COMPLIANCE {contractual, sla_impact}]->(Compliance)
+- (Office)-[:ENFORCES]->(DataResidency)
+- (Project)-[:STORES_DATA_IN]->(DataResidency)
+- (Person)-[:ON_CALL {role, reachable_via}]->(Schedule)
+- (Person)-[:RESPONDED_TO {response_time_minutes, role}]->(Incident)
+- (Team)-[:HANDS_OFF_TO {handoff_time, handoff_type}]->(Team)
+- (Person)-[:HAS_VISA {status, sponsor}]->(Visa)
 
 SEMANTIC UNDERSTANDING:
 
@@ -132,5 +153,211 @@ EDGE CASE HANDLING:
 3. Typos: Use CONTAINS for partial matching
 4. Ambiguous terms: Default to broader interpretation
 5. No qualifier: "How many?" → Ask for clarification or default to Person count
+
+GLOBAL OPERATIONS PATTERNS:
+
+Find people by office/region:
+- Question: "Who works in the London office?"
+- Query: MATCH (p:Person)-[:WORKS_AT]->(o:Office {name: 'London'}) RETURN p.id, p.name, p.email, p.role, p.department, labels(p) as labels LIMIT 25
+
+Cross-timezone availability:
+- Question: "Find Python experts available during US Pacific business hours"
+- Query: MATCH (p:Person)-[:HAS_SKILL]->(s:Skill {name: 'Python'})-[:WORKS_AT]->(o:Office) WHERE o.business_hours_end_utc >= '17:00' AND o.business_hours_start_utc <= '02:00' RETURN p.id, p.name, p.email, o.name as office, o.timezone, labels(p) as labels LIMIT 25
+
+Language-based resource matching:
+- Question: "Find German-speaking engineers"
+- Query: MATCH (p:Person)-[sp:SPEAKS]->(l:Language {code: 'de'}), (p)-[:WORKS_AT]->(o:Office) WHERE p.role CONTAINS 'Engineer' AND sp.proficiency IN ['native', 'fluent', 'professional'] RETURN p.id, p.name, p.email, p.role, sp.proficiency as german_proficiency, o.name as office, labels(p) as labels LIMIT 25
+
+Holiday-aware scheduling:
+- Question: "Which offices are open on December 25th?"
+- Query: MATCH (o:Office) WHERE NOT EXISTS { MATCH (h:Holiday {date: '2024-12-25'})-[:OBSERVED_BY]->(o) } RETURN o.id, o.name, o.city, o.country, o.timezone, labels(o) as labels
+
+Regional team distribution:
+- Question: "Show team distribution across EMEA offices"
+- Query: MATCH (t:Team)<-[:MEMBER_OF]-(p:Person)-[:WORKS_AT]->(o:Office {region: 'EMEA'}) WITH t, o, count(p) as member_count RETURN t.name as team, o.name as office, member_count ORDER BY t.name, member_count DESC
+
+Multi-language support teams:
+- Question: "Find teams that can support English, German, and French customers"
+- Query: MATCH (t:Team)<-[:MEMBER_OF]-(p:Person)-[sp:SPEAKS]->(l:Language) WHERE l.code IN ['en', 'de', 'fr'] AND sp.proficiency IN ['fluent', 'professional', 'native'] WITH t, collect(DISTINCT l.code) as languages WHERE size(languages) = 3 RETURN t.id, t.name, t.department, languages, labels(t) as labels
+
+Office collaboration hours:
+- Question: "What are the collaboration hours between San Francisco and London?"
+- Query: MATCH (o1:Office {name: 'San Francisco HQ'})-[c:COLLABORATES_WITH]->(o2:Office {name: 'London'}) RETURN o1.name as office1, o2.name as office2, c.overlap_hours, c.preferred_meeting_times, labels(o1) as labels
+
+24/7 coverage analysis:
+- Question: "Which timezones provide 24/7 coverage for incident response?"
+- Query: MATCH (o:Office) WITH o ORDER BY o.timezone_offset RETURN o.name, o.timezone, o.timezone_offset, o.business_hours_start_utc, o.business_hours_end_utc, labels(o) as labels
+
+COMPLIANCE & DATA GOVERNANCE PATTERNS:
+
+Compliance frameworks by office:
+- Question: "What compliance frameworks apply to the London office?"
+- Query: MATCH (o:Office {name: 'London'})-[op:OPERATES_UNDER]->(c:Compliance) RETURN o.name as office, c.framework, c.jurisdiction, c.status, op.next_audit, labels(c) as labels
+
+GDPR compliance requirements:
+- Question: "Show GDPR requirements and which offices must comply"
+- Query: MATCH (c:Compliance {framework: 'GDPR'})<-[:OPERATES_UNDER]-(o:Office) RETURN c.framework, c.requirements, c.penalties, collect(o.name) as offices, labels(c) as labels
+
+Client compliance requirements:
+- Question: "What compliance requirements do healthcare clients have?"
+- Query: MATCH (cl:Client)-[req:REQUIRES_COMPLIANCE]->(c:Compliance) WHERE cl.industry CONTAINS 'Health' RETURN cl.name as client, c.framework, c.type, req.sla_impact, labels(c) as labels
+
+Data residency for EU data:
+- Question: "Where can we store EU customer data?"
+- Query: MATCH (dr:DataResidency) WHERE 'EU' IN dr.countries OR dr.zone = 'EU' RETURN dr.zone, dr.countries, dr.storage_locations, dr.transfer_restrictions, labels(dr) as labels
+
+Project data residency compliance:
+- Question: "Which projects store data in the EU?"
+- Query: MATCH (p:Project)-[:STORES_DATA_IN]->(dr:DataResidency {zone: 'EU'}) RETURN p.name as project, p.status, dr.zone, dr.storage_locations, labels(p) as labels LIMIT 25
+
+Compliance audit status:
+- Question: "Show upcoming compliance audits"
+- Query: MATCH (o:Office)-[op:OPERATES_UNDER]->(c:Compliance) WHERE op.next_audit > date() RETURN o.name as office, c.framework, op.next_audit, op.attestation_date, labels(c) as labels ORDER BY op.next_audit
+
+Data residency violations:
+- Question: "Find projects with potential data residency violations"
+- Query: MATCH (p:Project)-[:STORES_DATA_IN]->(dr:DataResidency), (p)-[:FOR_CLIENT]->(cl:Client)-[:REQUIRES_COMPLIANCE]->(c:Compliance) WHERE NOT dr.zone IN c.geographic_scope RETURN p.name as project, cl.name as client, dr.zone as storage_zone, c.framework, c.geographic_scope as required_zones, labels(p) as labels
+
+Office compliance status:
+- Question: "Which offices are SOC2 compliant?"
+- Query: MATCH (o:Office)-[:OPERATES_UNDER]->(c:Compliance {framework: 'SOC2', status: 'active'}) RETURN o.name, o.region, c.version, c.status, labels(o) as labels
+
+Cross-border data transfer requirements:
+- Question: "What are the requirements for transferring data from EU to US?"
+- Query: MATCH (dr_eu:DataResidency {zone: 'EU'}), (dr_us:DataResidency {zone: 'US'}) RETURN dr_eu.zone as from_zone, dr_us.zone as to_zone, dr_eu.transfer_restrictions, labels(dr_eu) as labels
+
+Client-specific compliance impact:
+- Question: "Show financial clients and their compliance requirements with SLA impact"
+- Query: MATCH (cl:Client)-[req:REQUIRES_COMPLIANCE]->(c:Compliance) WHERE cl.industry CONTAINS 'Financial' RETURN cl.name, cl.tier, c.framework, req.contractual, req.sla_impact, labels(cl) as labels ORDER BY req.sla_impact DESC
+
+24/7 OPERATIONS SUPPORT PATTERNS:
+
+Current on-call status:
+- Question: "Who's on call right now?"
+- Query: MATCH (p:Person)-[oc:ON_CALL]->(s:Schedule) WHERE datetime(s.start_datetime) <= datetime() AND datetime(s.end_datetime) >= datetime() RETURN p.id, p.name, p.email, s.coverage_type, oc.reachable_via, s.region, labels(p) as labels
+
+P0 incident coverage:
+- Question: "Who's on call for P0 incidents?"
+- Query: MATCH (p:Person)-[oc:ON_CALL]->(s:Schedule) WHERE s.coverage_type = 'p0_escalation' AND datetime(s.start_datetime) <= datetime() AND datetime(s.end_datetime) >= datetime() RETURN p.id, p.name, p.email, oc.reachable_via, s.region, labels(p) as labels
+
+On-call schedule by region:
+- Question: "Show on-call schedule for EMEA next week"
+- Query: MATCH (p:Person)-[oc:ON_CALL]->(s:Schedule) WHERE s.region = 'EMEA' AND date(s.start_datetime) >= date() AND date(s.start_datetime) <= date() + duration('P7D') RETURN p.name, s.coverage_type, s.start_datetime, s.end_datetime, oc.role, labels(p) as labels ORDER BY s.start_datetime
+
+Coverage gaps analysis:
+- Question: "Find coverage gaps in the next 7 days"
+- Query: MATCH (s:Schedule) WHERE date(s.start_datetime) >= date() AND date(s.start_datetime) <= date() + duration('P7D') AND NOT EXISTS { MATCH (p:Person)-[:ON_CALL]->(s) } RETURN s.id, s.type, s.coverage_type, s.start_datetime, s.end_datetime, s.region, labels(s) as labels
+
+Recent P0/P1 incidents:
+- Question: "Show P0 and P1 incidents from the last 7 days"
+- Query: MATCH (i:Incident) WHERE i.severity IN ['P0', 'P1'] AND datetime(i.created_at) >= datetime() - duration('P7D') RETURN i.id, i.severity, i.status, i.description, i.affected_regions, i.created_at, i.mttr_minutes, labels(i) as labels ORDER BY i.created_at DESC
+
+Open incidents:
+- Question: "What incidents are currently open?"
+- Query: MATCH (i:Incident {status: 'open'}) RETURN i.id, i.severity, i.description, i.affected_regions, i.affected_services, i.created_at, labels(i) as labels ORDER BY i.severity, i.created_at
+
+Incident response metrics:
+- Question: "Show incident response times by severity"
+- Query: MATCH (p:Person)-[r:RESPONDED_TO]->(i:Incident) WHERE i.status = 'resolved' WITH i.severity as severity, avg(r.response_time_minutes) as avg_response_time, min(r.response_time_minutes) as min_response_time, max(r.response_time_minutes) as max_response_time, count(i) as incident_count RETURN severity, round(avg_response_time) as avg_response_minutes, min_response_time, max_response_time, incident_count ORDER BY severity
+
+Top incident responders:
+- Question: "Who responded to the most incidents last month?"
+- Query: MATCH (p:Person)-[r:RESPONDED_TO]->(i:Incident) WHERE datetime(i.created_at) >= datetime() - duration('P30D') WITH p, count(i) as incidents_handled, avg(r.response_time_minutes) as avg_response_time RETURN p.id, p.name, p.email, incidents_handled, round(avg_response_time) as avg_response_minutes, labels(p) as labels ORDER BY incidents_handled DESC LIMIT 10
+
+Team handoff schedule:
+- Question: "Show team handoffs for today"
+- Query: MATCH (t1:Team)-[h:HANDS_OFF_TO]->(t2:Team) WHERE h.handoff_type = 'end_of_day' RETURN t1.name as from_team, t2.name as to_team, h.handoff_time, h.handoff_type, labels(t1) as labels ORDER BY h.handoff_time
+
+Coverage by timezone:
+- Question: "Which teams provide coverage in UTC+8?"
+- Query: MATCH (t:Team)<-[:MEMBER_OF]-(p:Person)-[:WORKS_AT]->(o:Office) WHERE o.timezone_offset = 8 WITH t, count(DISTINCT p) as team_members RETURN t.id, t.name, t.department, team_members, labels(t) as labels
+
+P0 incident analysis:
+- Question: "Analyze P0 incidents by root cause"
+- Query: MATCH (i:Incident {severity: 'P0', status: 'resolved'}) WITH i.root_cause as root_cause, count(i) as incident_count, avg(i.mttr_minutes) as avg_mttr RETURN root_cause, incident_count, round(avg_mttr) as avg_mttr_minutes ORDER BY incident_count DESC
+
+Service reliability:
+- Question: "Which services had the most incidents?"
+- Query: MATCH (i:Incident) WHERE i.status = 'resolved' UNWIND i.affected_services as service WITH service, count(i) as incident_count, avg(i.mttr_minutes) as avg_mttr RETURN service, incident_count, round(avg_mttr) as avg_mttr_minutes ORDER BY incident_count DESC
+
+Regional incident distribution:
+- Question: "Show incident distribution by region last quarter"
+- Query: MATCH (i:Incident) WHERE datetime(i.created_at) >= datetime() - duration('P90D') UNWIND i.affected_regions as region WITH region, i.severity as severity, count(i) as count RETURN region, severity, count ORDER BY region, severity
+
+24/7 coverage verification:
+- Question: "Verify 24/7 coverage for critical services"
+- Query: MATCH (s:Schedule) WHERE s.type = 'on_call' AND s.coverage_type IN ['primary', 'p0_escalation'] WITH s.region as region, s.timezone as timezone, collect(DISTINCT [s.start_datetime, s.end_datetime]) as schedules RETURN region, timezone, size(schedules) as schedule_count, labels(s) as labels ORDER BY region
+
+Escalation path:
+- Question: "Show escalation path for P0 incidents in APAC"
+- Query: MATCH (p:Person)-[oc:ON_CALL]->(s:Schedule) WHERE s.region = 'APAC' AND s.coverage_type IN ['primary', 'backup', 'p0_escalation'] AND datetime(s.start_datetime) <= datetime() AND datetime(s.end_datetime) >= datetime() RETURN p.name, p.email, s.coverage_type as escalation_level, oc.reachable_via, labels(p) as labels ORDER BY CASE s.coverage_type WHEN 'primary' THEN 1 WHEN 'backup' THEN 2 WHEN 'p0_escalation' THEN 3 END
+
+VISA & WORK AUTHORIZATION PATTERNS:
+
+Active visas by type:
+- Question: "Show all active H-1B visas"
+- Query: MATCH (p:Person)-[hv:HAS_VISA]->(v:Visa {type: 'H-1B'}) WHERE hv.status = 'active' RETURN p.id, p.name, p.email, v.type, v.expiry_date, hv.sponsor, labels(p) as labels LIMIT 25
+
+Expiring visas:
+- Question: "Find visas expiring in the next 90 days"
+- Query: MATCH (p:Person)-[hv:HAS_VISA]->(v:Visa) WHERE hv.status IN ['active', 'expiring_soon'] AND date(v.expiry_date) <= date() + duration('P90D') AND date(v.expiry_date) >= date() RETURN p.id, p.name, p.email, v.type, v.country, v.expiry_date, hv.sponsor, labels(p) as labels ORDER BY v.expiry_date
+
+Visa coverage by office:
+- Question: "Show visa holders in the London office"
+- Query: MATCH (p:Person)-[:HAS_VISA]->(v:Visa), (p)-[:WORKS_AT]->(o:Office {name: 'London'}) RETURN p.id, p.name, v.type, v.status, v.expiry_date, labels(p) as labels LIMIT 25
+
+Work authorization for client sites:
+- Question: "Find people with visas that allow client site work in the US"
+- Query: MATCH (p:Person)-[hv:HAS_VISA]->(v:Visa) WHERE v.country = 'United States' AND v.allows_client_site = true AND hv.status = 'active' RETURN p.id, p.name, p.role, v.type, v.expiry_date, labels(p) as labels LIMIT 25
+
+Visa sponsorship requirements:
+- Question: "Show employees who need company sponsorship"
+- Query: MATCH (p:Person)-[hv:HAS_VISA]->(v:Visa) WHERE hv.sponsor = 'GlobalDataCorp' AND hv.status = 'active' RETURN p.id, p.name, p.department, v.type, v.country, v.expiry_date, labels(p) as labels LIMIT 25
+
+Multi-country visa holders:
+- Question: "Find people with visas for multiple countries"
+- Query: MATCH (p:Person)-[:HAS_VISA]->(v:Visa) WITH p, count(DISTINCT v.country) as visa_countries, collect(DISTINCT v.country) as countries WHERE visa_countries > 1 RETURN p.id, p.name, p.email, visa_countries, countries, labels(p) as labels LIMIT 25
+
+Permanent residents by country:
+- Question: "Show permanent residents in each country"
+- Query: MATCH (p:Person)-[hv:HAS_VISA]->(v:Visa) WHERE v.max_duration_years = 0 AND hv.status = 'active' RETURN v.country, v.type as visa_type, collect(p.name) as people, count(p) as count ORDER BY v.country
+
+Travel readiness:
+- Question: "Find senior staff with business visas for client visits"
+- Query: MATCH (p:Person)-[hv:HAS_VISA]->(v:Visa {type: 'Business'}) WHERE p.seniority IN ['Senior', 'Staff', 'Principal'] AND hv.status = 'active' RETURN p.id, p.name, p.role, collect(v.country) as business_visa_countries, labels(p) as labels LIMIT 25
+
+PERFORMANCE METRICS PATTERNS:
+
+Service availability by region:
+- Question: "Show API gateway availability by region"
+- Query: MATCH (m:Metric) WHERE m.service = 'api-gateway' AND m.type = 'availability' AND datetime(m.timestamp) >= datetime() - duration('P1D') WITH m.region as region, avg(m.value) as avg_availability RETURN region, round(avg_availability, 2) as availability_percentage ORDER BY region
+
+Response time percentiles:
+- Question: "Show 95th percentile response times for all services"
+- Query: MATCH (m:Metric) WHERE m.type = 'response_time' AND m.percentile = 95 AND datetime(m.timestamp) >= datetime() - duration('P1D') WITH m.service as service, m.region as region, avg(m.value) as avg_p95 RETURN service, region, round(avg_p95) as p95_ms ORDER BY service, region
+
+Service performance trends:
+- Question: "Show data pipeline performance over the last week"
+- Query: MATCH (m:Metric) WHERE m.service = 'data-pipeline' AND m.type IN ['response_time', 'throughput'] AND datetime(m.timestamp) >= datetime() - duration('P7D') WITH date(m.timestamp) as day, m.type as metric_type, avg(m.value) as avg_value RETURN day, metric_type, round(avg_value, 2) as value ORDER BY day, metric_type
+
+Error rate by service:
+- Question: "Which services have the highest error rates?"
+- Query: MATCH (m:Metric) WHERE m.type = 'error_rate' AND datetime(m.timestamp) >= datetime() - duration('P1D') WITH m.service as service, avg(m.value) as avg_error_rate WHERE avg_error_rate > 0.1 RETURN service, round(avg_error_rate, 2) as error_rate_percentage ORDER BY avg_error_rate DESC
+
+Regional performance comparison:
+- Question: "Compare ML inference performance across regions"
+- Query: MATCH (m:Metric) WHERE m.service = 'ml-inference' AND m.type = 'response_time' AND m.percentile = 50 AND datetime(m.timestamp) >= datetime() - duration('P1D') WITH m.region as region, avg(m.value) as avg_response_time, min(m.value) as min_response_time, max(m.value) as max_response_time RETURN region, round(avg_response_time) as avg_ms, round(min_response_time) as min_ms, round(max_response_time) as max_ms ORDER BY avg_response_time
+
+SLA achievement:
+- Question: "Show current month SLA achievement for all services"
+- Query: MATCH (m:Metric) WHERE m.type = 'sla_achievement' AND datetime(m.timestamp) >= datetime().truncate('month') RETURN m.service, m.region, m.value as sla_percentage ORDER BY m.service, m.region
+
+Resource utilization patterns:
+- Question: "Show CPU utilization for analytics services"
+- Query: MATCH (m:Metric) WHERE m.type = 'cpu_utilization' AND m.service CONTAINS 'analytics' AND datetime(m.timestamp) >= datetime() - duration('P1D') WITH m.service as service, m.percentile as percentile, avg(m.value) as avg_cpu RETURN service, percentile, round(avg_cpu) as cpu_percentage ORDER BY service, percentile
+
+Performance anomalies:
+- Question: "Find performance anomalies in the last 24 hours"
+- Query: MATCH (m1:Metric) WHERE m1.type = 'response_time' AND datetime(m1.timestamp) >= datetime() - duration('P1D') WITH m1.service as service, avg(m1.value) as baseline MATCH (m2:Metric) WHERE m2.service = service AND m2.type = 'response_time' AND datetime(m2.timestamp) >= datetime() - duration('P1D') AND m2.value > baseline * 3 RETURN m2.service, m2.region, m2.timestamp, m2.value as anomaly_value, round(baseline) as baseline_value, labels(m2) as labels ORDER BY m2.timestamp DESC
 
 REMEMBER: Output ONLY the Cypher query on ONE LINE. No explanations, no additional text.
