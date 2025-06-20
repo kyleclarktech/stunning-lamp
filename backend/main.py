@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 from seed_data import seed_database
 import logging
-from query_patterns_improved import match_and_generate_query
+from query_patterns import match_and_generate_query
 from error_handler import handle_query_error
 from streaming_utils import ResponseStreamer, StreamingFormatter, create_progress_messages
 

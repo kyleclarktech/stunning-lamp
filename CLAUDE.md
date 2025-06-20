@@ -46,10 +46,10 @@ python test_websocket.py
 
 ```bash
 # Seed database with test data
-docker exec -it stunning-lamp-api-1 python seed_data.py
+docker exec -it stunning-lamp-api-1 python scripts/seed_data.py
 
 # Initialize empty database
-docker exec -it stunning-lamp-api-1 python init_db.py
+docker exec -it stunning-lamp-api-1 python scripts/init_db.py
 
 # Access FalkorDB CLI
 docker exec -it stunning-lamp-falkordb-1 redis-cli
@@ -116,7 +116,7 @@ FALKOR_PORT=6379
 
 ### Modifying the Schema
 
-1. Update seed data generation in `backend/seed_data.py`
+1. Update seed data generation in `backend/scripts/seed_data.py`
 2. Modify query prompts to reflect new node types/relationships
 3. Update the schema documentation in prompt files
 
