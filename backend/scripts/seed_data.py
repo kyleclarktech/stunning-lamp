@@ -3,8 +3,179 @@ import falkordb
 from faker import Faker
 import random
 from datetime import datetime, timedelta
+import os
+import sys
+
+# Add parent directory to path to access environment variables
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 fake = Faker()
+
+def generate_skills_data():
+    """Generate technical skills and competencies"""
+    skills = [
+        # Programming Languages
+        {"id": "skill_1", "name": "Python", "category": "programming", "type": "language"},
+        {"id": "skill_2", "name": "Java", "category": "programming", "type": "language"},
+        {"id": "skill_3", "name": "Go", "category": "programming", "type": "language"},
+        {"id": "skill_4", "name": "JavaScript", "category": "programming", "type": "language"},
+        {"id": "skill_5", "name": "TypeScript", "category": "programming", "type": "language"},
+        {"id": "skill_6", "name": "SQL", "category": "programming", "type": "language"},
+        {"id": "skill_7", "name": "Scala", "category": "programming", "type": "language"},
+        {"id": "skill_8", "name": "Rust", "category": "programming", "type": "language"},
+        
+        # Cloud Platforms
+        {"id": "skill_9", "name": "AWS", "category": "cloud", "type": "platform"},
+        {"id": "skill_10", "name": "GCP", "category": "cloud", "type": "platform"},
+        {"id": "skill_11", "name": "Azure", "category": "cloud", "type": "platform"},
+        
+        # Data Technologies
+        {"id": "skill_12", "name": "Apache Spark", "category": "data", "type": "framework"},
+        {"id": "skill_13", "name": "Apache Kafka", "category": "data", "type": "framework"},
+        {"id": "skill_14", "name": "Apache Airflow", "category": "data", "type": "framework"},
+        {"id": "skill_15", "name": "Snowflake", "category": "data", "type": "database"},
+        {"id": "skill_16", "name": "BigQuery", "category": "data", "type": "database"},
+        {"id": "skill_17", "name": "Databricks", "category": "data", "type": "platform"},
+        {"id": "skill_18", "name": "dbt", "category": "data", "type": "tool"},
+        {"id": "skill_19", "name": "Apache Flink", "category": "data", "type": "framework"},
+        {"id": "skill_20", "name": "Elasticsearch", "category": "data", "type": "database"},
+        
+        # Machine Learning
+        {"id": "skill_21", "name": "TensorFlow", "category": "ml", "type": "framework"},
+        {"id": "skill_22", "name": "PyTorch", "category": "ml", "type": "framework"},
+        {"id": "skill_23", "name": "Scikit-learn", "category": "ml", "type": "framework"},
+        {"id": "skill_24", "name": "MLflow", "category": "ml", "type": "platform"},
+        {"id": "skill_25", "name": "Kubeflow", "category": "ml", "type": "platform"},
+        
+        # DevOps & Infrastructure
+        {"id": "skill_26", "name": "Kubernetes", "category": "devops", "type": "platform"},
+        {"id": "skill_27", "name": "Docker", "category": "devops", "type": "platform"},
+        {"id": "skill_28", "name": "Terraform", "category": "devops", "type": "tool"},
+        {"id": "skill_29", "name": "Helm", "category": "devops", "type": "tool"},
+        {"id": "skill_30", "name": "Jenkins", "category": "devops", "type": "tool"},
+        {"id": "skill_31", "name": "GitLab CI", "category": "devops", "type": "tool"},
+        {"id": "skill_32", "name": "Prometheus", "category": "devops", "type": "monitoring"},
+        {"id": "skill_33", "name": "Grafana", "category": "devops", "type": "monitoring"},
+        
+        # Databases
+        {"id": "skill_34", "name": "PostgreSQL", "category": "database", "type": "relational"},
+        {"id": "skill_35", "name": "MySQL", "category": "database", "type": "relational"},
+        {"id": "skill_36", "name": "MongoDB", "category": "database", "type": "nosql"},
+        {"id": "skill_37", "name": "Redis", "category": "database", "type": "nosql"},
+        {"id": "skill_38", "name": "Cassandra", "category": "database", "type": "nosql"},
+        
+        # Domain Expertise
+        {"id": "skill_39", "name": "Data Architecture", "category": "domain", "type": "expertise"},
+        {"id": "skill_40", "name": "Data Governance", "category": "domain", "type": "expertise"},
+        {"id": "skill_41", "name": "Data Modeling", "category": "domain", "type": "expertise"},
+        {"id": "skill_42", "name": "ETL/ELT", "category": "domain", "type": "expertise"},
+        {"id": "skill_43", "name": "Real-time Processing", "category": "domain", "type": "expertise"},
+        {"id": "skill_44", "name": "Data Quality", "category": "domain", "type": "expertise"},
+        {"id": "skill_45", "name": "Analytics Engineering", "category": "domain", "type": "expertise"},
+        {"id": "skill_46", "name": "Security & Compliance", "category": "domain", "type": "expertise"},
+        {"id": "skill_47", "name": "Performance Optimization", "category": "domain", "type": "expertise"},
+        {"id": "skill_48", "name": "Distributed Systems", "category": "domain", "type": "expertise"},
+        
+        # Certifications
+        {"id": "skill_49", "name": "AWS Certified Solutions Architect", "category": "certification", "type": "aws"},
+        {"id": "skill_50", "name": "GCP Professional Data Engineer", "category": "certification", "type": "gcp"},
+        {"id": "skill_51", "name": "Certified Kubernetes Administrator", "category": "certification", "type": "cncf"},
+        {"id": "skill_52", "name": "Databricks Certified Data Engineer", "category": "certification", "type": "databricks"}
+    ]
+    return skills
+
+def generate_projects_data():
+    """Generate project data"""
+    projects = []
+    project_names = [
+        {"name": "Data Lake Modernization", "type": "infrastructure", "client_id": "client_1"},
+        {"name": "Real-time Analytics Platform", "type": "platform", "client_id": "client_2"},
+        {"name": "ML Pipeline Implementation", "type": "ml", "client_id": "client_3"},
+        {"name": "Customer 360 Data Platform", "type": "analytics", "client_id": "client_4"},
+        {"name": "Cost Optimization Initiative", "type": "optimization", "client_id": "client_5"},
+        {"name": "Data Governance Framework", "type": "governance", "client_id": "client_6"},
+        {"name": "Multi-Cloud Migration", "type": "infrastructure", "client_id": "client_7"},
+        {"name": "Streaming Data Pipeline", "type": "platform", "client_id": "client_8"},
+        {"name": "Self-Service Analytics Portal", "type": "analytics", "client_id": "client_9"},
+        {"name": "API Platform v2.0", "type": "platform", "client_id": "client_10"},
+        {"name": "Security Compliance Audit", "type": "governance", "client_id": "client_11"},
+        {"name": "Performance Optimization Sprint", "type": "optimization", "client_id": "client_12"}
+    ]
+    
+    for i, proj in enumerate(project_names):
+        start_date = fake.date_between(start_date='-6m', end_date='+3m')
+        duration_weeks = random.randint(8, 26)
+        end_date = start_date + timedelta(weeks=duration_weeks)
+        
+        project = {
+            "id": f"project_{i+1}",
+            "name": proj["name"],
+            "type": proj["type"],
+            "status": random.choice(["planning", "active", "on_hold", "completed"]),
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat(),
+            "budget": random.randint(100000, 2000000),
+            "priority": random.choice(["high", "medium", "low"]),
+            "client_id": proj["client_id"],
+            "description": f"Implementation of {proj['name']} for enterprise client"
+        }
+        projects.append(project)
+    
+    return projects
+
+def generate_clients_data():
+    """Generate client data"""
+    clients = []
+    client_names = [
+        "Acme Financial Services", "Global Retail Corp", "HealthTech Solutions",
+        "Manufacturing Industries", "Telecomm Giant", "E-commerce Leader",
+        "Media Conglomerate", "Energy Corporation", "Pharma Innovations",
+        "Logistics Network", "Insurance Group", "Banking Consortium"
+    ]
+    
+    for i, name in enumerate(client_names):
+        client = {
+            "id": f"client_{i+1}",
+            "name": name,
+            "industry": random.choice(["Financial Services", "Retail", "Healthcare", "Manufacturing", "Telecom", "E-commerce", "Media", "Energy", "Pharmaceutical", "Logistics", "Insurance"]),
+            "tier": random.choice(["enterprise", "mid-market", "strategic"]),
+            "annual_value": random.randint(500000, 5000000),
+            "relationship_start": fake.date_between(start_date='-3y', end_date='-6m').isoformat()
+        }
+        clients.append(client)
+    
+    return clients
+
+def generate_sprints_data():
+    """Generate sprint data for projects"""
+    sprints = []
+    sprint_id = 1
+    projects = generate_projects_data()
+    
+    for project in projects:
+        if project["status"] in ["active", "completed"]:
+            # Generate 2-6 sprints per project
+            num_sprints = random.randint(2, 6)
+            start_date = datetime.fromisoformat(project["start_date"])
+            
+            for i in range(num_sprints):
+                sprint_start = start_date + timedelta(weeks=i*2)
+                sprint_end = sprint_start + timedelta(weeks=2)
+                
+                sprint = {
+                    "id": f"sprint_{sprint_id}",
+                    "name": f"{project['name']} - Sprint {i+1}",
+                    "project_id": project["id"],
+                    "sprint_number": i + 1,
+                    "start_date": sprint_start.isoformat(),
+                    "end_date": sprint_end.isoformat(),
+                    "status": "completed" if sprint_end < datetime.now() else "active" if sprint_start <= datetime.now() else "planned",
+                    "velocity": random.randint(20, 60) if sprint_end < datetime.now() else None
+                }
+                sprints.append(sprint)
+                sprint_id += 1
+    
+    return sprints
 
 def generate_people_data():
     """Generate realistic people data for a B2B data analytics platform company"""
@@ -15,6 +186,10 @@ def generate_people_data():
         "Professional Services", "Sales", "Marketing", "Finance", "Legal", 
         "People Operations", "Engineering", "Solutions Architecture"
     ]
+    
+    seniority_levels = ["Junior", "Mid", "Senior", "Staff", "Principal"]
+    timezones = ["US/Pacific", "US/Mountain", "US/Central", "US/Eastern", "Europe/London", "Europe/Berlin", "Asia/Singapore", "Australia/Sydney"]
+    
     roles = {
         "Data Platform Engineering": [
             "Data Platform Engineer", "Senior Data Platform Engineer", "Staff Data Platform Engineer",
@@ -118,18 +293,53 @@ def generate_people_data():
         last_name = last_name.replace("'", "").replace("-", "")
         email = f"{first_name}.{last_name}@company.com"
         
+        role = random.choice(roles[dept])
+        hire_date = fake.date_between(start_date='-3y', end_date='today')
+        years_exp = random.randint(1, 15)
+        
+        # Determine seniority based on role
+        if "Principal" in role or "VP" in role or "Director" in role:
+            seniority = "Principal"
+            base_rate = random.randint(200, 350)
+        elif "Staff" in role or "Lead" in role or "Senior" in role:
+            seniority = "Senior"
+            base_rate = random.randint(150, 250)
+        elif "Manager" in role:
+            seniority = "Staff"
+            base_rate = random.randint(175, 275)
+        else:
+            seniority = random.choice(["Junior", "Mid", "Senior"])
+            base_rate = random.randint(100, 200)
+        
+        location = random.choice([
+            "San Francisco", "New York", "Austin", "Remote", "Seattle", "Boston", 
+            "Chicago", "Los Angeles", "Denver", "Atlanta", "Portland", "Miami",
+            "Toronto", "London", "Berlin", "Singapore", "Sydney"
+        ])
+        
+        # Map location to timezone
+        timezone_map = {
+            "San Francisco": "US/Pacific", "Seattle": "US/Pacific", "Los Angeles": "US/Pacific", "Portland": "US/Pacific",
+            "Denver": "US/Mountain", "Austin": "US/Central", "Chicago": "US/Central",
+            "New York": "US/Eastern", "Boston": "US/Eastern", "Atlanta": "US/Eastern", "Miami": "US/Eastern",
+            "Toronto": "US/Eastern", "London": "Europe/London", "Berlin": "Europe/Berlin",
+            "Singapore": "Asia/Singapore", "Sydney": "Australia/Sydney", "Remote": random.choice(timezones)
+        }
+        
         person = {
             "id": f"person_{i+1}",
             "name": full_name,
             "email": email,
             "department": dept,
-            "role": random.choice(roles[dept]),
-            "hire_date": fake.date_between(start_date='-3y', end_date='today').isoformat(),
-            "location": random.choice([
-                "San Francisco", "New York", "Austin", "Remote", "Seattle", "Boston", 
-                "Chicago", "Los Angeles", "Denver", "Atlanta", "Portland", "Miami",
-                "Toronto", "London", "Berlin", "Singapore", "Sydney"
-            ]),
+            "role": role,
+            "seniority": seniority,
+            "hire_date": hire_date.isoformat(),
+            "location": location,
+            "timezone": timezone_map.get(location, "US/Pacific"),
+            "capacity_hours_per_week": 40,
+            "current_utilization": random.randint(60, 100),  # percentage
+            "billing_rate": base_rate,
+            "years_experience": years_exp,
             "manager_id": None  # Will be set later
         }
         people.append(person)
@@ -521,12 +731,23 @@ def generate_relationships():
     teams = generate_teams_data()
     groups = generate_groups_data()
     policies = generate_policies_data()
+    skills = generate_skills_data()
+    projects = generate_projects_data()
+    clients = generate_clients_data()
+    sprints = generate_sprints_data()
     
     relationships = {
         "person_team_memberships": [],
         "person_group_memberships": [],
         "team_policy_responsibilities": [],
-        "group_policy_responsibilities": []
+        "group_policy_responsibilities": [],
+        "person_skills": [],
+        "person_project_allocations": [],
+        "project_skill_requirements": [],
+        "team_project_delivery": [],
+        "person_mentorships": [],
+        "person_backups": [],
+        "person_specializations": []
     }
     
     # Assign people to teams (each person belongs to 1 primary team)
@@ -630,11 +851,164 @@ def generate_relationships():
                     "assigned_date": fake.date_between(start_date='-1y', end_date='today').isoformat()
                 })
     
+    # Assign skills to people based on their role and department
+    for person in people:
+        num_skills = random.randint(3, 8)
+        person_skills = []
+        
+        # Core skills based on department
+        if person["department"] in ["Data Platform Engineering", "Analytics Engineering"]:
+            core_skills = ["skill_1", "skill_6", "skill_12", "skill_13", "skill_14", "skill_15", "skill_16", "skill_17", "skill_18"]
+        elif person["department"] == "Data Science":
+            core_skills = ["skill_1", "skill_6", "skill_21", "skill_22", "skill_23", "skill_24", "skill_25"]
+        elif person["department"] in ["Engineering", "Infrastructure & DevOps"]:
+            core_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_26", "skill_27", "skill_28"]
+        else:
+            core_skills = ["skill_1", "skill_6", "skill_39", "skill_40", "skill_41"]
+        
+        # Add cloud skills for technical roles
+        if person["department"] in ["Data Platform Engineering", "Engineering", "Infrastructure & DevOps", "Data Science"]:
+            core_skills.extend(["skill_9", "skill_10", "skill_11"])
+        
+        selected_skills = random.sample(core_skills, min(num_skills, len(core_skills)))
+        
+        for skill_id in selected_skills:
+            proficiency = random.choice(["beginner", "intermediate", "advanced", "expert"])
+            years_exp = random.randint(1, min(10, person["years_experience"]))
+            
+            relationships["person_skills"].append({
+                "person_id": person["id"],
+                "skill_id": skill_id,
+                "proficiency_level": proficiency,
+                "years_experience": years_exp,
+                "last_used": fake.date_between(start_date='-6m', end_date='today').isoformat()
+            })
+    
+    # Assign people to projects
+    active_projects = [p for p in projects if p["status"] in ["active", "planning"]]
+    for project in active_projects:
+        # Allocate 3-12 people per project
+        num_people = random.randint(3, 12)
+        allocated_people = random.sample(people, num_people)
+        
+        for person in allocated_people:
+            allocation = random.randint(20, 100)  # percentage
+            relationships["person_project_allocations"].append({
+                "person_id": person["id"],
+                "project_id": project["id"],
+                "allocation_percentage": allocation,
+                "start_date": project["start_date"],
+                "end_date": project["end_date"],
+                "role_on_project": random.choice(["lead", "contributor", "advisor", "reviewer"])
+            })
+    
+    # Define project skill requirements
+    for project in projects:
+        # Each project requires 2-5 skills
+        num_required_skills = random.randint(2, 5)
+        
+        if project["type"] == "ml":
+            relevant_skills = ["skill_1", "skill_21", "skill_22", "skill_23", "skill_24", "skill_25"]
+        elif project["type"] == "infrastructure":
+            relevant_skills = ["skill_26", "skill_27", "skill_28", "skill_9", "skill_10", "skill_11"]
+        elif project["type"] == "platform":
+            relevant_skills = ["skill_1", "skill_2", "skill_3", "skill_12", "skill_13", "skill_14"]
+        elif project["type"] == "analytics":
+            relevant_skills = ["skill_1", "skill_6", "skill_15", "skill_16", "skill_17", "skill_18"]
+        else:
+            relevant_skills = list(range(1, 53))
+            relevant_skills = [f"skill_{i}" for i in relevant_skills]
+        
+        selected_skills = random.sample(relevant_skills, min(num_required_skills, len(relevant_skills)))
+        
+        for skill_id in selected_skills:
+            relationships["project_skill_requirements"].append({
+                "project_id": project["id"],
+                "skill_id": skill_id,
+                "priority": random.choice(["critical", "high", "medium", "low"]),
+                "min_proficiency_level": random.choice(["intermediate", "advanced", "expert"]),
+                "headcount_needed": random.randint(1, 3)
+            })
+    
+    # Assign teams to deliver projects
+    for project in projects:
+        # 1-3 teams per project
+        num_teams = random.randint(1, 3)
+        selected_teams = random.sample(teams, num_teams)
+        
+        for team in selected_teams:
+            relationships["team_project_delivery"].append({
+                "team_id": team["id"],
+                "project_id": project["id"],
+                "responsibility": random.choice(["primary", "supporting", "consulting"]),
+                "committed_capacity": random.randint(20, 80)  # percentage of team capacity
+            })
+    
+    # Create mentorship relationships
+    senior_people = [p for p in people if p["seniority"] in ["Senior", "Staff", "Principal"]]
+    junior_people = [p for p in people if p["seniority"] in ["Junior", "Mid"]]
+    
+    for mentor in random.sample(senior_people, min(30, len(senior_people))):
+        # Each mentor has 1-3 mentees
+        num_mentees = random.randint(1, 3)
+        potential_mentees = [p for p in junior_people if p["department"] == mentor["department"]]
+        
+        if potential_mentees:
+            mentees = random.sample(potential_mentees, min(num_mentees, len(potential_mentees)))
+            for mentee in mentees:
+                relationships["person_mentorships"].append({
+                    "mentor_id": mentor["id"],
+                    "mentee_id": mentee["id"],
+                    "start_date": fake.date_between(start_date='-1y', end_date='today').isoformat(),
+                    "focus_area": random.choice(["technical skills", "career development", "domain expertise", "leadership"])
+                })
+    
+    # Create backup relationships for critical roles
+    critical_people = [p for p in people if "Lead" in p["role"] or "Manager" in p["role"] or "Principal" in p["role"]]
+    
+    for person in critical_people:
+        # Find potential backups in same department
+        potential_backups = [p for p in people if p["department"] == person["department"] and p["id"] != person["id"]]
+        
+        if potential_backups:
+            backup = random.choice(potential_backups)
+            relationships["person_backups"].append({
+                "primary_person_id": person["id"],
+                "backup_person_id": backup["id"],
+                "coverage_type": random.choice(["full", "partial", "emergency"]),
+                "readiness_level": random.choice(["ready", "in_training", "identified"])
+            })
+    
+    # Create specialization relationships
+    for person in people:
+        # 20% of people have specializations
+        if random.random() < 0.2:
+            if person["department"] in ["Data Platform Engineering", "Analytics Engineering"]:
+                specializations = ["Real-time Processing", "Data Governance", "Performance Optimization", "Data Modeling"]
+            elif person["department"] == "Data Science":
+                specializations = ["Computer Vision", "NLP", "Time Series", "Recommender Systems", "MLOps"]
+            elif person["department"] == "Engineering":
+                specializations = ["API Design", "Microservices", "Frontend Architecture", "Security"]
+            else:
+                specializations = ["Process Improvement", "Strategic Planning", "Cross-functional Leadership"]
+            
+            spec = random.choice(specializations)
+            relationships["person_specializations"].append({
+                "person_id": person["id"],
+                "specialization": spec,
+                "expertise_level": random.choice(["recognized", "expert", "thought_leader"]),
+                "years_in_specialty": random.randint(2, 8)
+            })
+    
     return {
         "people": people,
         "teams": teams,
         "groups": groups,
         "policies": policies,
+        "skills": skills,
+        "projects": projects,
+        "clients": clients,
+        "sprints": sprints,
         "relationships": relationships
     }
 
@@ -658,6 +1032,10 @@ def seed_database(falkor_client):
         db.query("CREATE INDEX ON :Team(name)")
         db.query("CREATE INDEX ON :Group(name)")
         db.query("CREATE INDEX ON :Policy(name)")
+        db.query("CREATE INDEX ON :Skill(name)")
+        db.query("CREATE INDEX ON :Project(name)")
+        db.query("CREATE INDEX ON :Client(name)")
+        db.query("CREATE INDEX ON :Sprint(name)")
     except:
         pass  # Indexes might already exist
     
@@ -674,8 +1052,14 @@ def seed_database(falkor_client):
             email: '{person['email']}',
             department: '{person['department']}',
             role: '{escaped_role}',
+            seniority: '{person['seniority']}',
             hire_date: '{person['hire_date']}',
             location: '{person['location']}',
+            timezone: '{person['timezone']}',
+            capacity_hours_per_week: {person['capacity_hours_per_week']},
+            current_utilization: {person['current_utilization']},
+            billing_rate: {person['billing_rate']},
+            years_experience: {person['years_experience']},
             manager_id: '{person.get('manager_id', '')}'
         }})"""
         db.query(query)
@@ -721,6 +1105,64 @@ def seed_database(falkor_client):
         }})"""
         db.query(query)
     
+    # Create nodes for skills
+    for skill in data["skills"]:
+        escaped_name = skill['name'].replace("'", "''")
+        query = f"""CREATE (s:Skill {{
+            id: '{skill['id']}',
+            name: '{escaped_name}',
+            category: '{skill['category']}',
+            type: '{skill['type']}'
+        }})"""
+        db.query(query)
+    
+    # Create nodes for clients
+    for client in data["clients"]:
+        escaped_name = client['name'].replace("'", "''")
+        query = f"""CREATE (c:Client {{
+            id: '{client['id']}',
+            name: '{escaped_name}',
+            industry: '{client['industry']}',
+            tier: '{client['tier']}',
+            annual_value: {client['annual_value']},
+            relationship_start: '{client['relationship_start']}'
+        }})"""
+        db.query(query)
+    
+    # Create nodes for projects
+    for project in data["projects"]:
+        escaped_name = project['name'].replace("'", "''")
+        escaped_description = project['description'].replace("'", "''")
+        query = f"""CREATE (pr:Project {{
+            id: '{project['id']}',
+            name: '{escaped_name}',
+            type: '{project['type']}',
+            status: '{project['status']}',
+            start_date: '{project['start_date']}',
+            end_date: '{project['end_date']}',
+            budget: {project['budget']},
+            priority: '{project['priority']}',
+            client_id: '{project['client_id']}',
+            description: '{escaped_description}'
+        }})"""
+        db.query(query)
+    
+    # Create nodes for sprints
+    for sprint in data["sprints"]:
+        escaped_name = sprint['name'].replace("'", "''")
+        velocity = sprint['velocity'] if sprint['velocity'] is not None else 0
+        query = f"""CREATE (s:Sprint {{
+            id: '{sprint['id']}',
+            name: '{escaped_name}',
+            project_id: '{sprint['project_id']}',
+            sprint_number: {sprint['sprint_number']},
+            start_date: '{sprint['start_date']}',
+            end_date: '{sprint['end_date']}',
+            status: '{sprint['status']}',
+            velocity: {velocity}
+        }})"""
+        db.query(query)
+    
     # Create relationships for person-team memberships
     for membership in data["relationships"]["person_team_memberships"]:
         escaped_role = membership['role'].replace("'", "''")
@@ -756,12 +1198,100 @@ def seed_database(falkor_client):
                        CREATE (p)-[:REPORTS_TO]->(m)"""
             db.query(query)
     
+    # Create person-skill relationships
+    for skill_rel in data["relationships"]["person_skills"]:
+        query = f"""MATCH (p:Person {{id: '{skill_rel['person_id']}'}}), (s:Skill {{id: '{skill_rel['skill_id']}'}}) 
+                   CREATE (p)-[:HAS_SKILL {{
+                       proficiency_level: '{skill_rel['proficiency_level']}',
+                       years_experience: {skill_rel['years_experience']},
+                       last_used: '{skill_rel['last_used']}'
+                   }}]->(s)"""
+        db.query(query)
+    
+    # Create person-project allocations
+    for allocation in data["relationships"]["person_project_allocations"]:
+        query = f"""MATCH (p:Person {{id: '{allocation['person_id']}'}}), (pr:Project {{id: '{allocation['project_id']}'}}) 
+                   CREATE (p)-[:ALLOCATED_TO {{
+                       allocation_percentage: {allocation['allocation_percentage']},
+                       start_date: '{allocation['start_date']}',
+                       end_date: '{allocation['end_date']}',
+                       role_on_project: '{allocation['role_on_project']}'
+                   }}]->(pr)"""
+        db.query(query)
+    
+    # Create project-skill requirements
+    for req in data["relationships"]["project_skill_requirements"]:
+        query = f"""MATCH (pr:Project {{id: '{req['project_id']}'}}), (s:Skill {{id: '{req['skill_id']}'}}) 
+                   CREATE (pr)-[:REQUIRES_SKILL {{
+                       priority: '{req['priority']}',
+                       min_proficiency_level: '{req['min_proficiency_level']}',
+                       headcount_needed: {req['headcount_needed']}
+                   }}]->(s)"""
+        db.query(query)
+    
+    # Create team-project delivery relationships
+    for delivery in data["relationships"]["team_project_delivery"]:
+        query = f"""MATCH (t:Team {{id: '{delivery['team_id']}'}}), (pr:Project {{id: '{delivery['project_id']}'}}) 
+                   CREATE (t)-[:DELIVERS {{
+                       responsibility: '{delivery['responsibility']}',
+                       committed_capacity: {delivery['committed_capacity']}
+                   }}]->(pr)"""
+        db.query(query)
+    
+    # Create mentorship relationships
+    for mentorship in data["relationships"]["person_mentorships"]:
+        query = f"""MATCH (mentor:Person {{id: '{mentorship['mentor_id']}'}}), (mentee:Person {{id: '{mentorship['mentee_id']}'}}) 
+                   CREATE (mentee)-[:MENTORED_BY {{
+                       start_date: '{mentorship['start_date']}',
+                       focus_area: '{mentorship['focus_area']}'
+                   }}]->(mentor)"""
+        db.query(query)
+    
+    # Create backup relationships
+    for backup in data["relationships"]["person_backups"]:
+        query = f"""MATCH (primary:Person {{id: '{backup['primary_person_id']}'}}), (backup:Person {{id: '{backup['backup_person_id']}'}}) 
+                   CREATE (backup)-[:BACKUP_FOR {{
+                       coverage_type: '{backup['coverage_type']}',
+                       readiness_level: '{backup['readiness_level']}'
+                   }}]->(primary)"""
+        db.query(query)
+    
+    # Create specialization relationships  
+    for spec in data["relationships"]["person_specializations"]:
+        # Create Technology nodes on the fly for specializations
+        escaped_spec = spec['specialization'].replace("'", "''")
+        query = f"""MERGE (tech:Technology {{name: '{escaped_spec}'}})"""
+        db.query(query)
+        
+        query = f"""MATCH (p:Person {{id: '{spec['person_id']}'}}), (tech:Technology {{name: '{escaped_spec}'}}) 
+                   CREATE (p)-[:SPECIALIZES_IN {{
+                       expertise_level: '{spec['expertise_level']}',
+                       years_in_specialty: {spec['years_in_specialty']}
+                   }}]->(tech)"""
+        db.query(query)
+    
+    # Create project-client relationships
+    for project in data["projects"]:
+        query = f"""MATCH (pr:Project {{id: '{project['id']}'}}), (c:Client {{id: '{project['client_id']}'}}) 
+                   CREATE (pr)-[:FOR_CLIENT]->(c)"""
+        db.query(query)
+    
+    # Create sprint-project relationships
+    for sprint in data["sprints"]:
+        query = f"""MATCH (s:Sprint {{id: '{sprint['id']}'}}), (pr:Project {{id: '{sprint['project_id']}'}}) 
+                   CREATE (s)-[:PART_OF]->(pr)"""
+        db.query(query)
+    
     # Store summary statistics as a node
     stats = {
         "people_count": len(data["people"]),
         "teams_count": len(data["teams"]),
         "groups_count": len(data["groups"]),
         "policies_count": len(data["policies"]),
+        "skills_count": len(data["skills"]),
+        "projects_count": len(data["projects"]),
+        "clients_count": len(data["clients"]),
+        "sprints_count": len(data["sprints"]),
         "seeded_at": datetime.now().isoformat()
     }
     
@@ -770,14 +1300,43 @@ def seed_database(falkor_client):
         teams_count: {stats['teams_count']},
         groups_count: {stats['groups_count']},
         policies_count: {stats['policies_count']},
+        skills_count: {stats['skills_count']},
+        projects_count: {stats['projects_count']},
+        clients_count: {stats['clients_count']},
+        sprints_count: {stats['sprints_count']},
         seeded_at: '{stats['seeded_at']}'
     }})"""
     db.query(query)
     
     print(f"✅ Seeded {stats['people_count']} people, {stats['teams_count']} teams, {stats['groups_count']} groups, {stats['policies_count']} policies")
+    print(f"✅ Added {stats['skills_count']} skills, {stats['projects_count']} projects, {stats['clients_count']} clients, {stats['sprints_count']} sprints")
     print(f"✅ Created {len(data['relationships']['person_team_memberships'])} team memberships")
     print(f"✅ Created {len(data['relationships']['person_group_memberships'])} group memberships") 
     print(f"✅ Created {len(data['relationships']['team_policy_responsibilities'])} team policy responsibilities")
     print(f"✅ Created {len(data['relationships']['group_policy_responsibilities'])} group policy responsibilities")
+    print(f"✅ Created {len(data['relationships']['person_skills'])} person-skill relationships")
+    print(f"✅ Created {len(data['relationships']['person_project_allocations'])} project allocations")
+    print(f"✅ Created {len(data['relationships']['project_skill_requirements'])} project skill requirements")
+    print(f"✅ Created {len(data['relationships']['person_mentorships'])} mentorship relationships")
+    print(f"✅ Created {len(data['relationships']['person_backups'])} backup relationships")
     
     return data
+
+if __name__ == "__main__":
+    # Initialize FalkorDB client
+    try:
+        falkor_host = os.getenv("FALKOR_HOST", "localhost")
+        falkor_port = int(os.getenv("FALKOR_PORT", 6379))
+        
+        print(f"🔌 Connecting to FalkorDB at {falkor_host}:{falkor_port}...")
+        client = falkordb.FalkorDB(host=falkor_host, port=falkor_port)
+        
+        # Run the seed function
+        seed_database(client)
+        
+        print("✅ Database seeding completed successfully!")
+        
+    except Exception as e:
+        print(f"❌ Error seeding database: {e}")
+        import traceback
+        traceback.print_exc()

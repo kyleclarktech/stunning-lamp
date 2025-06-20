@@ -1,0 +1,152 @@
+{
+  "timestamp": "20250620_144247",
+  "summary": {
+    "total_queries": 12,
+    "successful": 12,
+    "failed": 0,
+    "success_rate": 100.0
+  },
+  "categories": [
+    {
+      "category": "Timezone Queries",
+      "total": 3,
+      "successful": 3,
+      "failed": 0,
+      "avg_duration": 1.0374387105305989,
+      "queries": [
+        {
+          "name": "Q1: Find employees in Pacific timezone",
+          "status": "SUCCESS",
+          "duration": 0.7688999176025391,
+          "result_count": 10,
+          "error": null,
+          "matches_expected": true
+        },
+        {
+          "name": "Q2: Count employees by timezone",
+          "status": "SUCCESS",
+          "duration": 0.5218982696533203,
+          "result_count": 8,
+          "error": null,
+          "matches_expected": true
+        },
+        {
+          "name": "Q12: Teams distributed across timezones",
+          "status": "SUCCESS",
+          "duration": 1.8215179443359375,
+          "result_count": 36,
+          "error": null,
+          "matches_expected": true
+        }
+      ]
+    },
+    {
+      "category": "Project Coordination",
+      "total": 3,
+      "successful": 3,
+      "failed": 0,
+      "avg_duration": 1.6260147094726562,
+      "queries": [
+        {
+          "name": "Q17: Project timezone coverage",
+          "status": "SUCCESS",
+          "duration": 0.6706714630126953,
+          "result_count": 4,
+          "error": null,
+          "matches_expected": true
+        },
+        {
+          "name": "Q19: Available experts for projects",
+          "status": "SUCCESS",
+          "duration": 3.565549850463867,
+          "result_count": 20,
+          "error": null,
+          "matches_expected": true
+        },
+        {
+          "name": "Q21: Cross-functional strategic groups",
+          "status": "SUCCESS",
+          "duration": 0.6418228149414062,
+          "result_count": 0,
+          "error": null,
+          "matches_expected": true
+        }
+      ]
+    },
+    {
+      "category": "Compliance Tracking",
+      "total": 2,
+      "successful": 2,
+      "failed": 0,
+      "avg_duration": 0.41854381561279297,
+      "queries": [
+        {
+          "name": "Q28: Find GDPR policies",
+          "status": "SUCCESS",
+          "duration": 0.4456043243408203,
+          "result_count": 8,
+          "error": null,
+          "matches_expected": true
+        },
+        {
+          "name": "Q29: Map compliance to regions (will fail)",
+          "status": "SUCCESS",
+          "duration": 0.3914833068847656,
+          "result_count": 0,
+          "error": null,
+          "matches_expected": false
+        }
+      ]
+    },
+    {
+      "category": "Resource Utilization",
+      "total": 2,
+      "successful": 2,
+      "failed": 0,
+      "avg_duration": 0.9005069732666016,
+      "queries": [
+        {
+          "name": "Q43: Team incident response capacity",
+          "status": "SUCCESS",
+          "duration": 1.439809799194336,
+          "result_count": 2,
+          "error": null,
+          "matches_expected": true
+        },
+        {
+          "name": "Q49: Find underutilized resources",
+          "status": "SUCCESS",
+          "duration": 0.3612041473388672,
+          "result_count": 0,
+          "error": null,
+          "matches_expected": true
+        }
+      ]
+    },
+    {
+      "category": "Complex Aggregations",
+      "total": 2,
+      "successful": 2,
+      "failed": 0,
+      "avg_duration": 1.0364055633544922,
+      "queries": [
+        {
+          "name": "Skills distribution by department",
+          "status": "SUCCESS",
+          "duration": 1.4278888702392578,
+          "result_count": 25,
+          "error": null,
+          "matches_expected": true
+        },
+        {
+          "name": "Project allocation by timezone",
+          "status": "SUCCESS",
+          "duration": 0.6449222564697266,
+          "result_count": 6,
+          "error": null,
+          "matches_expected": true
+        }
+      ]
+    }
+  ]
+}

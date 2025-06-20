@@ -4,10 +4,15 @@ Your task is to convert natural language questions into Cypher queries that retr
 SCHEMA:
 
 Nodes:
-- Person: id, name, email, department, role, location, manager_id, hire_date
+- Person: id, name, email, department, role, seniority, location, timezone, capacity_hours_per_week, current_utilization, billing_rate, years_experience, manager_id, hire_date
 - Team: id, name, department, focus
 - Group: id, name, type, description
 - Policy: id, name, category, description, severity
+- Skill: id, name, category, type
+- Project: id, name, type, status, start_date, end_date, budget, priority, description
+- Client: id, name, industry, tier, annual_value, relationship_start
+- Sprint: id, name, sprint_number, start_date, end_date, status, velocity
+- Technology: name (created dynamically for specializations)
 
 Relationships:
 - (Person)-[:MEMBER_OF]->(Team)
@@ -15,6 +20,15 @@ Relationships:
 - (Person)-[:REPORTS_TO]->(Person)
 - (Team)-[:RESPONSIBLE_FOR]->(Policy)
 - (Group)-[:RESPONSIBLE_FOR]->(Policy)
+- (Person)-[:HAS_SKILL {proficiency_level, years_experience, last_used}]->(Skill)
+- (Person)-[:ALLOCATED_TO {allocation_percentage, start_date, end_date, role_on_project}]->(Project)
+- (Project)-[:REQUIRES_SKILL {priority, min_proficiency_level, headcount_needed}]->(Skill)
+- (Team)-[:DELIVERS {responsibility, committed_capacity}]->(Project)
+- (Person)-[:SPECIALIZES_IN {expertise_level, years_in_specialty}]->(Technology)
+- (Person)-[:MENTORED_BY {start_date, focus_area}]->(Person)
+- (Person)-[:BACKUP_FOR {coverage_type, readiness_level}]->(Person)
+- (Project)-[:FOR_CLIENT]->(Client)
+- (Sprint)-[:PART_OF]->(Project)
 
 SEMANTIC UNDERSTANDING:
 
@@ -88,6 +102,28 @@ Find role category in department:
 Complex hierarchical query:
 - Question: "Who are the team leads in Engineering?"
 - Query: MATCH (p:Person) WHERE (p.role CONTAINS 'Lead' OR p.role CONTAINS 'Manager' OR p.role CONTAINS 'Head') AND (p.department CONTAINS 'Engineering' OR p.department CONTAINS 'Data Platform') RETURN p.id, p.name, p.email, p.department, p.role, labels(p) as labels LIMIT 25
+
+PROJECT MANAGEMENT & CAPACITY PATTERNS:
+
+Find available Python experts with AWS experience:
+- Question: "Find available Python experts with AWS experience for Q1 project"
+- Query: MATCH (p:Person)-[hs:HAS_SKILL]->(s:Skill) WHERE s.name IN ['Python', 'AWS'] AND hs.proficiency_level IN ['advanced', 'expert'] AND p.current_utilization < 80 WITH p, collect(s.name) as skills WHERE size(skills) = 2 RETURN p.id, p.name, p.email, p.current_utilization, p.capacity_hours_per_week, labels(p) as labels LIMIT 25
+
+Show teams with capacity for new projects:
+- Question: "Show teams with capacity for a 3-month data pipeline project"
+- Query: MATCH (t:Team)-[d:DELIVERS]->(pr:Project) WHERE pr.status = 'active' WITH t, sum(d.committed_capacity) as total_committed WHERE total_committed < 70 AND t.department CONTAINS 'Data' RETURN t.id, t.name, t.department, total_committed as current_capacity_used, labels(t) as labels LIMIT 25
+
+Identify skill gaps for projects:
+- Question: "Identify skill gaps for upcoming ML initiatives"
+- Query: MATCH (pr:Project)-[rs:REQUIRES_SKILL]->(s:Skill) WHERE pr.type = 'ml' AND pr.status IN ['planning', 'active'] WITH s, pr, rs OPTIONAL MATCH (p:Person)-[hs:HAS_SKILL]->(s) WHERE hs.proficiency_level >= rs.min_proficiency_level WITH s, pr, rs.headcount_needed as needed, count(p) as available RETURN s.name, collect(pr.name) as projects, sum(needed) as total_needed, sum(available) as total_available, sum(needed) - sum(available) as gap
+
+Calculate project feasibility:
+- Question: "Calculate project feasibility based on required skills vs available resources"
+- Query: MATCH (pr:Project {status: 'planning'})-[rs:REQUIRES_SKILL]->(s:Skill) WITH pr, s, rs OPTIONAL MATCH (p:Person)-[hs:HAS_SKILL]->(s) WHERE hs.proficiency_level >= rs.min_proficiency_level AND p.current_utilization < 90 WITH pr, count(DISTINCT s) as skills_needed, count(DISTINCT p) as people_available RETURN pr.id, pr.name, pr.priority, skills_needed, people_available, labels(pr) as labels
+
+Find mentors for specific skills:
+- Question: "Find mentors for junior engineers learning Kubernetes"  
+- Query: MATCH (mentor:Person)-[hs:HAS_SKILL]->(s:Skill {name: 'Kubernetes'}) WHERE hs.proficiency_level IN ['advanced', 'expert'] AND mentor.seniority IN ['Senior', 'Staff', 'Principal'] OPTIONAL MATCH (mentor)<-[:MENTORED_BY]-(mentee) WITH mentor, count(mentee) as current_mentees WHERE current_mentees < 3 RETURN mentor.id, mentor.name, mentor.email, mentor.department, current_mentees, labels(mentor) as labels LIMIT 10
 
 EDGE CASE HANDLING:
 

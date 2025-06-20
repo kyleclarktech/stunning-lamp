@@ -12,7 +12,7 @@ from jinja2 import Template
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime
-from seed_data import seed_database
+# from seed_data import seed_database  # Commented out - seed_data is in scripts folder
 import logging
 from query_patterns import match_and_generate_query
 from error_handler import handle_query_error
