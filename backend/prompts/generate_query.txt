@@ -74,3 +74,9 @@ Finding people who report to a role (not name):
 Finding people by role with multiple variations:
 - Question: "Who are the team leads?"
 - Query: MATCH (p:Person) WHERE p.role CONTAINS 'Lead' OR p.role CONTAINS 'lead' OR p.role CONTAINS 'Manager' OR p.role CONTAINS 'manager' OR p.role CONTAINS 'Head' RETURN p.id, p.name, p.email, p.department, p.role, labels(p) as labels LIMIT 25
+
+Counting people by role:
+- Question: "How many developers?"
+- Query: MATCH (p:Person) WHERE p.role CONTAINS 'developer' OR p.role CONTAINS 'Developer' RETURN count(p) as count
+
+Important: Team nodes only have these properties: id, name, department, focus. Do NOT use t.description on Team nodes.

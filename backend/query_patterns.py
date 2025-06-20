@@ -169,6 +169,34 @@ class QueryPatternMatcher:
                 cypher_template="""MATCH (p:Person) WHERE p.department CONTAINS $dept OR p.department CONTAINS $dept_upper RETURN count(p) as count""",
                 parameter_extractors={"dept": "1"},
                 priority=6
+            ),
+            
+            # Count people by role
+            QueryPattern(
+                name="count_people_role",
+                description="Count people with a specific role",
+                patterns=[
+                    r"how many (.+?)s?(?: are there)?(?:\?|$)",
+                    r"count (?:of )?(.+?)s?(?:\?|$)",
+                    r"number of (.+?)s?(?:\?|$)"
+                ],
+                cypher_template="""MATCH (p:Person) WHERE p.role CONTAINS $role OR p.role CONTAINS $role_upper RETURN count(p) as count""",
+                parameter_extractors={"role": "1"},
+                priority=5
+            ),
+            
+            # Count people by role in specific department/team
+            QueryPattern(
+                name="count_role_in_dept",
+                description="Count people with a specific role in a department or team",
+                patterns=[
+                    r"how many (.+?)s?(?: are there)? in (?:the )?(.+?)(?:\?|$)",
+                    r"count (?:of )?(.+?)s? in (?:the )?(.+?)(?:\?|$)",
+                    r"number of (.+?)s? in (?:the )?(.+?)(?:\?|$)"
+                ],
+                cypher_template="""MATCH (p:Person) WHERE (p.role CONTAINS $role OR p.role CONTAINS $role_upper) AND (p.department CONTAINS $location OR p.department CONTAINS $location_upper OR EXISTS {MATCH (p)-[:MEMBER_OF]->(t:Team) WHERE t.name CONTAINS $location OR t.name CONTAINS $location_upper}) RETURN count(p) as count""",
+                parameter_extractors={"role": "1", "location": "2"},
+                priority=7
             )
         ]
     

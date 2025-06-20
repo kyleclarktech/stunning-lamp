@@ -11,6 +11,8 @@ services:
     environment:
       - OLLAMA_HOST=http://ollama:11434
       - OLLAMA_MODEL=granite3.3:8b-largectx
+      - FALKOR_HOST=falkordb
+      - FALKOR_PORT=6379
     volumes:
       - ./backend:/app
     working_dir: /app

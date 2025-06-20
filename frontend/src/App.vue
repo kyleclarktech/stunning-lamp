@@ -201,10 +201,11 @@ onUnmounted(() => {
 
 <style scoped>
 .app {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  width: 95%;
 }
 
 .header {
@@ -290,19 +291,19 @@ onUnmounted(() => {
 .main {
   display: flex;
   flex-direction: column;
-  height: 600px;
+  height: calc(100vh - 200px);
+  max-height: 900px;
 }
 
 .messages {
   flex: 1;
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 15px;
+  padding: 20px;
   overflow-y: auto;
   margin-bottom: 15px;
   background: white;
-  min-height: 480px;
-  max-height: 480px;
+  min-height: 500px;
 }
 
 .message {
@@ -317,14 +318,14 @@ onUnmounted(() => {
   background: #007bff;
   color: white;
   align-self: flex-end;
-  max-width: 70%;
+  max-width: 60%;
 }
 
 .message-server {
   background: #e9ecef;
   color: #333;
   align-self: flex-start;
-  max-width: 70%;
+  max-width: 75%;
 }
 
 .message-system {
@@ -363,7 +364,7 @@ onUnmounted(() => {
   border: 1px solid #dee2e6;
   border-left: 4px solid #6f42c1;
   align-self: flex-start;
-  max-width: 90%;
+  max-width: 85%;
   margin: 8px 0;
   font-family: monospace;
 }
@@ -710,5 +711,61 @@ onUnmounted(() => {
 .query-results-content pre code {
   background: none;
   padding: 0;
+}
+
+/* Responsive design for different screen sizes */
+@media (max-width: 768px) {
+  .app {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .message-user {
+    max-width: 80%;
+  }
+  
+  .message-server {
+    max-width: 85%;
+  }
+  
+  .main {
+    height: calc(100vh - 150px);
+  }
+}
+
+@media (min-width: 1600px) {
+  .app {
+    max-width: 1600px;
+  }
+  
+  .messages {
+    padding: 25px 30px;
+  }
+  
+  .message {
+    margin-bottom: 15px;
+    padding: 10px 16px;
+  }
+}
+
+/* Better desktop layout */
+@media (min-width: 1200px) {
+  .connection-status {
+    gap: 15px;
+    padding: 12px 20px;
+  }
+  
+  .connection-status input {
+    font-size: 16px;
+  }
+  
+  textarea {
+    font-size: 16px;
+  }
+  
+  .query-results {
+    max-width: 90%;
+    margin: 0 auto;
+  }
 }
 </style>

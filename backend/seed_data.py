@@ -7,102 +7,121 @@ from datetime import datetime, timedelta
 fake = Faker()
 
 def generate_people_data():
-    """Generate realistic people data"""
+    """Generate realistic people data for a B2B data analytics platform company"""
     people = []
     departments = [
-        "Engineering", "Product", "Design", "Data Science", "DevOps", "Security", 
-        "Marketing", "Sales", "HR", "Finance", "Legal", "Operations", "Customer Success",
-        "Quality Assurance", "Research", "Business Development"
+        "Data Platform Engineering", "Analytics Engineering", "Product", "Data Science", 
+        "Infrastructure & DevOps", "Security & Compliance", "Customer Success", 
+        "Professional Services", "Sales", "Marketing", "Finance", "Legal", 
+        "People Operations", "Engineering", "Solutions Architecture"
     ]
     roles = {
+        "Data Platform Engineering": [
+            "Data Platform Engineer", "Senior Data Platform Engineer", "Staff Data Platform Engineer",
+            "Principal Data Platform Engineer", "Data Infrastructure Engineer", "Senior Data Infrastructure Engineer",
+            "Streaming Data Engineer", "Data Pipeline Engineer", "Platform Engineering Manager",
+            "Director of Data Platform", "VP of Data Engineering", "Data Platform Architect"
+        ],
+        "Analytics Engineering": [
+            "Analytics Engineer", "Senior Analytics Engineer", "Lead Analytics Engineer",
+            "Analytics Engineering Manager", "BI Developer", "Senior BI Developer",
+            "Data Modeling Engineer", "Metrics Engineer", "Analytics Platform Engineer"
+        ],
         "Engineering": [
-            "Junior Software Engineer", "Software Engineer", "Senior Software Engineer", 
-            "Staff Engineer", "Principal Engineer", "Engineering Manager", "Senior Engineering Manager",
-            "Director of Engineering", "VP of Engineering", "Frontend Engineer", "Backend Engineer",
-            "Full Stack Engineer", "Mobile Engineer", "Platform Engineer"
+            "Backend Engineer", "Senior Backend Engineer", "Staff Backend Engineer", 
+            "Frontend Engineer", "Senior Frontend Engineer", "Full Stack Engineer",
+            "API Engineer", "Senior API Engineer", "Engineering Manager", "Director of Engineering"
         ],
         "Product": [
-            "Associate Product Manager", "Product Manager", "Senior Product Manager", 
-            "Principal Product Manager", "Group Product Manager", "Product Director", 
-            "VP of Product", "Chief Product Officer", "Product Marketing Manager",
-            "Technical Product Manager", "Growth Product Manager"
-        ],
-        "Design": [
-            "UX Designer", "Senior UX Designer", "Staff UX Designer", "Design Lead", 
-            "Principal Designer", "Design Director", "VP of Design", "UI Designer",
-            "UX Researcher", "Product Designer", "Visual Designer", "Design Systems Lead"
+            "Product Manager - Analytics", "Senior Product Manager - Data Platform", 
+            "Principal Product Manager", "Group Product Manager - Enterprise", "Product Director", 
+            "VP of Product", "Technical Product Manager - APIs", "Product Manager - Data Governance",
+            "Product Manager - Visualization", "Product Manager - Data Integration"
         ],
         "Data Science": [
-            "Data Analyst", "Data Scientist", "Senior Data Scientist", "Staff Data Scientist",
-            "ML Engineer", "Senior ML Engineer", "Data Engineer", "Senior Data Engineer",
-            "Analytics Engineer", "Data Science Manager", "Head of Data Science",
-            "Research Scientist", "Applied Scientist"
+            "Data Scientist", "Senior Data Scientist", "Staff Data Scientist", "Principal Data Scientist",
+            "ML Engineer", "Senior ML Engineer", "Applied Scientist", "Research Data Scientist",
+            "Data Science Manager", "Director of Data Science", "VP of Data Science",
+            "Algorithm Engineer", "ML Platform Engineer"
         ],
-        "DevOps": [
+        "Infrastructure & DevOps": [
             "DevOps Engineer", "Senior DevOps Engineer", "Staff DevOps Engineer",
-            "Platform Engineer", "SRE", "Senior SRE", "Infrastructure Engineer",
-            "Cloud Engineer", "DevOps Manager", "Director of Platform"
+            "Site Reliability Engineer", "Senior SRE", "Infrastructure Engineer",
+            "Cloud Architect", "Kubernetes Engineer", "DevOps Manager", 
+            "Director of Infrastructure", "Database Administrator", "Performance Engineer"
         ],
-        "Security": [
-            "Security Analyst", "Security Engineer", "Senior Security Engineer", 
-            "Security Architect", "Principal Security Engineer", "Security Manager",
-            "CISO", "Compliance Officer", "Privacy Engineer", "Threat Intelligence Analyst"
-        ],
-        "Marketing": [
-            "Marketing Coordinator", "Marketing Manager", "Senior Marketing Manager", 
-            "Marketing Director", "VP of Marketing", "Content Marketing Manager",
-            "Digital Marketing Manager", "Brand Manager", "Marketing Operations Manager"
-        ],
-        "Sales": [
-            "Sales Development Representative", "Account Executive", "Senior Account Executive",
-            "Sales Manager", "Regional Sales Manager", "VP of Sales", "Chief Revenue Officer",
-            "Sales Engineer", "Customer Success Manager", "Account Manager"
-        ],
-        "HR": [
-            "HR Coordinator", "HR Generalist", "Senior HR Generalist", "HR Business Partner",
-            "HR Manager", "Senior HR Manager", "HR Director", "VP of People", "Chief People Officer",
-            "Talent Acquisition Manager", "Learning & Development Manager"
-        ],
-        "Finance": [
-            "Financial Analyst", "Senior Financial Analyst", "Finance Manager", 
-            "Senior Finance Manager", "Finance Director", "VP of Finance", "CFO",
-            "Controller", "Accounting Manager", "FP&A Manager", "Treasury Manager"
-        ],
-        "Legal": [
-            "Legal Counsel", "Senior Legal Counsel", "Associate General Counsel", 
-            "General Counsel", "Chief Legal Officer", "Contract Manager", "Paralegal"
-        ],
-        "Operations": [
-            "Operations Coordinator", "Operations Manager", "Senior Operations Manager",
-            "Operations Director", "VP of Operations", "Chief Operating Officer",
-            "Business Operations Manager", "Revenue Operations Manager"
+        "Security & Compliance": [
+            "Security Engineer", "Senior Security Engineer", "Staff Security Engineer",
+            "Security Architect", "Compliance Manager", "Data Privacy Officer",
+            "GRC Analyst", "Senior GRC Analyst", "Security Operations Engineer",
+            "Director of Security", "CISO", "Compliance Engineer"
         ],
         "Customer Success": [
-            "Customer Success Associate", "Customer Success Manager", "Senior Customer Success Manager",
-            "Customer Success Director", "VP of Customer Success", "Customer Support Manager",
-            "Technical Account Manager"
+            "Customer Success Manager", "Senior Customer Success Manager", "Enterprise CSM",
+            "Technical Account Manager", "Senior TAM", "Customer Success Engineer",
+            "Implementation Specialist", "Customer Success Director", "VP of Customer Success",
+            "Onboarding Specialist", "Customer Success Operations Manager"
         ],
-        "Quality Assurance": [
-            "QA Tester", "QA Engineer", "Senior QA Engineer", "QA Manager", 
-            "QA Director", "Test Automation Engineer", "Performance Test Engineer"
+        "Professional Services": [
+            "Data Consultant", "Senior Data Consultant", "Lead Data Consultant",
+            "Solutions Consultant", "Implementation Engineer", "Senior Implementation Engineer",
+            "Professional Services Manager", "Engagement Manager", "Director of Professional Services",
+            "Data Architect - Consulting", "Analytics Consultant"
         ],
-        "Research": [
-            "Research Analyst", "Research Manager", "Senior Research Manager",
-            "Research Director", "User Researcher", "Market Research Manager"
+        "Sales": [
+            "Sales Development Representative", "Account Executive - Mid Market", "Enterprise Account Executive",
+            "Senior Enterprise AE", "Sales Engineer", "Senior Sales Engineer", 
+            "Sales Manager", "Regional Sales Director", "VP of Sales", "Chief Revenue Officer",
+            "Channel Partner Manager", "Strategic Account Manager"
         ],
-        "Business Development": [
-            "Business Development Associate", "Business Development Manager", 
-            "Senior Business Development Manager", "BD Director", "VP of Business Development",
-            "Partnership Manager", "Strategic Partnerships Manager"
-        ]
+        "Marketing": [
+            "Product Marketing Manager", "Senior Product Marketing Manager", "Content Marketing Manager",
+            "Demand Generation Manager", "Marketing Operations Manager", "Developer Relations Manager",
+            "Marketing Director", "VP of Marketing", "Technical Writer", "Marketing Analyst",
+            "Event Marketing Manager", "Partner Marketing Manager"
+        ],
+        "Finance": [
+            "Financial Analyst", "Senior Financial Analyst", "Revenue Analyst", 
+            "FP&A Manager", "Finance Manager", "Accounting Manager", "Controller",
+            "Finance Director", "VP of Finance", "CFO", "Billing Specialist",
+            "Revenue Operations Analyst"
+        ],
+        "Legal": [
+            "Legal Counsel", "Senior Legal Counsel", "Data Privacy Counsel", 
+            "Commercial Counsel", "General Counsel", "Contract Manager", 
+            "Compliance Counsel", "Paralegal"
+        ],
+        "People Operations": [
+            "People Operations Specialist", "HR Business Partner", "Senior HRBP",
+            "Talent Acquisition Manager", "Senior Recruiter", "Technical Recruiter",
+            "People Operations Manager", "Director of People", "VP of People", 
+            "Learning & Development Manager", "Total Rewards Manager"
+        ],
+        "Solutions Architecture": [
+            "Solutions Architect", "Senior Solutions Architect", "Principal Solutions Architect",
+            "Data Solutions Architect", "Enterprise Architect", "Technical Solutions Manager",
+            "Integration Architect", "Solutions Engineering Manager", "Director of Solutions Architecture",
+            "Pre-Sales Engineer", "Customer Solutions Engineer"
+        ],
+        # Note: Removed QA, Research, and BD as separate departments - these roles are integrated into other teams
     }
     
     for i in range(500):
         dept = random.choice(departments)
+        # Generate a name first
+        full_name = fake.name()
+        # Create email from the name
+        first_name = full_name.split()[0].lower()
+        last_name = full_name.split()[-1].lower()
+        # Remove any apostrophes or special characters from names
+        first_name = first_name.replace("'", "").replace("-", "")
+        last_name = last_name.replace("'", "").replace("-", "")
+        email = f"{first_name}.{last_name}@company.com"
+        
         person = {
             "id": f"person_{i+1}",
-            "name": fake.name(),
-            "email": fake.email(),
+            "name": full_name,
+            "email": email,
             "department": dept,
             "role": random.choice(roles[dept]),
             "hire_date": fake.date_between(start_date='-3y', end_date='today').isoformat(),
@@ -133,362 +152,364 @@ def generate_people_data():
     return people
 
 def generate_teams_data():
-    """Generate realistic team data"""
+    """Generate team data for a B2B data analytics platform"""
     teams = [
+        # Data Platform Engineering Teams
+        {"id": "team_1", "name": "Data Ingestion", "department": "Data Platform Engineering", "focus": "Real-time and batch data ingestion pipelines"},
+        {"id": "team_2", "name": "Data Processing", "department": "Data Platform Engineering", "focus": "Distributed data processing and transformation systems"},
+        {"id": "team_3", "name": "Storage & Query", "department": "Data Platform Engineering", "focus": "Data lake, warehouse, and query optimization"},
+        {"id": "team_4", "name": "Streaming Platform", "department": "Data Platform Engineering", "focus": "Real-time streaming infrastructure and event processing"},
+        {"id": "team_5", "name": "Data Quality", "department": "Data Platform Engineering", "focus": "Data validation, quality monitoring, and lineage tracking"},
+        
+        # Analytics Engineering Teams
+        {"id": "team_6", "name": "Analytics Platform", "department": "Analytics Engineering", "focus": "Self-service analytics platform and tools"},
+        {"id": "team_7", "name": "Data Modeling", "department": "Analytics Engineering", "focus": "Semantic layer, metrics definitions, and data models"},
+        {"id": "team_8", "name": "BI Tools", "department": "Analytics Engineering", "focus": "Business intelligence tools and visualization platforms"},
+        
         # Engineering Teams
-        {"id": "team_1", "name": "Core Platform", "department": "Engineering", "focus": "Platform infrastructure and core services"},
-        {"id": "team_2", "name": "Frontend Web", "department": "Engineering", "focus": "Web application development and user interfaces"},
-        {"id": "team_3", "name": "Mobile Apps", "department": "Engineering", "focus": "iOS and Android native applications"},
-        {"id": "team_4", "name": "Backend Services", "department": "Engineering", "focus": "API development and microservices architecture"},
-        {"id": "team_5", "name": "Platform Tools", "department": "Engineering", "focus": "Developer tools and internal platforms"},
-        {"id": "team_6", "name": "Integration", "department": "Engineering", "focus": "Third-party integrations and external APIs"},
+        {"id": "team_9", "name": "API Platform", "department": "Engineering", "focus": "REST and GraphQL APIs for data access"},
+        {"id": "team_10", "name": "Frontend Applications", "department": "Engineering", "focus": "Web applications and user interfaces"},
+        {"id": "team_11", "name": "Authentication & Access", "department": "Engineering", "focus": "Identity management, SSO, and access control"},
+        {"id": "team_12", "name": "Developer Experience", "department": "Engineering", "focus": "SDKs, documentation, and developer tools"},
         
         # Data Science Teams
-        {"id": "team_7", "name": "Data Pipeline", "department": "Data Science", "focus": "Data ingestion, processing, and ETL workflows"},
-        {"id": "team_8", "name": "ML Platform", "department": "Data Science", "focus": "Machine learning infrastructure and model deployment"},
-        {"id": "team_9", "name": "Analytics", "department": "Data Science", "focus": "Business intelligence and data visualization"},
-        {"id": "team_10", "name": "AI Research", "department": "Data Science", "focus": "Applied research and experimental ML models"},
+        {"id": "team_13", "name": "ML Infrastructure", "department": "Data Science", "focus": "Machine learning platform and model serving"},
+        {"id": "team_14", "name": "Advanced Analytics", "department": "Data Science", "focus": "Predictive analytics and AI-powered insights"},
+        {"id": "team_15", "name": "Data Science Tools", "department": "Data Science", "focus": "Notebooks, experimentation, and ML workflows"},
         
         # Product Teams
-        {"id": "team_11", "name": "Core Product", "department": "Product", "focus": "Core platform features and user workflows"},
-        {"id": "team_12", "name": "Growth Product", "department": "Product", "focus": "User acquisition, activation, and retention"},
-        {"id": "team_13", "name": "Enterprise Product", "department": "Product", "focus": "Enterprise features and B2B functionality"},
-        {"id": "team_14", "name": "Mobile Product", "department": "Product", "focus": "Mobile app strategy and features"},
+        {"id": "team_16", "name": "Platform Product", "department": "Product", "focus": "Core data platform capabilities and roadmap"},
+        {"id": "team_17", "name": "Analytics Product", "department": "Product", "focus": "Analytics features and visualization tools"},
+        {"id": "team_18", "name": "Enterprise Product", "department": "Product", "focus": "Enterprise features, governance, and compliance"},
+        {"id": "team_19", "name": "Integration Product", "department": "Product", "focus": "Connectors, integrations, and data sources"},
         
-        # Design Teams
-        {"id": "team_15", "name": "User Experience", "department": "Design", "focus": "User research and experience design"},
-        {"id": "team_16", "name": "Visual Design", "department": "Design", "focus": "Brand, visual identity, and design systems"},
-        {"id": "team_17", "name": "Product Design", "department": "Design", "focus": "Product interface design and prototyping"},
+        # Infrastructure & DevOps Teams
+        {"id": "team_20", "name": "Cloud Infrastructure", "department": "Infrastructure & DevOps", "focus": "Multi-cloud infrastructure and Kubernetes"},
+        {"id": "team_21", "name": "Site Reliability", "department": "Infrastructure & DevOps", "focus": "System reliability, monitoring, and incident response"},
+        {"id": "team_22", "name": "Database Operations", "department": "Infrastructure & DevOps", "focus": "Database management and optimization"},
         
-        # DevOps Teams
-        {"id": "team_18", "name": "Platform Engineering", "department": "DevOps", "focus": "Kubernetes, containers, and cloud infrastructure"},
-        {"id": "team_19", "name": "Site Reliability", "department": "DevOps", "focus": "Monitoring, alerting, and system reliability"},
-        {"id": "team_20", "name": "CI/CD", "department": "DevOps", "focus": "Build automation and deployment pipelines"},
-        
-        # Security Teams
-        {"id": "team_21", "name": "Infrastructure Security", "department": "Security", "focus": "Cloud security and infrastructure hardening"},
-        {"id": "team_22", "name": "Application Security", "department": "Security", "focus": "Code security, vulnerability scanning, and SAST/DAST"},
-        {"id": "team_23", "name": "Compliance", "department": "Security", "focus": "SOC2, GDPR, and regulatory compliance"},
-        
-        # Marketing Teams
-        {"id": "team_24", "name": "Content Marketing", "department": "Marketing", "focus": "Blog, documentation, and educational content"},
-        {"id": "team_25", "name": "Digital Marketing", "department": "Marketing", "focus": "SEO, SEM, and online advertising campaigns"},
-        {"id": "team_26", "name": "Product Marketing", "department": "Marketing", "focus": "Go-to-market strategy and product positioning"},
-        
-        # Sales Teams
-        {"id": "team_27", "name": "Enterprise Sales", "department": "Sales", "focus": "Large enterprise deals and strategic accounts"},
-        {"id": "team_28", "name": "SMB Sales", "department": "Sales", "focus": "Small and medium business customer acquisition"},
-        {"id": "team_29", "name": "Sales Engineering", "department": "Sales", "focus": "Technical sales support and demos"},
+        # Security & Compliance Teams
+        {"id": "team_23", "name": "Data Security", "department": "Security & Compliance", "focus": "Data encryption, access control, and security"},
+        {"id": "team_24", "name": "Compliance & Privacy", "department": "Security & Compliance", "focus": "GDPR, CCPA, SOC2, and regulatory compliance"},
+        {"id": "team_25", "name": "Security Operations", "department": "Security & Compliance", "focus": "Security monitoring and incident response"},
         
         # Customer Success Teams
-        {"id": "team_30", "name": "Customer Success", "department": "Customer Success", "focus": "Customer onboarding and relationship management"},
-        {"id": "team_31", "name": "Support Engineering", "department": "Customer Success", "focus": "Technical customer support and troubleshooting"},
+        {"id": "team_26", "name": "Enterprise Success", "department": "Customer Success", "focus": "Strategic account management and success"},
+        {"id": "team_27", "name": "Technical Success", "department": "Customer Success", "focus": "Technical implementation and support"},
+        {"id": "team_28", "name": "Customer Education", "department": "Customer Success", "focus": "Training, certification, and documentation"},
         
-        # Quality Assurance Teams
-        {"id": "team_32", "name": "QA Automation", "department": "Quality Assurance", "focus": "Test automation and continuous testing"},
-        {"id": "team_33", "name": "Manual Testing", "department": "Quality Assurance", "focus": "Exploratory testing and user acceptance testing"},
+        # Professional Services Teams
+        {"id": "team_29", "name": "Implementation Services", "department": "Professional Services", "focus": "Customer implementations and migrations"},
+        {"id": "team_30", "name": "Data Architecture", "department": "Professional Services", "focus": "Data architecture consulting and best practices"},
+        {"id": "team_31", "name": "Analytics Consulting", "department": "Professional Services", "focus": "Analytics strategy and use case development"},
         
-        # Operations Teams
-        {"id": "team_34", "name": "Business Operations", "department": "Operations", "focus": "Process optimization and operational efficiency"},
-        {"id": "team_35", "name": "Revenue Operations", "department": "Operations", "focus": "Sales and marketing operations and analytics"}
+        # Sales Teams
+        {"id": "team_32", "name": "Enterprise Sales", "department": "Sales", "focus": "Fortune 500 and large enterprise accounts"},
+        {"id": "team_33", "name": "Mid-Market Sales", "department": "Sales", "focus": "Mid-market and growth company accounts"},
+        {"id": "team_34", "name": "Partner Sales", "department": "Sales", "focus": "Channel partners and technology alliances"},
+        
+        # Solutions Architecture Teams
+        {"id": "team_35", "name": "Enterprise Architecture", "department": "Solutions Architecture", "focus": "Enterprise data architecture and strategy"},
+        {"id": "team_36", "name": "Technical Solutions", "department": "Solutions Architecture", "focus": "Technical demonstrations and proof of concepts"},
+        {"id": "team_37", "name": "Integration Architecture", "department": "Solutions Architecture", "focus": "Integration patterns and best practices"}
     ]
     
     return teams
 
 def generate_groups_data():
-    """Generate cross-functional groups that span multiple teams"""
+    """Generate cross-functional groups for data analytics platform governance"""
     groups = [
         {
             "id": "group_1",
-            "name": "Security Council",
-            "description": "Cross-functional security governance, policy oversight, and threat assessment",
+            "name": "Data Governance Council",
+            "description": "Cross-functional data governance, privacy, quality standards, and compliance oversight",
             "type": "governance",
             "lead_department": "Security"
         },
         {
             "id": "group_2", 
-            "name": "Data Governance Committee",
-            "description": "Data privacy, compliance, quality standards, and governance across all teams",
+            "name": "Security & Privacy Board",
+            "description": "Data security, encryption standards, access control, and privacy compliance",
             "type": "governance",
-            "lead_department": "Data Science"
+            "lead_department": "Security & Compliance"
         },
         {
             "id": "group_3",
-            "name": "Architecture Review Board",
-            "description": "Technical architecture decisions, design standards, and technology strategy",
+            "name": "Data Architecture Board",
+            "description": "Data architecture standards, technology stack decisions, and integration patterns",
             "type": "technical",
-            "lead_department": "Engineering"
+            "lead_department": "Data Platform Engineering"
         },
         {
             "id": "group_4",
-            "name": "Product Strategy Group",
-            "description": "Cross-product strategy, roadmap alignment, and market positioning",
-            "type": "strategic",
-            "lead_department": "Product"
+            "name": "Customer Data Council",
+            "description": "Customer data handling, retention policies, and data ethics guidelines",
+            "type": "governance",
+            "lead_department": "Security & Compliance"
         },
         {
             "id": "group_5",
-            "name": "Incident Response Team",
-            "description": "24/7 incident response, crisis management, and post-incident reviews",
+            "name": "Platform Reliability Team",
+            "description": "24/7 platform monitoring, incident response, and reliability engineering",
             "type": "operational",
-            "lead_department": "DevOps"
+            "lead_department": "Infrastructure & DevOps"
         },
         {
             "id": "group_6",
-            "name": "Compliance Working Group",
-            "description": "SOC2, GDPR, ISO27001, and regulatory compliance coordination",
+            "name": "Regulatory Compliance Committee",
+            "description": "SOC2, GDPR, CCPA, HIPAA, and industry-specific compliance requirements",
             "type": "compliance",
-            "lead_department": "Security"
+            "lead_department": "Security & Compliance"
         },
         {
             "id": "group_7",
-            "name": "Engineering Excellence Committee",
-            "description": "Code quality standards, engineering best practices, and technical debt management",
+            "name": "API Governance Board",
+            "description": "API standards, versioning, rate limiting, and developer experience",
             "type": "technical",
             "lead_department": "Engineering"
         },
         {
             "id": "group_8",
-            "name": "Diversity & Inclusion Council",
-            "description": "Promoting diversity, equity, and inclusion across all departments",
-            "type": "cultural",
-            "lead_department": "HR"
+            "name": "Data Quality Committee",
+            "description": "Data quality standards, validation rules, and monitoring processes",
+            "type": "technical",
+            "lead_department": "Data Platform Engineering"
         },
         {
             "id": "group_9",
-            "name": "API Standards Committee",
-            "description": "API design standards, versioning strategies, and developer experience",
-            "type": "technical",
-            "lead_department": "Engineering"
+            "name": "ML/AI Ethics Committee",
+            "description": "Ethical AI guidelines, bias detection, and responsible ML practices",
+            "type": "governance",
+            "lead_department": "Data Science"
         },
         {
             "id": "group_10",
-            "name": "Customer Advisory Board",
-            "description": "Customer feedback integration, product prioritization, and user experience insights",
+            "name": "Enterprise Customer Advisory",
+            "description": "Enterprise customer feedback, feature prioritization, and strategic partnerships",
             "type": "strategic",
-            "lead_department": "Product"
+            "lead_department": "Customer Success"
         },
         {
             "id": "group_11",
-            "name": "Business Continuity Planning",
-            "description": "Disaster recovery, business continuity, and operational resilience planning",
+            "name": "SLA & Performance Committee",
+            "description": "SLA definitions, performance benchmarks, and customer commitment standards",
             "type": "operational",
-            "lead_department": "Operations"
+            "lead_department": "Infrastructure & DevOps"
         },
         {
             "id": "group_12",
-            "name": "Open Source Committee",
-            "description": "Open source contribution guidelines, license management, and community engagement",
+            "name": "Data Connectors Alliance",
+            "description": "Integration partnerships, connector development, and ecosystem expansion",
             "type": "technical",
-            "lead_department": "Engineering"
+            "lead_department": "Solutions Architecture"
         },
         {
             "id": "group_13",
-            "name": "Performance Optimization Task Force",
-            "description": "System performance analysis, optimization strategies, and scalability planning",
-            "type": "technical",
-            "lead_department": "DevOps"
+            "name": "Cost Optimization Board",
+            "description": "Cloud cost management, resource optimization, and pricing strategy",
+            "type": "operational",
+            "lead_department": "Infrastructure & DevOps"
         },
         {
             "id": "group_14",
-            "name": "Sales & Marketing Alignment",
-            "description": "Sales and marketing coordination, lead qualification, and customer journey optimization",
+            "name": "Partner Ecosystem Council",
+            "description": "Technology partnerships, channel strategy, and ecosystem development",
             "type": "strategic",
             "lead_department": "Sales"
         },
         {
             "id": "group_15",
-            "name": "Employee Wellness Committee",
-            "description": "Employee mental health, work-life balance, and workplace wellness initiatives",
-            "type": "cultural",
-            "lead_department": "HR"
+            "name": "Innovation Lab",
+            "description": "Emerging technologies, R&D initiatives, and competitive analysis",
+            "type": "strategic",
+            "lead_department": "Data Science"
         }
     ]
     
     return groups
 
 def generate_policies_data():
-    """Generate realistic policy data with detailed descriptions"""
+    """Generate comprehensive policies for B2B data analytics platform"""
     policies = [
         {
             "id": "policy_1",
-            "name": "Code Review Policy",
-            "description": "All code changes must be reviewed by at least one qualified engineer before merging. Reviews must check for security vulnerabilities, code quality, performance impact, and adherence to coding standards. Critical system changes require review by senior engineers.",
-            "category": "development",
-            "severity": "high",
-            "responsible_type": "team",
-            "compliance_frameworks": ["SOC2", "Internal", "ISO27001"]
+            "name": "Customer Data Processing Policy",
+            "description": "All customer data processing must comply with data processing agreements (DPAs). Data must be processed only for agreed purposes with explicit consent. Data minimization principles apply - collect only necessary data. Customer data segregation must be maintained with encryption at rest and in transit. Processing logs retained for audit purposes.",
+            "category": "data_governance",
+            "severity": "critical",
+            "responsible_type": "group",
+            "compliance_frameworks": ["GDPR", "CCPA", "SOC2"]
         },
         {
             "id": "policy_2", 
-            "name": "Data Retention and Deletion Policy",
-            "description": "Personal data must be retained only for as long as necessary for business purposes. Customer data retention periods: account data (7 years after closure), activity logs (2 years), marketing data (3 years with consent). Automated deletion processes must be implemented with audit trails.",
-            "category": "data_privacy",
-            "severity": "critical",
-            "responsible_type": "group",
-            "compliance_frameworks": ["GDPR", "SOC2", "CCPA"]
+            "name": "Data Classification Policy",
+            "description": "All data must be classified as Public, Internal, Confidential, or Restricted. Classification determines handling requirements including encryption, access controls, and retention periods. Restricted data requires additional security controls and audit logging. Automated classification tools must scan and tag data. Quarterly classification reviews required.",
+            "category": "data_governance",
+            "severity": "high",
+            "responsible_type": "team",
+            "compliance_frameworks": ["SOC2", "ISO27001", "NIST"]
         },
         {
             "id": "policy_3",
-            "name": "Identity and Access Management Policy", 
-            "description": "User access must follow principle of least privilege. Access requests require manager approval and periodic review (quarterly for privileged access, annually for standard access). Multi-factor authentication mandatory for all systems. Access must be revoked within 4 hours of employment termination.",
+            "name": "Data Quality Standards Policy", 
+            "description": "Data quality metrics must be defined and monitored for all datasets. Quality thresholds: completeness >95%, accuracy >99%, consistency >98%. Automated quality checks required for all data pipelines. Quality issues must be remediated within SLA timeframes. Data quality scorecards published monthly.",
+            "category": "data_governance",
+            "severity": "high",
+            "responsible_type": "team",
+            "compliance_frameworks": ["SOC2", "Internal"]
+        },
+        {
+            "id": "policy_4",
+            "name": "Data Lineage and Metadata Policy",
+            "description": "Complete data lineage must be maintained for all datasets showing origin, transformations, and dependencies. Metadata cataloging required including schema, ownership, quality metrics, and usage. Lineage must be queryable and auditable. Updates to lineage tracking within 24 hours of pipeline changes.",
+            "category": "data_governance",
+            "severity": "medium", 
+            "responsible_type": "team",
+            "compliance_frameworks": ["SOC2", "Internal"]
+        },
+        {
+            "id": "policy_5",
+            "name": "Encryption Policy",
+            "description": "All data must be encrypted at rest (AES-256) and in transit (TLS 1.2+). Encryption keys managed via HSM with annual rotation. Customer data requires envelope encryption with customer-managed keys option. Key escrow and recovery procedures required. Encryption status monitored continuously.",
+            "category": "security",
+            "severity": "critical",
+            "responsible_type": "team",
+            "compliance_frameworks": ["SOC2", "ISO27001", "FIPS"]
+        },
+        {
+            "id": "policy_6",
+            "name": "Access Control Policy",
+            "description": "Role-based access control (RBAC) required for all systems. Just-in-time access for privileged operations. Access reviews quarterly for admins, semi-annually for users. Break-glass procedures for emergency access with full audit trail. Customer data access restricted to authorized personnel only.",
             "category": "security",
             "severity": "critical",
             "responsible_type": "group",
             "compliance_frameworks": ["SOC2", "ISO27001", "NIST"]
         },
         {
-            "id": "policy_4",
-            "name": "Security Incident Response Policy",
-            "description": "Security incidents must be detected, contained, and resolved according to severity levels. Critical incidents (P0) require immediate response within 15 minutes, high severity (P1) within 1 hour. All incidents require post-mortem analysis and documentation. External notifications required for data breaches within 72 hours.",
-            "category": "security",
-            "severity": "critical", 
-            "responsible_type": "group",
-            "compliance_frameworks": ["SOC2", "ISO27001", "GDPR"]
-        },
-        {
-            "id": "policy_5",
-            "name": "API Security and Design Standards",
-            "description": "All APIs must implement authentication, authorization, rate limiting, and input validation. API keys must be rotated quarterly. Public APIs require additional security testing and documentation. API versioning strategy must ensure backward compatibility for minimum 18 months.",
-            "category": "security",
-            "severity": "high",
-            "responsible_type": "team",
-            "compliance_frameworks": ["SOC2", "Internal", "OWASP"]
-        },
-        {
-            "id": "policy_6",
-            "name": "Data Encryption and Protection Policy",
-            "description": "All data must be encrypted at rest using AES-256 and in transit using TLS 1.3+. Database encryption keys must be managed through dedicated key management service with rotation every 90 days. Backup data must maintain same encryption standards.",
-            "category": "security",
-            "severity": "high",
-            "responsible_type": "team",
-            "compliance_frameworks": ["SOC2", "PCI-DSS", "FIPS 140-2"]
-        },
-        {
             "id": "policy_7",
-            "name": "Secure Software Development Lifecycle",
-            "description": "Security must be integrated throughout SDLC including threat modeling, secure coding standards, static/dynamic analysis, and security testing. Dependency scanning required for all third-party libraries. Security sign-off required before production deployment.",
-            "category": "development",
+            "name": "Audit Logging Policy",
+            "description": "All data access, modifications, and administrative actions must be logged. Logs retained for 2 years minimum, 7 years for compliance data. Log integrity protection via write-once storage. Real-time anomaly detection on audit logs. Customer audit logs available via API.",
+            "category": "security",
             "severity": "high",
             "responsible_type": "team",
-            "compliance_frameworks": ["Internal", "SOC2", "NIST"]
+            "compliance_frameworks": ["SOC2", "GDPR", "HIPAA"]
         },
         {
             "id": "policy_8",
-            "name": "Data Classification and Handling Policy",
-            "description": "Data must be classified as Public, Internal, Confidential, or Restricted. Each classification has specific handling, access, and retention requirements. PII and financial data automatically classified as Restricted. Data labeling required on all systems and documents.",
-            "category": "data_privacy",
+            "name": "API Rate Limiting Policy",
+            "description": "All APIs must implement rate limiting based on customer tier. Default limits: 1000 requests/hour for standard, 10000/hour for premium, custom for enterprise. Burst allowances up to 2x limit for 5 minutes. Clear error messages and retry headers required. Rate limit monitoring and alerting.",
+            "category": "platform",
             "severity": "high",
-            "responsible_type": "group",
-            "compliance_frameworks": ["GDPR", "SOC2", "CCPA"]
-        },
-        {
-            "id": "policy_9",
-            "name": "Third Party Risk Management Policy",
-            "description": "All vendors handling company or customer data must undergo security assessment. Due diligence includes security questionnaires, certifications review, and on-site assessments for critical vendors. Contracts must include security requirements and audit rights. Annual vendor reviews required.",
-            "category": "security",
-            "severity": "medium",
-            "responsible_type": "group",
-            "compliance_frameworks": ["SOC2", "Internal", "ISO27001"]
-        },
-        {
-            "id": "policy_10",
-            "name": "Infrastructure Monitoring and Alerting Policy",
-            "description": "All production systems must have monitoring and alerting for availability, performance, and security events. Alert escalation procedures defined with response time SLAs. Security events require immediate notification to security team. Monitoring data retained for minimum 1 year.",
-            "category": "operational",
-            "severity": "medium",
             "responsible_type": "team",
             "compliance_frameworks": ["SOC2", "Internal"]
         },
         {
-            "id": "policy_11",
-            "name": "Change Management Policy",
-            "description": "All production changes must follow formal change management process including impact assessment, approval workflow, rollback plan, and post-deployment verification. Emergency changes allowed with retroactive approval within 24 hours. Change advisory board reviews high-risk changes weekly.",
-            "category": "operational",
-            "severity": "high",
+            "id": "policy_9",
+            "name": "SLA and Uptime Policy",
+            "description": "Platform SLA: 99.9% uptime for standard, 99.95% for premium, 99.99% for enterprise. Planned maintenance windows excluded. SLA credits issued automatically for breaches. Real-time status page required with incident history. Performance SLAs for query response times.",
+            "category": "platform",
+            "severity": "critical",
             "responsible_type": "group",
-            "compliance_frameworks": ["SOC2", "ITIL", "Internal"]
+            "compliance_frameworks": ["SOC2", "Internal"]
+        },
+        {
+            "id": "policy_10",
+            "name": "Multi-tenancy Isolation Policy",
+            "description": "Complete logical isolation between customer tenants. Resource quotas enforced per tenant. No shared compute or storage resources. Network isolation via VPC/namespace separation. Regular isolation testing required. Data leakage prevention controls mandatory.",
+            "category": "platform",
+            "severity": "critical",
+            "responsible_type": "team",
+            "compliance_frameworks": ["SOC2", "ISO27001", "FedRAMP"]
+        },
+        {
+            "id": "policy_11",
+            "name": "Data Export Policy",
+            "description": "Customers must be able to export all their data within 30 days of request. Standard formats: CSV, JSON, Parquet. Bulk export via secure channels. Export includes all data, metadata, and configurations. Automated export capabilities required. Data portability compliance.",
+            "category": "platform",
+            "severity": "high",
+            "responsible_type": "team",
+            "compliance_frameworks": ["GDPR", "CCPA", "Internal"]
         },
         {
             "id": "policy_12",
-            "name": "Business Continuity and Disaster Recovery Policy", 
-            "description": "Critical business functions must maintain RTO of 4 hours and RPO of 1 hour. Disaster recovery plans tested quarterly with annual full-scale exercises. Backup systems maintained in geographically separate regions. Communication plans include customer and stakeholder notification procedures.",
-            "category": "operational",
+            "name": "Data Processing Agreement Policy", 
+            "description": "Signed DPAs required for all customers before data processing. DPAs must specify purposes, retention, sub-processors, and security measures. Annual review and updates required. Template DPAs for standard offerings, custom for enterprise. Sub-processor list maintained publicly.",
+            "category": "legal",
+            "severity": "critical",
+            "responsible_type": "group",
+            "compliance_frameworks": ["GDPR", "CCPA", "SOC2"]
+        },
+        {
+            "id": "policy_13",
+            "name": "Right to Erasure Policy",
+            "description": "Customer data deletion requests must be fulfilled within 30 days. Deletion includes all copies, backups (after retention period), and derived data. Deletion certificate provided. Some data retained for legal/compliance as documented. Automated deletion workflows required.",
+            "category": "data_privacy",
+            "severity": "critical",
+            "responsible_type": "group",
+            "compliance_frameworks": ["GDPR", "CCPA", "PIPEDA"]
+        },
+        {
+            "id": "policy_14",
+            "name": "Data Breach Notification Policy",
+            "description": "Confirmed breaches notified to affected customers within 72 hours. Notifications include scope, impact, remediation steps, and recommendations. Regulatory notifications as required by jurisdiction. Public disclosure for significant breaches. Breach response team activation procedures.",
+            "category": "security",
+            "severity": "critical",
+            "responsible_type": "group",
+            "compliance_frameworks": ["GDPR", "CCPA", "SOC2"]
+        },
+        {
+            "id": "policy_15",
+            "name": "Third-party Data Processor Policy",
+            "description": "All third-party processors vetted for security and compliance. Contracts require equivalent data protection. Annual audits of critical processors. Processor list maintained and available to customers. Change notifications 30 days in advance. Data localization requirements respected.",
+            "category": "vendor_management",
+            "severity": "high",
+            "responsible_type": "group",
+            "compliance_frameworks": ["GDPR", "SOC2", "ISO27001"]
+        },
+        {
+            "id": "policy_16",
+            "name": "CI/CD Security Policy",
+            "description": "All code deployments via automated CI/CD pipelines. Security scanning (SAST/DAST) required before production. No direct production access - all changes via pipeline. Deployment approvals for critical systems. Rollback capabilities required. Container scanning for vulnerabilities.",
+            "category": "development",
+            "severity": "high",
+            "responsible_type": "team",
+            "compliance_frameworks": ["SOC2", "ISO27001", "NIST"]
+        },
+        {
+            "id": "policy_17",
+            "name": "Disaster Recovery Policy",
+            "description": "RPO: 1 hour for critical data, 4 hours for standard. RTO: 4 hours for critical systems, 24 hours for standard. DR testing quarterly with full failover annually. Geo-redundant backups in 3+ regions. Automated failover for critical services. Customer data recovery guarantees.",
+            "category": "operations",
             "severity": "critical",
             "responsible_type": "group",
             "compliance_frameworks": ["SOC2", "ISO22301", "Internal"]
         },
         {
-            "id": "policy_13",
-            "name": "Employee Background Check Policy",
-            "description": "All employees require background checks appropriate to their access level. Standard checks for general employees, enhanced checks for privileged access roles. Checks must be completed before access provisioning. Re-verification required every 5 years for high-privilege roles.",
-            "category": "hr_security",
-            "severity": "medium",
-            "responsible_type": "group",
-            "compliance_frameworks": ["SOC2", "Internal"]
-        },
-        {
-            "id": "policy_14",
-            "name": "Acceptable Use Policy",
-            "description": "Company resources must be used only for legitimate business purposes. Prohibited activities include unauthorized software installation, personal file storage, accessing inappropriate content, and circumventing security controls. Violations may result in disciplinary action.",
-            "category": "hr_security",
-            "severity": "medium",
-            "responsible_type": "group",
-            "compliance_frameworks": ["Internal", "SOC2"]
-        },
-        {
-            "id": "policy_15",
-            "name": "Security Awareness Training Policy",
-            "description": "All employees must complete security awareness training within 30 days of hire and annually thereafter. Training covers phishing, social engineering, password security, and incident reporting. Specialized training required for developers and administrators. Completion tracking and reporting required.",
-            "category": "training",
-            "severity": "medium",
-            "responsible_type": "group",
-            "compliance_frameworks": ["SOC2", "ISO27001", "Internal"]
-        },
-        {
-            "id": "policy_16",
-            "name": "Cloud Security Configuration Policy",
-            "description": "Cloud resources must follow security baselines including network segmentation, access controls, logging, and encryption. Infrastructure as Code required for reproducible deployments. Cloud security posture monitoring with automated compliance checking. Regular security configuration reviews required.",
-            "category": "security",
-            "severity": "high",
-            "responsible_type": "team",
-            "compliance_frameworks": ["SOC2", "CSF", "CIS"]
-        },
-        {
-            "id": "policy_17",
-            "name": "Privacy by Design Policy",
-            "description": "Privacy considerations must be integrated into all product development from initial design. Privacy impact assessments required for new features handling personal data. Data minimization principles applied with purpose limitation and consent management. Privacy officer approval required for data processing changes.",
-            "category": "data_privacy",
-            "severity": "high",
-            "responsible_type": "group",
-            "compliance_frameworks": ["GDPR", "CCPA", "PIPEDA"]
-        },
-        {
             "id": "policy_18",
-            "name": "Mobile Device Management Policy",
-            "description": "Corporate mobile devices must be enrolled in MDM system with encryption, passcode requirements, and remote wipe capability. BYOD devices accessing corporate data require containerization and security app installation. Lost or stolen devices must be reported immediately for remote wipe.",
-            "category": "security",
-            "severity": "medium",
+            "name": "Change Management Policy",
+            "description": "All production changes require approval based on risk level. High-risk changes need CAB approval and rollback plan. Change freeze during peak periods. Post-implementation reviews for major changes. Emergency change procedures defined. Customer notification for impacting changes.",
+            "category": "operations",
+            "severity": "high",
             "responsible_type": "group",
-            "compliance_frameworks": ["SOC2", "Internal"]
+            "compliance_frameworks": ["SOC2", "ITIL", "Internal"]
         },
         {
             "id": "policy_19",
-            "name": "Open Source Software Policy",
-            "description": "Open source components must be reviewed for license compatibility, security vulnerabilities, and maintenance status before use. Vulnerability scanning required for all dependencies with prompt patching of critical issues. Legal review required for copyleft licenses. Contribution guidelines established for employee contributions.",
-            "category": "development",
+            "name": "Performance Monitoring Policy",
+            "description": "All services monitored for availability, latency, and error rates. SLIs/SLOs defined per service. Alerting thresholds at 80% of SLO. Performance baselines established and anomaly detection enabled. Monthly performance reviews and optimization. Customer-facing performance metrics published.",
+            "category": "operations",
             "severity": "medium",
-            "responsible_type": "group",
-            "compliance_frameworks": ["Internal", "SOC2"]
+            "responsible_type": "team",
+            "compliance_frameworks": ["SOC2", "Internal"]
         },
         {
             "id": "policy_20",
-            "name": "Records Management and Retention Policy",
-            "description": "Business records must be classified, retained, and disposed of according to legal and regulatory requirements. Legal hold procedures established for litigation and investigations. Electronic records require metadata preservation and audit trails. Retention schedules reviewed annually and updated for regulatory changes.",
-            "category": "compliance",
-            "severity": "medium",
+            "name": "Data Retention and Deletion Policy",
+            "description": "Customer data retained per contractual agreements. Default retention: operational data 90 days, analytical results 1 year, audit logs 2 years. Automated deletion workflows with verification. Legal hold procedures for investigations. Data destruction certificates provided on request.",
+            "category": "data_governance",
+            "severity": "high",
             "responsible_type": "group",
-            "compliance_frameworks": ["SOX", "GDPR", "Internal"]
+            "compliance_frameworks": ["GDPR", "CCPA", "SOC2"]
         }
     ]
     
@@ -527,14 +548,24 @@ def generate_relationships():
     # Assign people to groups (cross-functional, 3-8 people per group)
     for group in groups:
         # Get people from relevant departments
-        if group["lead_department"] == "Security":
-            relevant_people = [p for p in people if p["department"] in ["Security", "Engineering", "DevOps"]]
+        if group["lead_department"] == "Security & Compliance":
+            relevant_people = [p for p in people if p["department"] in ["Security & Compliance", "Engineering", "Infrastructure & DevOps"]]
         elif group["lead_department"] == "Data Science":
-            relevant_people = [p for p in people if p["department"] in ["Data Science", "Engineering", "Product"]]
+            relevant_people = [p for p in people if p["department"] in ["Data Science", "Analytics Engineering", "Product"]]
         elif group["lead_department"] == "Engineering":
-            relevant_people = [p for p in people if p["department"] in ["Engineering", "DevOps", "Security"]]
+            relevant_people = [p for p in people if p["department"] in ["Engineering", "Infrastructure & DevOps", "Security & Compliance"]]
+        elif group["lead_department"] == "Data Platform Engineering":
+            relevant_people = [p for p in people if p["department"] in ["Data Platform Engineering", "Analytics Engineering", "Infrastructure & DevOps"]]
         elif group["lead_department"] == "Product":
-            relevant_people = [p for p in people if p["department"] in ["Product", "Design", "Engineering"]]
+            relevant_people = [p for p in people if p["department"] in ["Product", "Engineering", "Data Science"]]
+        elif group["lead_department"] == "Customer Success":
+            relevant_people = [p for p in people if p["department"] in ["Customer Success", "Professional Services", "Solutions Architecture"]]
+        elif group["lead_department"] == "Infrastructure & DevOps":
+            relevant_people = [p for p in people if p["department"] in ["Infrastructure & DevOps", "Engineering", "Security & Compliance"]]
+        elif group["lead_department"] == "Solutions Architecture":
+            relevant_people = [p for p in people if p["department"] in ["Solutions Architecture", "Professional Services", "Engineering"]]
+        elif group["lead_department"] == "Sales":
+            relevant_people = [p for p in people if p["department"] in ["Sales", "Marketing", "Customer Success"]]
         else:
             relevant_people = people
         
@@ -554,10 +585,14 @@ def generate_relationships():
     for policy in policies:
         if policy["responsible_type"] == "team":
             # Assign to relevant teams based on policy category
-            if policy["category"] in ["development", "operational"]:
-                eligible_teams = [t for t in teams if t["department"] in ["Engineering", "DevOps"]]
+            if policy["category"] == "data_governance":
+                eligible_teams = [t for t in teams if t["department"] in ["Data Platform Engineering", "Analytics Engineering", "Data Science"]]
+            elif policy["category"] == "platform":
+                eligible_teams = [t for t in teams if t["department"] in ["Engineering", "Data Platform Engineering", "Infrastructure & DevOps"]]
             elif policy["category"] == "security":
-                eligible_teams = [t for t in teams if t["department"] in ["Security", "Engineering", "DevOps"]]
+                eligible_teams = [t for t in teams if t["department"] in ["Security & Compliance", "Engineering", "Infrastructure & DevOps"]]
+            elif policy["category"] in ["development", "operations"]:
+                eligible_teams = [t for t in teams if t["department"] in ["Engineering", "Infrastructure & DevOps", "Data Platform Engineering"]]
             else:
                 eligible_teams = teams
             
@@ -573,12 +608,16 @@ def generate_relationships():
         
         else:  # responsible_type == "group"
             # Assign to relevant groups
-            if policy["category"] == "security":
-                eligible_groups = [g for g in groups if "Security" in g["name"] or "Incident" in g["name"]]
+            if policy["category"] == "data_governance":
+                eligible_groups = [g for g in groups if "Data Governance" in g["name"] or "Data Quality" in g["name"]]
+            elif policy["category"] == "security":
+                eligible_groups = [g for g in groups if "Security" in g["name"] or "Compliance" in g["name"]]
             elif policy["category"] == "data_privacy":
-                eligible_groups = [g for g in groups if "Data" in g["name"] or "Compliance" in g["name"]]
+                eligible_groups = [g for g in groups if "Data" in g["name"] or "Compliance" in g["name"] or "Privacy" in g["name"]]
+            elif policy["category"] == "platform":
+                eligible_groups = [g for g in groups if "API" in g["name"] or "SLA" in g["name"] or "Architecture" in g["name"]]
             elif policy["category"] == "development":
-                eligible_groups = [g for g in groups if "Architecture" in g["name"]]
+                eligible_groups = [g for g in groups if "Architecture" in g["name"] or "API" in g["name"]]
             else:
                 eligible_groups = groups
             
