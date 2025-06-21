@@ -10,7 +10,7 @@ Nodes:
 - Policy: id, name, category, description, severity
 - Skill: id, name, category, type
 - Project: id, name, type, status, start_date, end_date, budget, priority, description
-- Client: id, name, industry, tier, annual_value, relationship_start
+- Client: id, name, industry, tier, annual_value, mrr, data_volume_gb, active_users, support_tier, primary_region, time_zone_preferences, relationship_start
 - Sprint: id, name, sprint_number, start_date, end_date, status, velocity
 - Technology: name (created dynamically for specializations)
 - Office: id, name, city, country, country_code, region, timezone, timezone_offset, business_hours_start, business_hours_end, business_hours_start_utc, business_hours_end_utc, languages, currency, data_residency_zone, is_headquarters, established_date
@@ -22,6 +22,8 @@ Nodes:
 - Incident: id, severity, status, description, affected_regions, affected_services, created_at, resolved_at, mttr_minutes, root_cause
 - Visa: id, type, name, country, issued_date, expiry_date, restrictions, allows_client_site, max_duration_years, renewable
 - Metric: id, type, service, region, value, unit, timestamp, percentile
+- CloudRegion: id, provider, region_code, region_name, availability_zones, data_residency_zone
+- PlatformComponent: id, name, type, tier, owner_team_id, documentation_url
 
 Relationships:
 - (Person)-[:MEMBER_OF]->(Team)
@@ -50,13 +52,20 @@ Relationships:
 - (Person)-[:RESPONDED_TO {response_time_minutes, role}]->(Incident)
 - (Team)-[:HANDS_OFF_TO {handoff_time, handoff_type}]->(Team)
 - (Person)-[:HAS_VISA {status, sponsor}]->(Visa)
+- (Team)-[:SUPPORTS_REGION {coverage_hours}]->(Client)
+- (PlatformComponent)-[:DEPLOYED_IN]->(CloudRegion)
+- (Client)-[:USES_COMPONENT {usage_level}]->(PlatformComponent)
+- (Person)-[:EXPERT_IN {expertise_level}]->(PlatformComponent)
 
 SEMANTIC UNDERSTANDING:
 
 1. GENERIC ORGANIZATIONAL TERMS (map to ALL Person nodes):
    - "employees", "staff", "people", "workforce", "personnel", "colleagues" → MATCH (p:Person)
    - "everyone", "all staff", "entire team" → MATCH (p:Person)
+   - "employees work for the company", "people in the company", "staff members" → MATCH (p:Person)
+   - IMPORTANT: When asked "How many employees/people/staff work for the company?" → ALWAYS use: MATCH (p:Person) RETURN count(p) as count
    - Example: "How many employees?" → MATCH (p:Person) RETURN count(p) as count
+   - Example: "How many employees work for the company?" → MATCH (p:Person) RETURN count(p) as count
 
 2. ROLE CATEGORIES (use CONTAINS with OR for multiple keywords):
    - "developers", "engineers" → role CONTAINS 'Engineer' OR role CONTAINS 'Developer' 
@@ -79,13 +88,18 @@ QUERY GENERATION RULES:
 5. Limit results to 25 unless counting or specifically requested otherwise
 6. Use CONTAINS for fuzzy matching on names, roles, departments
 7. WHERE clauses must come AFTER the entire MATCH pattern
+8. CRITICAL: For count queries about "employees", "people", or "staff", NEVER search for these words in fields - they refer to ALL Person nodes
+9. NEVER use literal phrases like "work for the company" or "in the company" in WHERE clauses - these are just ways of referring to all employees
 
 HANDLING SPECIAL CASES:
 
 1. COUNT QUERIES:
-   - "How many employees/people/staff?" → Count ALL Person nodes
+   - "How many employees/people/staff?" → MATCH (p:Person) RETURN count(p) as count
+   - "How many employees work for the company?" → MATCH (p:Person) RETURN count(p) as count
+   - "How many people are in the company?" → MATCH (p:Person) RETURN count(p) as count
    - "How many developers?" → Count with role category filter
    - "How many in Engineering?" → Count with department filter
+   - RULE: If the question is asking for a total count of employees/people/staff, ALWAYS return count of ALL Person nodes
 
 2. LIST QUERIES:
    - "Show all employees" → List ALL Person nodes (with LIMIT)
@@ -106,6 +120,14 @@ COMMON PATTERNS WITH SEMANTIC UNDERSTANDING:
 
 Count all employees (generic term):
 - Question: "How many employees are there?"
+- Query: MATCH (p:Person) RETURN count(p) as count
+
+Count all employees (with phrase):
+- Question: "How many employees work for the company?"
+- Query: MATCH (p:Person) RETURN count(p) as count
+
+Count all people:
+- Question: "How many people are in the organization?"
 - Query: MATCH (p:Person) RETURN count(p) as count
 
 List all staff (generic term):
@@ -359,5 +381,87 @@ Resource utilization patterns:
 Performance anomalies:
 - Question: "Find performance anomalies in the last 24 hours"
 - Query: MATCH (m1:Metric) WHERE m1.type = 'response_time' AND datetime(m1.timestamp) >= datetime() - duration('P1D') WITH m1.service as service, avg(m1.value) as baseline MATCH (m2:Metric) WHERE m2.service = service AND m2.type = 'response_time' AND datetime(m2.timestamp) >= datetime() - duration('P1D') AND m2.value > baseline * 3 RETURN m2.service, m2.region, m2.timestamp, m2.value as anomaly_value, round(baseline) as baseline_value, labels(m2) as labels ORDER BY m2.timestamp DESC
+
+SAAS PLATFORM MANAGEMENT PATTERNS:
+
+Customers needing APAC support:
+- Question: "Which customers need support during APAC business hours?"
+- Query: MATCH (c:Client) WHERE c.primary_region = 'APAC' OR ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25
+
+Strategic customers by MRR:
+- Question: "Show Strategic tier customers by MRR in each region"  
+- Query: MATCH (c:Client {tier: 'strategic'}) RETURN c.primary_region as region, c.id, c.name, c.mrr, c.annual_value, c.industry, labels(c) as labels ORDER BY c.primary_region, c.mrr DESC
+
+Component experts for customer support:
+- Question: "Find experts for the Data Pipeline component who can work with Tokyo customers"
+- Query: MATCH (p:Person)-[e:EXPERT_IN]->(pc:PlatformComponent {name: 'Data Ingestion Pipeline'}), (p)-[:WORKS_AT]->(o:Office) WHERE e.expertise_level >= 3 AND (o.timezone CONTAINS 'Tokyo' OR o.region = 'APAC') RETURN p.id, p.name, p.email, e.expertise_level, o.name as office, o.timezone, labels(p) as labels LIMIT 25
+
+Cloud deployment regions:
+- Question: "Which cloud regions host our Analytics Engine?"
+- Query: MATCH (pc:PlatformComponent {name: 'Analytics Engine'})-[:DEPLOYED_IN]->(cr:CloudRegion) RETURN cr.provider, cr.region_code, cr.region_name, cr.data_residency_zone, labels(cr) as labels ORDER BY cr.provider, cr.region_code
+
+Customer platform usage:
+- Question: "Show customer usage patterns by platform component"
+- Query: MATCH (c:Client)-[u:USES_COMPONENT]->(pc:PlatformComponent) WITH pc, u.usage_level as usage_level, count(c) as customer_count, collect(c.name)[..5] as sample_customers RETURN pc.name as component, pc.type, pc.tier, usage_level, customer_count, sample_customers ORDER BY pc.tier, customer_count DESC
+
+European enterprise support teams:
+- Question: "Find teams that can support European Enterprise customers"
+- Query: MATCH (t:Team)-[sr:SUPPORTS_REGION]->(c:Client) WHERE c.primary_region = 'EMEA' AND c.tier = 'enterprise' WITH t, count(DISTINCT c) as supported_clients, collect(DISTINCT sr.coverage_hours) as coverage_hours RETURN t.id, t.name, t.department, supported_clients, coverage_hours[0] as coverage, labels(t) as labels LIMIT 25
+
+High-volume data customers:
+- Question: "Show customers processing over 10TB of data daily"
+- Query: MATCH (c:Client) WHERE c.data_volume_gb > 10000 RETURN c.id, c.name, c.industry, c.data_volume_gb, c.support_tier, c.primary_region, labels(c) as labels ORDER BY c.data_volume_gb DESC
+
+Platform component ownership:
+- Question: "Which teams own core platform components?"
+- Query: MATCH (pc:PlatformComponent {tier: 'core'})<-[:DELIVERS]-(t:Team) RETURN t.name as team, collect(pc.name) as owned_components, count(pc) as component_count ORDER BY component_count DESC
+
+Multi-cloud deployment analysis:
+- Question: "Show components deployed across multiple cloud providers"
+- Query: MATCH (pc:PlatformComponent)-[:DEPLOYED_IN]->(cr:CloudRegion) WITH pc, collect(DISTINCT cr.provider) as providers, count(DISTINCT cr.region_code) as region_count WHERE size(providers) > 1 RETURN pc.name, pc.type, providers, region_count, labels(pc) as labels ORDER BY region_count DESC
+
+Customer success coverage:
+- Question: "Analyze customer success coverage by region and tier"
+- Query: MATCH (t:Team {name: 'Customer Success'})-[sr:SUPPORTS_REGION]->(c:Client) WITH c.primary_region as region, c.tier as tier, count(c) as customer_count, avg(c.mrr) as avg_mrr RETURN region, tier, customer_count, round(avg_mrr) as avg_monthly_revenue ORDER BY region, tier
+
+Strategic tier customers by monthly revenue:
+- Question: "List Strategic customers sorted by MRR"
+- Query: MATCH (c:Client {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry, labels(c) as labels ORDER BY c.mrr DESC
+
+Customer timezone support requirements:
+- Question: "Which customers need support in Tokyo timezone?"
+- Query: MATCH (c:Client) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25
+
+Enterprise customers by data volume:
+- Question: "Show Enterprise customers by daily data processing volume"
+- Query: MATCH (c:Client {tier: 'enterprise'}) RETURN c.id, c.name, c.data_volume_gb, c.active_users, c.primary_region, labels(c) as labels ORDER BY c.data_volume_gb DESC
+
+Platform expertise mapping:
+- Question: "Find all experts for critical platform components"
+- Query: MATCH (p:Person)-[e:EXPERT_IN]->(pc:PlatformComponent {tier: 'core'}) WHERE e.expertise_level >= 4 RETURN pc.name as component, collect({name: p.name, level: e.expertise_level, office: p.location}) as experts ORDER BY pc.name
+
+Customer cloud region preferences:
+- Question: "Which customers have data in EU regions?"
+- Query: MATCH (c:Client)-[:USES_COMPONENT]->(pc:PlatformComponent)-[:DEPLOYED_IN]->(cr:CloudRegion {data_residency_zone: 'EU'}) RETURN DISTINCT c.id, c.name, c.industry, c.primary_region, collect(DISTINCT cr.region_name) as eu_regions, labels(c) as labels
+
+Regional support team availability:
+- Question: "Show teams available for APAC customer support"
+- Query: MATCH (t:Team)-[:SUPPORTS_REGION]->(c:Client {primary_region: 'APAC'}) WITH t, count(DISTINCT c) as apac_customers MATCH (p:Person)-[:MEMBER_OF]->(t) WITH t, apac_customers, count(p) as team_size RETURN t.name, t.department, apac_customers, team_size, labels(t) as labels ORDER BY apac_customers DESC
+
+Customer component usage analysis:
+- Question: "Which components are used by Financial Services customers?"
+- Query: MATCH (c:Client)-[u:USES_COMPONENT]->(pc:PlatformComponent) WHERE c.industry = 'Financial Services' WITH pc, count(c) as customer_count, collect(DISTINCT u.usage_level) as usage_levels RETURN pc.name, pc.type, pc.tier, customer_count, usage_levels ORDER BY customer_count DESC
+
+Platform experts by region:
+- Question: "Find platform experts in European offices"
+- Query: MATCH (p:Person)-[e:EXPERT_IN]->(pc:PlatformComponent), (p)-[:WORKS_AT]->(o:Office {region: 'EMEA'}) WHERE e.expertise_level >= 3 WITH o.name as office, pc.type as component_type, count(p) as expert_count RETURN office, component_type, expert_count ORDER BY office, expert_count DESC
+
+High-value customer support analysis:
+- Question: "Which teams support customers with over $1M annual value?"
+- Query: MATCH (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.annual_value > 1000000 WITH t, count(c) as high_value_customers, sum(c.annual_value) as total_value RETURN t.name, t.department, high_value_customers, total_value ORDER BY total_value DESC
+
+Component deployment cost analysis:
+- Question: "Show cloud regions used by Enterprise tier customers"
+- Query: MATCH (c:Client {tier: 'enterprise'})-[:USES_COMPONENT]->(pc:PlatformComponent)-[:DEPLOYED_IN]->(cr:CloudRegion) WITH c, collect(DISTINCT {provider: cr.provider, region: cr.region_name}) as regions RETURN c.name, c.industry, c.data_volume_gb, regions ORDER BY c.data_volume_gb DESC
 
 REMEMBER: Output ONLY the Cypher query on ONE LINE. No explanations, no additional text.

@@ -7,3 +7,6 @@ httpx
 jinja2
 python-dotenv
 faker
+redis
+pytest
+pytest-asyncio

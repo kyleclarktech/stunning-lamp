@@ -176,12 +176,40 @@ def generate_clients_data():
         else:
             tier = random.choice(["enterprise", "mid-market", "strategic"])
         
+        annual_value = random.randint(500000, 5000000) if tier == "mid-market" else random.randint(1000000, 10000000)
+        
+        # Define region and time zone mappings
+        region_timezone_map = {
+            "AMERICAS": ["America/New_York", "America/Chicago", "America/Los_Angeles", "America/Toronto"],
+            "EMEA": ["Europe/London", "Europe/Paris", "Europe/Berlin", "Africa/Johannesburg"],
+            "APAC": ["Asia/Tokyo", "Asia/Singapore", "Asia/Sydney", "Asia/Mumbai"]
+        }
+        
+        # Assign primary region based on industry and randomization
+        if client_info["industry"] == "Government" and "Federal" in client_info["name"]:
+            primary_region = "AMERICAS"
+        else:
+            primary_region = random.choice(["AMERICAS", "EMEA", "APAC"])
+        
+        # Set support tier based on client tier
+        support_tier_map = {
+            "mid-market": random.choice(["Basic", "Professional"]),
+            "enterprise": random.choice(["Professional", "Enterprise"]),
+            "strategic": "Strategic"
+        }
+        
         client = {
             "id": f"client_{i+1}",
             "name": client_info["name"],
             "industry": client_info["industry"],
             "tier": tier,
-            "annual_value": random.randint(500000, 5000000) if tier == "mid-market" else random.randint(1000000, 10000000),
+            "annual_value": annual_value,
+            "mrr": round(annual_value / 12, 2),
+            "data_volume_gb": random.randint(100, 50000),
+            "active_users": random.randint(10, 5000),
+            "support_tier": support_tier_map[tier],
+            "primary_region": primary_region,
+            "time_zone_preferences": random.sample(region_timezone_map[primary_region], k=random.randint(1, 3)),
             "relationship_start": fake.date_between(start_date='-3y', end_date='-6m').isoformat()
         }
         clients.append(client)
@@ -1940,6 +1968,98 @@ def generate_policies_data():
     
     return policies
 
+def generate_cloud_regions_data():
+    """Generate cloud region data for multi-cloud deployments"""
+    regions = []
+    
+    # Define cloud regions for major providers
+    cloud_regions = [
+        # AWS Regions
+        {"provider": "AWS", "region_code": "us-east-1", "region_name": "US East (N. Virginia)", "availability_zones": 6, "data_residency_zone": "US"},
+        {"provider": "AWS", "region_code": "us-west-2", "region_name": "US West (Oregon)", "availability_zones": 4, "data_residency_zone": "US"},
+        {"provider": "AWS", "region_code": "eu-west-1", "region_name": "EU (Ireland)", "availability_zones": 3, "data_residency_zone": "EU"},
+        {"provider": "AWS", "region_code": "eu-central-1", "region_name": "EU (Frankfurt)", "availability_zones": 3, "data_residency_zone": "EU"},
+        {"provider": "AWS", "region_code": "ap-southeast-1", "region_name": "Asia Pacific (Singapore)", "availability_zones": 3, "data_residency_zone": "APAC"},
+        {"provider": "AWS", "region_code": "ap-northeast-1", "region_name": "Asia Pacific (Tokyo)", "availability_zones": 4, "data_residency_zone": "APAC"},
+        
+        # GCP Regions
+        {"provider": "GCP", "region_code": "us-central1", "region_name": "Iowa", "availability_zones": 4, "data_residency_zone": "US"},
+        {"provider": "GCP", "region_code": "us-east1", "region_name": "South Carolina", "availability_zones": 3, "data_residency_zone": "US"},
+        {"provider": "GCP", "region_code": "europe-west1", "region_name": "Belgium", "availability_zones": 3, "data_residency_zone": "EU"},
+        {"provider": "GCP", "region_code": "europe-west4", "region_name": "Netherlands", "availability_zones": 3, "data_residency_zone": "EU"},
+        {"provider": "GCP", "region_code": "asia-southeast1", "region_name": "Singapore", "availability_zones": 3, "data_residency_zone": "APAC"},
+        {"provider": "GCP", "region_code": "asia-northeast1", "region_name": "Tokyo", "availability_zones": 3, "data_residency_zone": "APAC"},
+        
+        # Azure Regions
+        {"provider": "Azure", "region_code": "eastus", "region_name": "East US", "availability_zones": 3, "data_residency_zone": "US"},
+        {"provider": "Azure", "region_code": "westus2", "region_name": "West US 2", "availability_zones": 3, "data_residency_zone": "US"},
+        {"provider": "Azure", "region_code": "northeurope", "region_name": "North Europe", "availability_zones": 3, "data_residency_zone": "EU"},
+        {"provider": "Azure", "region_code": "westeurope", "region_name": "West Europe", "availability_zones": 3, "data_residency_zone": "EU"},
+        {"provider": "Azure", "region_code": "southeastasia", "region_name": "Southeast Asia", "availability_zones": 3, "data_residency_zone": "APAC"},
+        {"provider": "Azure", "region_code": "japaneast", "region_name": "Japan East", "availability_zones": 3, "data_residency_zone": "APAC"}
+    ]
+    
+    for i, region in enumerate(cloud_regions):
+        regions.append({
+            "id": f"region_{i+1}",
+            "provider": region["provider"],
+            "region_code": region["region_code"],
+            "region_name": region["region_name"],
+            "availability_zones": region["availability_zones"],
+            "data_residency_zone": region["data_residency_zone"]
+        })
+    
+    return regions
+
+def generate_platform_components_data():
+    """Generate platform component data for expertise mapping"""
+    components = []
+    
+    # Define platform components with their properties
+    platform_components = [
+        # Core Services
+        {"name": "API Gateway", "type": "service", "tier": "core", "owner_team_id": "team_14", "documentation_url": "https://docs.company.com/api-gateway"},
+        {"name": "Authentication Service", "type": "service", "tier": "core", "owner_team_id": "team_6", "documentation_url": "https://docs.company.com/auth-service"},
+        {"name": "Data Ingestion Pipeline", "type": "pipeline", "tier": "core", "owner_team_id": "team_1", "documentation_url": "https://docs.company.com/data-ingestion"},
+        {"name": "Stream Processing Engine", "type": "pipeline", "tier": "core", "owner_team_id": "team_1", "documentation_url": "https://docs.company.com/stream-processing"},
+        {"name": "Batch Processing Framework", "type": "pipeline", "tier": "core", "owner_team_id": "team_1", "documentation_url": "https://docs.company.com/batch-processing"},
+        
+        # Data Storage
+        {"name": "Data Lake Storage", "type": "database", "tier": "core", "owner_team_id": "team_5", "documentation_url": "https://docs.company.com/data-lake"},
+        {"name": "Time Series Database", "type": "database", "tier": "core", "owner_team_id": "team_5", "documentation_url": "https://docs.company.com/tsdb"},
+        {"name": "Metadata Store", "type": "database", "tier": "supporting", "owner_team_id": "team_5", "documentation_url": "https://docs.company.com/metadata-store"},
+        {"name": "Feature Store", "type": "database", "tier": "core", "owner_team_id": "team_4", "documentation_url": "https://docs.company.com/feature-store"},
+        
+        # Analytics & ML
+        {"name": "Analytics Engine", "type": "service", "tier": "core", "owner_team_id": "team_2", "documentation_url": "https://docs.company.com/analytics-engine"},
+        {"name": "ML Inference Service", "type": "service", "tier": "core", "owner_team_id": "team_4", "documentation_url": "https://docs.company.com/ml-inference"},
+        {"name": "Model Training Pipeline", "type": "pipeline", "tier": "supporting", "owner_team_id": "team_4", "documentation_url": "https://docs.company.com/model-training"},
+        {"name": "Data Visualization Service", "type": "service", "tier": "core", "owner_team_id": "team_2", "documentation_url": "https://docs.company.com/visualization"},
+        
+        # Customer-Facing
+        {"name": "Customer Portal", "type": "service", "tier": "core", "owner_team_id": "team_14", "documentation_url": "https://docs.company.com/customer-portal"},
+        {"name": "Admin Dashboard", "type": "service", "tier": "supporting", "owner_team_id": "team_14", "documentation_url": "https://docs.company.com/admin-dashboard"},
+        {"name": "Reporting Service", "type": "service", "tier": "core", "owner_team_id": "team_2", "documentation_url": "https://docs.company.com/reporting"},
+        
+        # Infrastructure & Monitoring
+        {"name": "Monitoring & Alerting", "type": "service", "tier": "supporting", "owner_team_id": "team_5", "documentation_url": "https://docs.company.com/monitoring"},
+        {"name": "Log Aggregation Service", "type": "service", "tier": "supporting", "owner_team_id": "team_5", "documentation_url": "https://docs.company.com/logging"},
+        {"name": "CI/CD Pipeline", "type": "pipeline", "tier": "supporting", "owner_team_id": "team_5", "documentation_url": "https://docs.company.com/cicd"},
+        {"name": "Service Mesh", "type": "service", "tier": "supporting", "owner_team_id": "team_5", "documentation_url": "https://docs.company.com/service-mesh"}
+    ]
+    
+    for i, component in enumerate(platform_components):
+        components.append({
+            "id": f"component_{i+1}",
+            "name": component["name"],
+            "type": component["type"],
+            "tier": component["tier"],
+            "owner_team_id": component["owner_team_id"],
+            "documentation_url": component["documentation_url"]
+        })
+    
+    return components
+
 def generate_relationships():
     """Generate relationships between entities"""
     people = generate_people_data()
@@ -1959,6 +2079,8 @@ def generate_relationships():
     incidents = generate_incidents_data()
     visas = generate_visas_data()
     metrics = generate_metrics_data()
+    cloud_regions = generate_cloud_regions_data()
+    platform_components = generate_platform_components_data()
     
     relationships = {
         "person_team_memberships": [],
@@ -1982,7 +2104,11 @@ def generate_relationships():
         "person_on_call": [],
         "person_incident_response": [],
         "team_handoffs": [],
-        "person_visas": []
+        "person_visas": [],
+        "team_supports_region": [],
+        "component_deployed_in": [],
+        "client_uses_component": [],
+        "person_expert_in": []
     }
     
     # Assign people to teams (each person belongs to 1 primary team)
@@ -2763,6 +2889,120 @@ def generate_relationships():
                         "sponsor": "Self"
                     })
     
+    # Generate SUPPORTS_REGION relationships (Team -> Client)
+    # Customer Success and Professional Services teams support clients based on regions
+    support_teams = [t for t in teams if t["department"] in ["Customer Success", "Professional Services", "Solutions Architecture"]]
+    for team in support_teams:
+        # Each support team covers specific regions
+        if "APAC" in team["name"]:
+            supported_regions = ["APAC"]
+        elif "EMEA" in team["name"]:
+            supported_regions = ["EMEA"]
+        elif "Americas" in team["name"]:
+            supported_regions = ["AMERICAS"]
+        else:
+            # General teams support all regions but with varying coverage
+            supported_regions = ["AMERICAS", "EMEA", "APAC"]
+        
+        # Create relationships for clients in supported regions
+        for client in clients:
+            if client["primary_region"] in supported_regions:
+                coverage_hours = {
+                    "AMERICAS": "8:00-20:00 EST",
+                    "EMEA": "8:00-20:00 GMT",
+                    "APAC": "8:00-20:00 JST"
+                }.get(client["primary_region"], "24/7")
+                
+                relationships["team_supports_region"].append({
+                    "team_id": team["id"],
+                    "client_id": client["id"],
+                    "coverage_hours": coverage_hours
+                })
+    
+    # Generate DEPLOYED_IN relationships (PlatformComponent -> CloudRegion)
+    # Deploy components across multiple regions for redundancy
+    for component in platform_components:
+        # Core components deployed in all major regions
+        if component["tier"] == "core":
+            num_regions = random.randint(6, 12)
+        else:
+            num_regions = random.randint(2, 6)
+        
+        deployed_regions = random.sample(cloud_regions, num_regions)
+        for region in deployed_regions:
+            relationships["component_deployed_in"].append({
+                "component_id": component["id"],
+                "region_id": region["id"]
+            })
+    
+    # Generate USES_COMPONENT relationships (Client -> PlatformComponent)
+    for client in clients:
+        # All clients use core components
+        core_components = [c for c in platform_components if c["tier"] == "core"]
+        for component in core_components:
+            usage_level = "high" if client["tier"] == "strategic" else random.choice(["low", "medium", "high"])
+            relationships["client_uses_component"].append({
+                "client_id": client["id"],
+                "component_id": component["id"],
+                "usage_level": usage_level
+            })
+        
+        # Strategic and enterprise clients use additional components
+        if client["tier"] in ["strategic", "enterprise"]:
+            supporting_components = [c for c in platform_components if c["tier"] == "supporting"]
+            num_supporting = random.randint(2, len(supporting_components))
+            for component in random.sample(supporting_components, num_supporting):
+                relationships["client_uses_component"].append({
+                    "client_id": client["id"],
+                    "component_id": component["id"],
+                    "usage_level": random.choice(["low", "medium"])
+                })
+    
+    # Generate EXPERT_IN relationships (Person -> PlatformComponent)
+    # Engineers and architects have expertise in specific components
+    technical_people = [p for p in people if any(role in p["role"] for role in 
+                       ["Engineer", "Architect", "Developer", "Scientist", "DevOps", "SRE"])]
+    
+    for person in technical_people:
+        # Number of components they're expert in depends on seniority
+        if "Principal" in person["role"] or "Staff" in person["role"]:
+            num_expertises = random.randint(3, 6)
+        elif "Senior" in person["role"]:
+            num_expertises = random.randint(2, 4)
+        else:
+            num_expertises = random.randint(1, 2)
+        
+        # Select components based on their role/department
+        if "Data" in person["department"]:
+            relevant_components = [c for c in platform_components if 
+                                 any(word in c["name"] for word in ["Data", "Pipeline", "Lake", "Stream", "Batch"])]
+        elif "ML" in person["role"] or "Data Science" in person["department"]:
+            relevant_components = [c for c in platform_components if 
+                                 any(word in c["name"] for word in ["ML", "Model", "Feature", "Analytics"])]
+        elif "Infrastructure" in person["department"] or "DevOps" in person["role"]:
+            relevant_components = [c for c in platform_components if 
+                                 c["type"] in ["database", "service"] or "Infrastructure" in c["name"]]
+        else:
+            relevant_components = platform_components
+        
+        if relevant_components:
+            expert_components = random.sample(relevant_components, 
+                                           min(num_expertises, len(relevant_components)))
+            for component in expert_components:
+                # Expertise level based on seniority
+                if "Principal" in person["role"] or "Staff" in person["role"]:
+                    expertise_level = random.randint(4, 5)
+                elif "Senior" in person["role"]:
+                    expertise_level = random.randint(3, 4)
+                else:
+                    expertise_level = random.randint(1, 3)
+                
+                relationships["person_expert_in"].append({
+                    "person_id": person["id"],
+                    "component_id": component["id"],
+                    "expertise_level": expertise_level
+                })
+    
     return {
         "people": people,
         "teams": teams,
@@ -2781,6 +3021,8 @@ def generate_relationships():
         "incidents": incidents,
         "visas": visas,
         "metrics": metrics,
+        "cloud_regions": cloud_regions,
+        "platform_components": platform_components,
         "relationships": relationships
     }
 
@@ -2821,6 +3063,12 @@ def seed_database(falkor_client):
         db.query("CREATE INDEX ON :Compliance(status)")
         db.query("CREATE INDEX ON :DataResidency(zone)")
         db.query("CREATE INDEX ON :DataResidency(countries)")
+        db.query("CREATE INDEX ON :CloudRegion(provider)")
+        db.query("CREATE INDEX ON :CloudRegion(region_code)")
+        db.query("CREATE INDEX ON :CloudRegion(data_residency_zone)")
+        db.query("CREATE INDEX ON :PlatformComponent(name)")
+        db.query("CREATE INDEX ON :PlatformComponent(type)")
+        db.query("CREATE INDEX ON :PlatformComponent(tier)")
         db.query("CREATE INDEX ON :Schedule(type)")
         db.query("CREATE INDEX ON :Schedule(coverage_type)")
         db.query("CREATE INDEX ON :Schedule(region)")
@@ -2911,12 +3159,20 @@ def seed_database(falkor_client):
     # Create nodes for clients
     for client in data["clients"]:
         escaped_name = client['name'].replace("'", "''")
+        # Convert time_zone_preferences list to string
+        time_zones_str = ','.join(client['time_zone_preferences'])
         query = f"""CREATE (c:Client {{
             id: '{client['id']}',
             name: '{escaped_name}',
             industry: '{client['industry']}',
             tier: '{client['tier']}',
             annual_value: {client['annual_value']},
+            mrr: {client['mrr']},
+            data_volume_gb: {client['data_volume_gb']},
+            active_users: {client['active_users']},
+            support_tier: '{client['support_tier']}',
+            primary_region: '{client['primary_region']}',
+            time_zone_preferences: '{time_zones_str}',
             relationship_start: '{client['relationship_start']}'
         }})"""
         db.query(query)
@@ -2952,6 +3208,32 @@ def seed_database(falkor_client):
             end_date: '{sprint['end_date']}',
             status: '{sprint['status']}',
             velocity: {velocity}
+        }})"""
+        db.query(query)
+    
+    # Create nodes for cloud regions
+    for region in data["cloud_regions"]:
+        escaped_region_name = region['region_name'].replace("'", "''")
+        query = f"""CREATE (cr:CloudRegion {{
+            id: '{region['id']}',
+            provider: '{region['provider']}',
+            region_code: '{region['region_code']}',
+            region_name: '{escaped_region_name}',
+            availability_zones: {region['availability_zones']},
+            data_residency_zone: '{region['data_residency_zone']}'
+        }})"""
+        db.query(query)
+    
+    # Create nodes for platform components
+    for component in data["platform_components"]:
+        escaped_name = component['name'].replace("'", "''")
+        query = f"""CREATE (pc:PlatformComponent {{
+            id: '{component['id']}',
+            name: '{escaped_name}',
+            type: '{component['type']}',
+            tier: '{component['tier']}',
+            owner_team_id: '{component['owner_team_id']}',
+            documentation_url: '{component['documentation_url']}'
         }})"""
         db.query(query)
     
@@ -3352,6 +3634,36 @@ def seed_database(falkor_client):
                    }}]->(v)"""
         db.query(query)
     
+    # Create SUPPORTS_REGION relationships (Team -> Client)
+    for support_rel in data["relationships"]["team_supports_region"]:
+        query = f"""MATCH (t:Team {{id: '{support_rel['team_id']}'}}), (c:Client {{id: '{support_rel['client_id']}'}}) 
+                   CREATE (t)-[:SUPPORTS_REGION {{
+                       coverage_hours: '{support_rel['coverage_hours']}'
+                   }}]->(c)"""
+        db.query(query)
+    
+    # Create DEPLOYED_IN relationships (PlatformComponent -> CloudRegion)
+    for deploy_rel in data["relationships"]["component_deployed_in"]:
+        query = f"""MATCH (pc:PlatformComponent {{id: '{deploy_rel['component_id']}'}}), (cr:CloudRegion {{id: '{deploy_rel['region_id']}'}}) 
+                   CREATE (pc)-[:DEPLOYED_IN]->(cr)"""
+        db.query(query)
+    
+    # Create USES_COMPONENT relationships (Client -> PlatformComponent)
+    for uses_rel in data["relationships"]["client_uses_component"]:
+        query = f"""MATCH (c:Client {{id: '{uses_rel['client_id']}'}}), (pc:PlatformComponent {{id: '{uses_rel['component_id']}'}}) 
+                   CREATE (c)-[:USES_COMPONENT {{
+                       usage_level: '{uses_rel['usage_level']}'
+                   }}]->(pc)"""
+        db.query(query)
+    
+    # Create EXPERT_IN relationships (Person -> PlatformComponent)
+    for expert_rel in data["relationships"]["person_expert_in"]:
+        query = f"""MATCH (p:Person {{id: '{expert_rel['person_id']}'}}), (pc:PlatformComponent {{id: '{expert_rel['component_id']}'}}) 
+                   CREATE (p)-[:EXPERT_IN {{
+                       expertise_level: {expert_rel['expertise_level']}
+                   }}]->(pc)"""
+        db.query(query)
+    
     # Store summary statistics as a node
     stats = {
         "people_count": len(data["people"]),
@@ -3371,6 +3683,8 @@ def seed_database(falkor_client):
         "incidents_count": len(data["incidents"]),
         "visas_count": len(data["visas"]),
         "metrics_count": len(data["metrics"]),
+        "cloud_regions_count": len(data["cloud_regions"]),
+        "platform_components_count": len(data["platform_components"]),
         "seeded_at": datetime.now().isoformat()
     }
     
@@ -3392,6 +3706,8 @@ def seed_database(falkor_client):
         incidents_count: {stats['incidents_count']},
         visas_count: {stats['visas_count']},
         metrics_count: {stats['metrics_count']},
+        cloud_regions_count: {stats['cloud_regions_count']},
+        platform_components_count: {stats['platform_components_count']},
         seeded_at: '{stats['seeded_at']}'
     }})"""
     db.query(query)
@@ -3402,6 +3718,7 @@ def seed_database(falkor_client):
     print(f"✅ Added {stats['compliance_count']} compliance frameworks, {stats['data_residency_count']} data residency zones")
     print(f"✅ Added {stats['schedules_count']} schedules, {stats['incidents_count']} incidents")
     print(f"✅ Added {stats['visas_count']} visas, {stats['metrics_count']} performance metrics")
+    print(f"✅ Added {stats['cloud_regions_count']} cloud regions, {stats['platform_components_count']} platform components")
     print(f"✅ Created {len(data['relationships']['person_team_memberships'])} team memberships")
     print(f"✅ Created {len(data['relationships']['person_group_memberships'])} group memberships") 
     print(f"✅ Created {len(data['relationships']['team_policy_responsibilities'])} team policy responsibilities")
@@ -3424,6 +3741,10 @@ def seed_database(falkor_client):
     print(f"✅ Created {len(data['relationships']['person_incident_response'])} incident responses")
     print(f"✅ Created {len(data['relationships']['team_handoffs'])} team handoff relationships")
     print(f"✅ Created {len(data['relationships']['person_visas'])} person-visa relationships")
+    print(f"✅ Created {len(data['relationships']['team_supports_region'])} team-supports-region relationships")
+    print(f"✅ Created {len(data['relationships']['component_deployed_in'])} component-deployed-in relationships")
+    print(f"✅ Created {len(data['relationships']['client_uses_component'])} client-uses-component relationships")
+    print(f"✅ Created {len(data['relationships']['person_expert_in'])} person-expert-in relationships")
     
     return data
 

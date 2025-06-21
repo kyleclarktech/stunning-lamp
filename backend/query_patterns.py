@@ -25,6 +25,8 @@ SEMANTIC_MAPPINGS = {
     "personnel": {"type": "all_people", "description": "All Person nodes"},
     "team members": {"type": "all_people", "description": "All Person nodes"},
     "colleagues": {"type": "all_people", "description": "All Person nodes"},
+    "employees work for the company": {"type": "all_people", "description": "All Person nodes"},
+    "staff members": {"type": "all_people", "description": "All Person nodes"},
     
     # Role categories
     "developers": {"type": "role_category", "roles": ["Engineer", "Developer", "Architect"], "exclude": ["Manager", "Director", "VP"]},
@@ -79,10 +81,11 @@ class EnhancedQueryPatternMatcher:
                 name="count_semantic",
                 description="Count queries that understand semantic terms",
                 patterns=[
-                    r"how many (.+?)(?:\s+are there)?(?:\s+in the (?:company|organization))?(?:\?|$)",
-                    r"(?:what is the )?(?:total )?(?:number|count) of (.+?)(?:\?|$)",
-                    r"count (?:all )?(?:the )?(.+?)(?:\?|$)",
+                    r"how many (.+?)(?:\s+work(?:s)? for the (?:company|organization))?(?:\s+are there)?(?:\s+in the (?:company|organization))?(?:\?|$)",
+                    r"(?:what is the )?(?:total )?(?:number|count) of (.+?)(?:\s+in the (?:company|organization))?(?:\?|$)",
+                    r"count (?:all )?(?:the )?(.+?)(?:\s+in the (?:company|organization))?(?:\?|$)",
                     r"how many (.+?) do we have(?:\?|$)",
+                    r"how many (.+?) are (?:there|employed)(?:\?|$)",
                     r"(?:what's|what is) (?:the )?(?:total )?(?:employee|staff|people) count(?:\?|$)"
                 ],
                 cypher_template="SEMANTIC_COUNT",  # Special template for semantic processing

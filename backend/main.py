@@ -17,14 +17,85 @@ import logging
 from query_patterns import match_and_generate_query
 from error_handler import handle_query_error
 from streaming_utils import ResponseStreamer, StreamingFormatter, create_progress_messages
+from api.dashboard import router as dashboard_router
+from typing import Set
 
 # Load environment variables from .env file
 load_dotenv()
+
+# WebSocket Connection Manager
+class WebSocketManager:
+    def __init__(self):
+        self.active_connections: Set[WebSocket] = set()
+        self.heartbeat_tasks: dict[WebSocket, asyncio.Task] = {}
+    
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.add(websocket)
+        logging.info(f"WebSocket connected. Total connections: {len(self.active_connections)}")
+        
+        # Start heartbeat task for this connection
+        heartbeat_task = asyncio.create_task(self._heartbeat_loop(websocket))
+        self.heartbeat_tasks[websocket] = heartbeat_task
+    
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.discard(websocket)
+        
+        # Cancel heartbeat task
+        if websocket in self.heartbeat_tasks:
+            task = self.heartbeat_tasks[websocket]
+            task.cancel()
+            del self.heartbeat_tasks[websocket]
+        
+        logging.info(f"WebSocket disconnected. Total connections: {len(self.active_connections)}")
+    
+    async def _heartbeat_loop(self, websocket: WebSocket):
+        """Send periodic ping frames to keep connection alive"""
+        try:
+            while True:
+                await asyncio.sleep(30)  # Send ping every 30 seconds
+                try:
+                    # Send ping frame
+                    await websocket.send_text(json.dumps({
+                        "type": "ping",
+                        "timestamp": datetime.now().isoformat()
+                    }))
+                except Exception as e:
+                    logging.debug(f"Heartbeat failed: {e}")
+                    break
+        except asyncio.CancelledError:
+            logging.debug("Heartbeat task cancelled")
+            pass
+    
+    async def broadcast_dashboard_update(self, message: dict):
+        """Broadcast dashboard updates to all connected clients"""
+        if not self.active_connections:
+            return
+        
+        message_json = json.dumps({"type": "dashboard_update", **message})
+        disconnected = set()
+        
+        for connection in self.active_connections:
+            try:
+                await connection.send_text(message_json)
+            except Exception as e:
+                logging.warning(f"Failed to send dashboard update: {e}")
+                disconnected.add(connection)
+        
+        # Remove disconnected clients
+        for conn in disconnected:
+            self.disconnect(conn)
+
+# Initialize WebSocket manager
+manager = WebSocketManager()
 
 app = FastAPI()
 
 # Set global logging level
 logging.basicConfig(level=logging.DEBUG)
+
+# Include routers
+app.include_router(dashboard_router)
 
 # Add CORS middleware to allow frontend connections
 app.add_middleware(
@@ -178,11 +249,14 @@ async def call_ai_model(prompt_text, websocket=None, timeout=60):
                 error_content = await resp.aread()
                 logging.error(f"Ollama API returned status {resp.status_code}: {error_content.decode()}")
                 if websocket:
-                    await websocket.send_text(json.dumps({
-                        "type": "error", 
-                        "message": f"AI request failed with status {resp.status_code}",
-                        "debug": error_content.decode()
-                    }))
+                    try:
+                        await websocket.send_text(json.dumps({
+                            "type": "error", 
+                            "message": f"AI request failed with status {resp.status_code}",
+                            "debug": error_content.decode()
+                        }))
+                    except (WebSocketDisconnect, ConnectionError):
+                        logging.warning("WebSocket disconnected while sending error")
                 resp.raise_for_status() # Will raise an exception
 
             data = resp.json()
@@ -200,13 +274,19 @@ async def call_ai_model(prompt_text, websocket=None, timeout=60):
     except httpx.ReadTimeout:
         logging.error(f"Timeout error calling Ollama at {url}")
         if websocket:
-            await websocket.send_text(json.dumps({"type": "error", "message": "AI request timed out after 60 seconds."}))
+            try:
+                await websocket.send_text(json.dumps({"type": "error", "message": "AI request timed out after 60 seconds."}))
+            except (WebSocketDisconnect, ConnectionError):
+                logging.warning("WebSocket disconnected while sending timeout error")
         raise
     except Exception as e:
         tb = traceback.format_exc()
         logging.error(f"Error calling Ollama HTTP API at {url}: {e}\n{tb}")
         if websocket:
-            await websocket.send_text(json.dumps({"type": "error", "message": f"AI request failed: {e}", "debug": tb}))
+            try:
+                await websocket.send_text(json.dumps({"type": "error", "message": f"AI request failed: {e}", "debug": tb}))
+            except (WebSocketDisconnect, ConnectionError):
+                logging.warning("WebSocket disconnected while sending error")
         raise e
 
 async def get_database_context():
@@ -782,14 +862,35 @@ async def health_check():
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
+    await manager.connect(websocket)
     
     try:
         while True:
-            data = await websocket.receive_text()
-            
-            # Message received, begin processing
-            
+            try:
+                data = await websocket.receive_text()
+                
+                # Handle pong messages (client responding to our ping)
+                try:
+                    message = json.loads(data)
+                    if message.get("type") == "pong":
+                        # Client is alive, continue to next message
+                        continue
+                except json.JSONDecodeError:
+                    # Not JSON, treat as regular message
+                    pass
+                
+                # Message received, begin processing
+                
+            except asyncio.TimeoutError:
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "message": "Connection timeout while waiting for message"
+                }))
+                continue
+            except WebSocketDisconnect:
+                logging.info("WebSocket disconnected while receiving")
+                break
+                
             try:
                 
                 # Wrap the entire processing pipeline in a timeout
@@ -803,7 +904,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     return ai_response
                 
                 # Apply timeout to the entire processing pipeline
-                ai_response = await asyncio.wait_for(process_message(), timeout=60)
+                # Increased timeout to 120 seconds to handle complex queries
+                ai_response = await asyncio.wait_for(process_message(), timeout=120)
                 
                 # Parse AI model's response
                 try:
@@ -959,7 +1061,11 @@ async def websocket_endpoint(websocket: WebSocket):
                         final_response = f"**Pig Latin Translation:**\n\n{pig_latin_text}"
                 
                 # Send final response
-                await websocket.send_text(final_response)
+                try:
+                    await websocket.send_text(final_response)
+                except (WebSocketDisconnect, ConnectionError) as e:
+                    logging.warning(f"Failed to send response, client disconnected: {e}")
+                    break
                 
             except asyncio.TimeoutError:
                 await websocket.send_text(json.dumps({
@@ -998,7 +1104,27 @@ async def websocket_endpoint(websocket: WebSocket):
                 }))
             
     except WebSocketDisconnect:
+        manager.disconnect(websocket)
         print("Client disconnected")
+
+async def broadcast_dashboard_update(update_type: str, data: dict = None):
+    """
+    Broadcast dashboard updates to all connected WebSocket clients
+    
+    Args:
+        update_type: Type of update (e.g., 'incidents', 'metrics', 'teams')
+        data: Optional data to include with the update
+    """
+    message = {
+        "update_type": update_type,
+        "timestamp": datetime.utcnow().isoformat(),
+        "data": data or {}
+    }
+    await manager.broadcast_dashboard_update(message)
+
+# Example usage in other parts of the code:
+# await broadcast_dashboard_update("incidents", {"new_incident": incident_data})
+# await broadcast_dashboard_update("metrics", {"updated_metrics": metrics_data})
 
 if __name__ == "__main__":
     import uvicorn
