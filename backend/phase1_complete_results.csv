@@ -1,0 +1,10 @@
+Model,Avg_Time,Success_Rate,VRAM_Usage,Overall_Score
+phi4:14b,3.85s,0%,10875MB,10
+granite3.3:8b,3.29s,0%,-4078MB,3
+granite3.3:8b-largectx,3.31s,0%,1942MB,16
+granite-code:8b,1.87s,0%,6312MB,17
+deepseek-coder:1.3b,0.85s,0%,2616MB,27
+codeqwen:7b,2.95s,0%,-1648MB,-21
+mistral:7b,2.03s,0%,5625MB,16
+llama3.2:3b,1.10s,0%,-1810MB,-6
+phi3-mini:3.8b,0.02s,0%,10MB,59

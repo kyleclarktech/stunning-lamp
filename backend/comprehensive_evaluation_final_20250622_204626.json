@@ -1,0 +1,24 @@
+{
+  "evaluation_date": "2025-06-22T20:46:26.753580",
+  "models_evaluated": [
+    "deepseek-coder:1.3b",
+    "llama3.2:3b",
+    "qwen2.5-coder:7b"
+  ],
+  "total_test_queries": 27,
+  "results": [
+    {
+      "model": "deepseek-coder:1.3b",
+      "error": "division by zero"
+    },
+    {
+      "model": "llama3.2:3b",
+      "error": "division by zero"
+    },
+    {
+      "model": "qwen2.5-coder:7b",
+      "error": "division by zero"
+    }
+  ],
+  "rankings": []
+}

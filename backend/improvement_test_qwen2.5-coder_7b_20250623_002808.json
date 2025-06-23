@@ -1,0 +1,966 @@
+{
+  "model": "qwen2.5-coder:7b",
+  "available": true,
+  "baseline_success_rate": 11.11111111111111,
+  "improved_success_rate": 22.22222222222222,
+  "improvement_percentage": 11.11111111111111,
+  "baseline_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.019065856933594,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.023868560791016,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 4.650852680206299,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3527135848999023,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.356919765472412,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3441028594970703,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3506693840026855,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 4.265456676483154,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.358750820159912,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3623621463775635,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3489904403686523,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3472609519958496,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3660521507263184,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3393607139587402,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.338848829269409,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3503623008728027,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 4.311331510543823,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3755085468292236,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Show me the important people",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.300032138824463,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.349780797958374,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.351128578186035,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3506832122802734,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.349026679992676,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 2.8362035751342773,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.348388910293579,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3558528423309326,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    },
+    {
+      "query": "Find team leads",
+      "model": "qwen2.5-coder:7b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 4.954103946685791,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0
+    }
+  ],
+  "improved_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 0.16058945655822754,
+      "generation_error": "HTTP 500",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 0.16058945655822754
+      }
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 0.21346497535705566,
+      "generation_error": "HTTP 500",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 0.21346497535705566
+      }
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.766481399536133,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0020415782928466797,
+        "generation_time": 3.766481399536133
+      }
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 2.8308401107788086,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0014002323150634766,
+        "generation_time": 2.8308401107788086
+      }
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3545737266540527,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.001524209976196289,
+        "generation_time": 3.3545737266540527
+      }
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.350827693939209,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0016002655029296875,
+        "generation_time": 3.350827693939209
+      }
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+      "generation_time": 3.1217710971832275,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0016579627990722656,
+        "generation_time": 3.1217710971832275
+      }
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+      "generation_time": 3.1238608360290527,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0012040138244628906,
+        "generation_time": 3.1238608360290527
+      }
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3550519943237305,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0012252330780029297,
+        "generation_time": 3.3550519943237305
+      }
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 2.8276538848876953,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0014333724975585938,
+        "generation_time": 2.8276538848876953
+      }
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3538122177124023,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.001251220703125,
+        "generation_time": 3.3538122177124023
+      }
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 4.27854585647583,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0014371871948242188,
+        "generation_time": 4.27854585647583
+      }
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3506879806518555,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0012547969818115234,
+        "generation_time": 3.3506879806518555
+      }
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3520426750183105,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.001329183578491211,
+        "generation_time": 3.3520426750183105
+      }
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3403449058532715,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0016601085662841797,
+        "generation_time": 3.3403449058532715
+      }
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3520267009735107,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.001561880111694336,
+        "generation_time": 3.3520267009735107
+      }
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 2.860159158706665,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0013363361358642578,
+        "generation_time": 2.860159158706665
+      }
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 2.8168187141418457,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0013501644134521484,
+        "generation_time": 2.8168187141418457
+      }
+    },
+    {
+      "query": "Show me the important people",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3273980617523193,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0011284351348876953,
+        "generation_time": 3.3273980617523193
+      }
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.352388620376587,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0010933876037597656,
+        "generation_time": 3.352388620376587
+      }
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.7784061431884766,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0011415481567382812,
+        "generation_time": 3.7784061431884766
+      }
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3578357696533203,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.001348733901977539,
+        "generation_time": 3.3578357696533203
+      }
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+      "generation_time": 3.121981143951416,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz = 'Asia/Tokyo') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0010564327239990234,
+        "generation_time": 3.121981143951416
+      }
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 2.834564447402954,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0011725425720214844,
+        "generation_time": 2.834564447402954
+      }
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.349203109741211,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0011980533599853516,
+        "generation_time": 3.349203109741211
+      }
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 4.270700693130493,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.001176595687866211,
+        "generation_time": 4.270700693130493
+      }
+    },
+    {
+      "query": "Find team leads",
+      "model": "qwen2.5-coder:7b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "processed_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+      "generation_time": 3.3027336597442627,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {primary_region: 'APAC'}) WHERE ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/' OR tz STARTS WITH 'Australia/') RETURN c.id, c.name, c.support_tier, c.primary_region, c.time_zone_preferences, c.active_users, labels(c) as labels LIMIT 25",
+        "processed_query": "",
+        "execution_time": 0.0012023448944091797,
+        "generation_time": 3.3027336597442627
+      }
+    }
+  ],
+  "timestamp": "2025-06-23T00:28:08.957280"
+}

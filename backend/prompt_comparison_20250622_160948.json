@@ -1,0 +1,205 @@
+{
+  "timestamp": "20250622_160948",
+  "simple": {
+    "configuration": "simple",
+    "results": [
+      {
+        "query": "Who manages the data team?",
+        "cypher": null,
+        "time": 2.384185791015625e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "List all compliance policies",
+        "cypher": null,
+        "time": 6.198883056640625e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Find people with Python skills",
+        "cypher": null,
+        "time": 7.62939453125e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "What are the critical security policies and who's responsible for them?",
+        "cypher": null,
+        "time": 5.245208740234375e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Find all senior engineers in Europe who know React and TypeScript",
+        "cypher": null,
+        "time": 6.198883056640625e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Which teams are working on customer-facing projects?",
+        "cypher": null,
+        "time": 7.867813110351562e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Show me the org structure",
+        "cypher": null,
+        "time": 6.4373016357421875e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Who should I talk to about data privacy?",
+        "cypher": null,
+        "time": 5.4836273193359375e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "What's our compliance status?",
+        "cypher": null,
+        "time": 8.106231689453125e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "xyz123 random query",
+        "cypher": null,
+        "time": 6.4373016357421875e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Find",
+        "cypher": null,
+        "time": 8.344650268554688e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Help with compliance and security policies for GDPR",
+        "cypher": null,
+        "time": 8.344650268554688e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      }
+    ],
+    "summary": {
+      "total_queries": 12,
+      "valid_queries": 0,
+      "success_rate": 0.0,
+      "average_time": 6.556510925292969e-06,
+      "average_confidence": 0,
+      "errors": 12
+    }
+  },
+  "complex": {
+    "configuration": "complex",
+    "results": [
+      {
+        "query": "Who manages the data team?",
+        "cypher": null,
+        "time": 5.245208740234375e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "List all compliance policies",
+        "cypher": null,
+        "time": 9.059906005859375e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Find people with Python skills",
+        "cypher": null,
+        "time": 1.0013580322265625e-05,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "What are the critical security policies and who's responsible for them?",
+        "cypher": null,
+        "time": 1.8596649169921875e-05,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Find all senior engineers in Europe who know React and TypeScript",
+        "cypher": null,
+        "time": 7.152557373046875e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Which teams are working on customer-facing projects?",
+        "cypher": null,
+        "time": 6.198883056640625e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Show me the org structure",
+        "cypher": null,
+        "time": 8.344650268554688e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Who should I talk to about data privacy?",
+        "cypher": null,
+        "time": 7.62939453125e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "What's our compliance status?",
+        "cypher": null,
+        "time": 6.198883056640625e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "xyz123 random query",
+        "cypher": null,
+        "time": 7.3909759521484375e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Find",
+        "cypher": null,
+        "time": 9.059906005859375e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      },
+      {
+        "query": "Help with compliance and security policies for GDPR",
+        "cypher": null,
+        "time": 6.9141387939453125e-06,
+        "valid": false,
+        "error": "'IntentProcessor' object has no attribute 'analyze_intent'"
+      }
+    ],
+    "summary": {
+      "total_queries": 12,
+      "valid_queries": 0,
+      "success_rate": 0.0,
+      "average_time": 8.4837277730306e-06,
+      "average_confidence": 0,
+      "errors": 12
+    }
+  },
+  "comparison": {
+    "simple_success_rate": 0.0,
+    "complex_success_rate": 0.0,
+    "simple_avg_time": 6.556510925292969e-06,
+    "complex_avg_time": 8.4837277730306e-06,
+    "simple_avg_confidence": 0,
+    "complex_avg_confidence": 0
+  }
+}

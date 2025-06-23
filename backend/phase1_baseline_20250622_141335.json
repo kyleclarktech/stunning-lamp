@@ -1,0 +1,106 @@
+{
+  "phase": 1,
+  "timestamp": "2025-06-22T14:09:54.508946",
+  "models_tested": [
+    {
+      "model": "phi4:14b",
+      "config": {
+        "name": "phi4:14b",
+        "priority": 1,
+        "type": "general"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "granite3.3:8b",
+      "config": {
+        "name": "granite3.3:8b",
+        "priority": 1,
+        "type": "general"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "granite3.3:8b-largectx",
+      "config": {
+        "name": "granite3.3:8b-largectx",
+        "priority": 1,
+        "type": "general"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "qwen2.5-coder:7b",
+      "config": {
+        "name": "qwen2.5-coder:7b",
+        "priority": 2,
+        "type": "coding"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "granite-code:8b",
+      "config": {
+        "name": "granite-code:8b",
+        "priority": 2,
+        "type": "coding"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "deepseek-coder:1.3b",
+      "config": {
+        "name": "deepseek-coder:1.3b",
+        "priority": 2,
+        "type": "coding"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "codeqwen:7b",
+      "config": {
+        "name": "codeqwen:7b",
+        "priority": 2,
+        "type": "coding"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "mistral:7b",
+      "config": {
+        "name": "mistral:7b",
+        "priority": 3,
+        "type": "general"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    },
+    {
+      "model": "llama3.2:3b",
+      "config": {
+        "name": "llama3.2:3b",
+        "priority": 3,
+        "type": "general"
+      },
+      "available": false,
+      "skipped": true,
+      "error": "Failed to pull model"
+    }
+  ],
+  "summary": {}
+}

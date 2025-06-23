@@ -1,0 +1,199 @@
+# Example GitHub Actions workflow integrating Claude Code
+# This demonstrates how to use Claude Code in CI/CD pipelines
+
+name: Claude Code Automated Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  code-review:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install Claude Code
+        run: |
+          # Note: This is a hypothetical installation step
+          # Actual installation would depend on Claude Code distribution method
+          npm install -g @anthropic/claude-code
+      
+      - name: Analyze Changed Files
+        id: analyze
+        run: |
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(py|js|ts)$' || true)
+          
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No code files changed"
+            exit 0
+          fi
+          
+          # Analyze each changed file
+          for file in $CHANGED_FILES; do
+            echo "Analyzing $file..."
+            
+            # Run Claude Code analysis
+            claude --print --output-format json \
+              --dangerously-skip-permissions \
+              --allowedTools "Read,Grep" \
+              "Review the file $file for code quality, potential bugs, and suggest improvements" \
+              > "analysis_${file//\//_}.json"
+          done
+          
+      - name: Security Scan
+        run: |
+          claude --print --output-format json \
+            --dangerously-skip-permissions \
+            --allowedTools "Read,Grep" \
+            "Scan all Python files for potential security vulnerabilities like SQL injection, XSS, or hardcoded secrets" \
+            | jq -r '.result' > security_report.md
+      
+      - name: Generate PR Comment
+        run: |
+          # Combine all analyses into a single report
+          echo "## Claude Code Review Report" > pr_comment.md
+          echo "" >> pr_comment.md
+          
+          # Add file analyses
+          for analysis in analysis_*.json; do
+            if [ -f "$analysis" ]; then
+              filename=$(echo $analysis | sed 's/analysis_//;s/.json$//' | tr '_' '/')
+              result=$(jq -r '.result' < "$analysis" | head -20)
+              
+              echo "### $filename" >> pr_comment.md
+              echo "$result" >> pr_comment.md
+              echo "" >> pr_comment.md
+            fi
+          done
+          
+          # Add security report
+          if [ -f security_report.md ]; then
+            echo "### Security Analysis" >> pr_comment.md
+            cat security_report.md >> pr_comment.md
+          fi
+          
+      - name: Post PR Comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const comment = fs.readFileSync('pr_comment.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  documentation-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check Documentation Coverage
+        run: |
+          # Check if new functions have documentation
+          claude --print --output-format json \
+            --dangerously-skip-permissions \
+            --allowedTools "Read,Grep" \
+            "Find all Python functions without docstrings in the backend directory" \
+            > undocumented_functions.json
+          
+          # Generate documentation suggestions
+          if [ $(jq -r '.result' undocumented_functions.json | wc -l) -gt 1 ]; then
+            claude --print \
+              --dangerously-skip-permissions \
+              --allowedTools "Read,Write" \
+              "Generate docstrings for the undocumented functions found" \
+              > suggested_docs.md
+          fi
+
+  test-generation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Generate Missing Tests
+        run: |
+          # Find functions without tests
+          claude --print --output-format json \
+            --dangerously-skip-permissions \
+            --allowedTools "Read,Grep" \
+            "Identify Python functions in backend/ that don't have corresponding tests" \
+            | jq -r '.result' > missing_tests.txt
+          
+          # Generate test suggestions
+          if [ -s missing_tests.txt ]; then
+            claude --print \
+              --dangerously-skip-permissions \
+              "Generate pytest test cases for the functions listed in missing_tests.txt" \
+              > suggested_tests.py
+          fi
+
+  performance-analysis:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Analyze Performance
+        run: |
+          # Check for performance anti-patterns
+          claude --print --output-format json \
+            --dangerously-skip-permissions \
+            --allowedTools "Read,Grep" \
+            "Analyze Python files for performance anti-patterns like N+1 queries, inefficient loops, or blocking I/O in async functions" \
+            > performance_analysis.json
+          
+          # Extract and format results
+          jq -r '.result' performance_analysis.json > performance_report.md
+
+# Example: Pre-commit hook using Claude Code
+# Save as .git/hooks/pre-commit
+
+#!/bin/bash
+# pre-commit hook using Claude Code
+
+echo "Running Claude Code pre-commit checks..."
+
+# Check for sensitive data
+sensitive_check=$(claude --print --output-format json \
+  --dangerously-skip-permissions \
+  --allowedTools "Grep" \
+  "Check staged files for potential secrets, API keys, or passwords" \
+  2>/dev/null)
+
+if echo "$sensitive_check" | jq -r '.result' | grep -i "found\|detected" > /dev/null; then
+  echo "WARNING: Potential sensitive data detected!"
+  echo "$sensitive_check" | jq -r '.result'
+  read -p "Continue anyway? (y/N) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 1
+  fi
+fi
+
+# Quick code quality check
+claude --print \
+  --dangerously-skip-permissions \
+  --allowedTools "Read" \
+  "Do a quick check of staged Python files for obvious bugs or issues" \
+  > /tmp/code_check.txt
+
+if grep -i "error\|bug\|issue" /tmp/code_check.txt > /dev/null; then
+  echo "Potential issues found:"
+  cat /tmp/code_check.txt
+  read -p "Continue anyway? (y/N) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    exit 1
+  fi
+fi
+
+echo "Pre-commit checks passed!"

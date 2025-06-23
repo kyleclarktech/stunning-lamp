@@ -1,0 +1,309 @@
+{
+  "timestamp": "20250622_224746",
+  "model": "granite3.3:8b-largectx",
+  "success_rate": 68.42105263157895,
+  "baseline_rate": 70.4,
+  "improvement": -1.9789473684210606,
+  "results": [
+    {
+      "query": "Find people whose names start with 'john' (case insensitive)",
+      "success": false,
+      "improvements_applied": [],
+      "error": "errMsg: Invalid input 'I': expected LOAD CSV line: 2, column: 24, offset: 40 errCtx: WHERE toLower(p.name) LIKE 'john%' errCtxOffset: 23",
+      "execution_time": 0,
+      "generated_query": "MATCH (p:Person)\nWHERE toLower(p.name) LIKE 'john%'\nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 100",
+      "processed_query": "MATCH (p:Person)\nWHERE toLower(p.name) LIKE 'john%'\nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 100",
+      "validation": {
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "query": "Show employees with lowercase role containing 'engineer'",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.0065708160400390625,
+      "generated_query": "MATCH (p:Person)\n  WHERE toLower(p.role) CONTAINS 'engineer'\n  RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\n  LIMIT 100;",
+      "processed_query": "MATCH (p:Person)\n  WHERE toLower(p.role) CONTAINS 'engineer'\n  RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\n  LIMIT 100",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "List teams where the department name in uppercase is 'ENGINEERING'",
+      "success": true,
+      "improvements_applied": [],
+      "error": null,
+      "execution_time": 0.0013127326965332031,
+      "generated_query": "MATCH (t:Team)\n  WHERE toLower(t.department) = 'engineering'\n  RETURN t.name AS Team_Name LIMIT 100",
+      "processed_query": "MATCH (t:Team)\n  WHERE toLower(t.department) = 'engineering'\n  RETURN t.name AS Team_Name LIMIT 100",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "List all employees; show their departments",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.004940032958984375,
+      "generated_query": "MATCH (p:Person) \nRETURN p.id AS EmployeeID, p.name AS Name, p.email AS Email, p.department AS Department, p.role AS Role, p.seniority AS Seniority, p.location AS Location, p.timezone AS Timezone, p.manager_id AS ManagerID, p.hire_date AS HireDate\nLIMIT 100;",
+      "processed_query": "MATCH (p:Person) \nRETURN p.id AS EmployeeID, p.name AS Name, p.email AS Email, p.department AS Department, p.role AS Role, p.seniority AS Seniority, p.location AS Location, p.timezone AS Timezone, p.manager_id AS ManagerID, p.hire_date AS HireDate\nLIMIT 100",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "Find all teams in engineering; count them",
+      "success": true,
+      "improvements_applied": [],
+      "error": null,
+      "execution_time": 0.001470327377319336,
+      "generated_query": "MATCH (t:Team)\nWHERE toLower(t.focus) CONTAINS 'engineering'\nRETURN count(distinct t) as team_count, collect(t.name) as team_names LIMIT 10",
+      "processed_query": "MATCH (t:Team)\nWHERE toLower(t.focus) CONTAINS 'engineering'\nRETURN count(distinct t) as team_count, collect(t.name) as team_names LIMIT 10",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "Show teams where count of members is greater than 10",
+      "success": false,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": "Unable to resolve filtered alias '(t)-[:MEMBER_OF]->()'",
+      "execution_time": 0,
+      "generated_query": "MATCH (t:Team)\nWHERE size((t)-[:MEMBER_OF]->()) > 10\nWITH t\nRETURN t.name AS Team, count((t)-[:MEMBER_OF]->()) AS MemberCount LIMIT 10;",
+      "processed_query": "MATCH (t:Team)\nWHERE size((t)-[:MEMBER_OF]->()) > 10\nWITH t\nRETURN t.name AS Team, count((t)-[:MEMBER_OF]->()) AS MemberCount LIMIT 10",
+      "validation": {
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "query": "Find departments where average salary is above 100000",
+      "success": false,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": "errMsg: Invalid input '(': expected '-' or '[' line: 1, column: 43, offset: 42 errCtx: MATCH (d:Person)-[:WORKS_AT]->(o:Office)<-(:Department) errCtxOffset: 42",
+      "execution_time": 0,
+      "generated_query": "MATCH (d:Person)-[:WORKS_AT]->(o:Office)<-(:Department)\n  WITH d, o.name as department, d.salary\n  RETURN department, avg(d.salary)\n  WHERE avg(d.salary) > 100000\n  LIMIT 10;",
+      "processed_query": "MATCH (d:Person)-[:WORKS_AT]->(o:Office)<-(:Department)\n  WITH d, o.name as department, d.salary\n  RETURN department, avg(d.salary)\n  WHERE avg(d.salary) > 100000\n  LIMIT 10",
+      "validation": {
+        "valid": false,
+        "errors": [
+          "Aggregation functions cannot be used directly in WHERE clauses. Use WITH clause first.",
+          "Undefined variables: o"
+        ]
+      }
+    },
+    {
+      "query": "Show policies updated this year",
+      "success": false,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": "errMsg: Invalid input 'W': expected ORDER BY line: 3, column: 92, offset: 162 errCtx: ...y, pol.description, pol.severity, pol.updated_at ORDER WITH SKIP AND LIMIT 10 errCtxOffset: 58",
+      "execution_time": 0,
+      "generated_query": "MATCH (pol:Policy) \nWHERE str(pol.updated_at) >= date('now', '-1year')\nRETURN pol.id, pol.name, pol.category, pol.description, pol.severity, pol.updated_at ORDER WITH SKIP AND LIMIT 10;",
+      "processed_query": "MATCH (pol:Policy) \nWHERE str(pol.updated_at) >= date('now', '-1year')\nRETURN pol.id, pol.name, pol.category, pol.description, pol.severity, pol.updated_at ORDER WITH SKIP AND LIMIT 10",
+      "validation": {
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "query": "Find employees hired in the last month",
+      "success": false,
+      "improvements_applied": [
+        "post-processing",
+        "function_error_detected"
+      ],
+      "error": "Unknown function 'dateTime'",
+      "execution_time": 0,
+      "generated_query": "MATCH (p:Person)\nWHERE toLower(p.hire_date) >= toLower(dateTime('now','-1month'))\nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 100;",
+      "processed_query": "MATCH (p:Person)\nWHERE toLower(p.hire_date) >= toLower(dateTime('now','-1month'))\nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 100",
+      "validation": {
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "query": "List all employees",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.0050737857818603516,
+      "generated_query": "MATCH (p:Person)\n    RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 100;",
+      "processed_query": "MATCH (p:Person)\n    RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 100",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "Who manages the data team?",
+      "success": true,
+      "improvements_applied": [],
+      "error": null,
+      "execution_time": 0.002214193344116211,
+      "generated_query": "MATCH (t:Team {name: 'data'})<-[:MEMBER_OF {is_lead: true}]-(p:Person) RETURN p.name AS Manager, p.email AS Email LIMIT 1",
+      "processed_query": "MATCH (t:Team {name: 'data'})<-[:MEMBER_OF {is_lead: true}]-(p:Person) RETURN p.name AS Manager, p.email AS Email LIMIT 1",
+      "validation": {
+        "valid": false,
+        "errors": [
+          "Undefined variables: p"
+        ]
+      },
+      "has_results": false
+    },
+    {
+      "query": "Show security policies",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.0018029212951660156,
+      "generated_query": "MATCH (pol:Policy) \nWHERE pol.category CONTAINS LOWER('security') \nOR pol.name CONTAINS LOWER('security')\nRETURN pol.id, pol.name, pol.category, pol.description, pol.severity\nLIMIT 20;",
+      "processed_query": "MATCH (pol:Policy) \nWHERE pol.category CONTAINS toLower('security') \nOR pol.name CONTAINS toLower('security')\nRETURN pol.id, pol.name, pol.category, pol.description, pol.severity\nLIMIT 20",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "How many developers are there?",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.0013146400451660156,
+      "generated_query": "MATCH (p:Person) WHERE p.role CONTAINS 'Developer' RETURN COUNT(p) LIMIT 10;",
+      "processed_query": "MATCH (p:Person) WHERE p.role CONTAINS 'Developer' RETURN COUNT(p) LIMIT 10",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "Find people with Python skills",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.0064389705657958984,
+      "generated_query": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python'\n    RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 100;",
+      "processed_query": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python'\n    RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 100",
+      "validation": {
+        "valid": false,
+        "errors": [
+          "Undefined variables: s"
+        ]
+      },
+      "has_results": true
+    },
+    {
+      "query": "Who reports to Sarah Chen?",
+      "success": false,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": "errMsg: Invalid input '[': expected '>' or '(' line: 1, column: 41, offset: 40 errCtx: MATCH (p:Person {name: 'Sarah Chen'})<--[:REPORTS_TO]-(r:Person) errCtxOffset: 40",
+      "execution_time": 0,
+      "generated_query": "MATCH (p:Person {name: 'Sarah Chen'})<--[:REPORTS_TO]-(r:Person)\n    RETURN r.name, r.email, r.department, r.role, r.seniority, r.location, r.timezone, r.manager_id, r.hire_date LIMIT 20;",
+      "processed_query": "MATCH (p:Person {name: 'Sarah Chen'})<--[:REPORTS_TO]-(r:Person)\n    RETURN r.name, r.email, r.department, r.role, r.seniority, r.location, r.timezone, r.manager_id, r.hire_date LIMIT 20",
+      "validation": {
+        "valid": false,
+        "errors": [
+          "Undefined variables: r"
+        ]
+      }
+    },
+    {
+      "query": "Find employees in London",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.0017299652099609375,
+      "generated_query": "MATCH (p:Person) WHERE toLower(p.location) CONTAINS 'london' RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.timezone, p.manager_id, p.hire_date LIMIT 10;",
+      "processed_query": "MATCH (p:Person) WHERE toLower(p.location) CONTAINS 'london' RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.timezone, p.manager_id, p.hire_date LIMIT 10",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "Show all compliance policies",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.001529693603515625,
+      "generated_query": "MATCH (pol:Policy)\n  RETURN pol.id, pol.name, pol.category, pol.description, pol.severity\n  ORDER BY pol.id DESC\n  LIMIT 10;",
+      "processed_query": "MATCH (pol:Policy)\n  RETURN pol.id, pol.name, pol.category, pol.description, pol.severity\n  ORDER BY pol.id DESC\n  LIMIT 10",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    },
+    {
+      "query": "Find senior engineers",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.001744985580444336,
+      "generated_query": "MATCH (p:Person)\n  WHERE p.role = 'engineer' AND p.seniority = 'senior'\n  RETURN p.id, p.name, p.email, p.department, p.location, p.timezone, p.manager_id, p.hire_date\n  LIMIT 10;",
+      "processed_query": "MATCH (p:Person)\n  WHERE p.role = 'engineer' AND p.seniority = 'senior'\n  RETURN p.id, p.name, p.email, p.department, p.location, p.timezone, p.manager_id, p.hire_date\n  LIMIT 10",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": false
+    },
+    {
+      "query": "List all projects",
+      "success": true,
+      "improvements_applied": [
+        "post-processing"
+      ],
+      "error": null,
+      "execution_time": 0.0020945072174072266,
+      "generated_query": "MATCH (p:Project)\n    RETURN p.id, p.name, p.type, p.status, p.start_date, p.end_date, p.budget, p.priority\n    LIMIT 100;",
+      "processed_query": "MATCH (p:Project)\n    RETURN p.id, p.name, p.type, p.status, p.start_date, p.end_date, p.budget, p.priority\n    LIMIT 100",
+      "validation": {
+        "valid": true,
+        "errors": []
+      },
+      "has_results": true
+    }
+  ]
+}

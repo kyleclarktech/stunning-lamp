@@ -1,0 +1,927 @@
+{
+  "model": "mistral:7b",
+  "available": true,
+  "baseline_success_rate": 22.22222222222222,
+  "improved_success_rate": 29.629629629629626,
+  "improvement_percentage": 7.4074074074074066,
+  "baseline_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.030618906021118,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.017090797424316,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(p:Process)\nWHERE p.priority = 'High'\nRETURN n.id AS node_id, p.id AS process_id, n.name AS node_name, p.name AS process_name, n.status AS node_status, p.status AS process_status\nORDER BY node_status, process_status DESC",
+      "generation_time": 3.923788070678711,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service) WHERE s.status = 'critical' AND n.location IN ['APAC', 'EMEA'] RETURN n.name, s.name, n.location, s.status",
+      "generation_time": 3.309069871902466,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.928728103637695,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE n.status = 'critical' AND m.status = 'normal' RETURN n, m",
+      "generation_time": 2.961289405822754,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.015993356704712,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.020108461380005,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE m.status = 'Down' RETURN n, m",
+      "generation_time": 4.611462116241455,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.017699241638184,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.01759672164917,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.018254995346069,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": "MATCH (n:Node)-[:IS_LOCATED_IN]->(l:Location) WHERE l.timezone IN [\"Asia/Tokyo\", \"Australia/*\"] OR l.region = \"APAC\" RETURN n.name, n.type, collect(DISTINCT l.timezone) as timezones, count(DISTINCT l) as location_count",
+      "generation_time": 4.8444812297821045,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.018584966659546,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.01761531829834,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.020679235458374,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.019697427749634,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.018465518951416,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Show me the important people",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.015790939331055,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": "MATCH (n:Node)-[:IS_LOCATED_IN]->(l:Location) WHERE l.name = 'APAC' RETURN n;",
+      "generation_time": 4.3493359088897705,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.015745401382446,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.01524806022644,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.0173749923706055,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.018272638320923,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.021482706069946,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.016287088394165,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "Find team leads",
+      "model": "mistral:7b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.014955282211304,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    }
+  ],
+  "improved_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 0.07505607604980469,
+      "generation_error": "HTTP 500",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 0.07505607604980469
+      }
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical' OR s.status = 'high'\nRETURN n.name AS maintenance_needed, collect(s.name) AS services_affected",
+      "processed_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical' OR s.status = 'high'\nRETURN n.name AS maintenance_needed, collect(s.name) AS services_affected",
+      "generation_time": 3.4721927642822266,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: s"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical' OR s.status = 'high'\nRETURN n.name AS maintenance_needed, collect(s.name) AS services_affected",
+        "processed_query": "",
+        "execution_time": 0.0031125545501708984,
+        "generation_time": 3.4721927642822266
+      }
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node)-[:IS_LOCATED_IN]->(l:Location) WHERE l.timezone IN [\"Asia/Tokyo\", \"Australia/*\"] OR l.region = \"APAC\" RETURN n.name, n.type, collect(DISTINCT l.timezone) as timezones, count(DISTINCT l) as location_count ORDER BY location_count DESC",
+      "processed_query": "MATCH (n:Node)-[:IS_LOCATED_IN]->(l:Location) WHERE l.timezone IN [\"Asia/Tokyo\", \"Australia/*\"] OR l.region = \"APAC\" RETURN n.name, n.type, collect(DISTINCT l.timezone) as timezones, count(DISTINCT l) as location_count ORDER BY location_count DESC",
+      "generation_time": 3.9223713874816895,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: l"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node)-[:IS_LOCATED_IN]->(l:Location) WHERE l.timezone IN [\"Asia/Tokyo\", \"Australia/*\"] OR l.region = \"APAC\" RETURN n.name, n.type, collect(DISTINCT l.timezone) as timezones, count(DISTINCT l) as location_count ORDER BY location_count DESC",
+        "processed_query": "",
+        "execution_time": 0.002780914306640625,
+        "generation_time": 3.9223713874816895
+      }
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE n.status = 'critical' AND m.status = 'warning' RETURN n, m",
+      "processed_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE n.status = 'critical' AND m.status = 'warning' RETURN n, m",
+      "generation_time": 2.9833290576934814,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: m"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE n.status = 'critical' AND m.status = 'warning' RETURN n, m",
+        "processed_query": "",
+        "execution_time": 0.0015003681182861328,
+        "generation_time": 2.9833290576934814
+      }
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical'\nRETURN n.id, s.id, n.name as maintenance_task, s.name as service, s.status as service_status\nORDER BY service_status DESC",
+      "processed_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical'\nRETURN n.id, s.id, n.name as maintenance_task, s.name as service, s.status as service_status\nORDER BY service_status DESC",
+      "generation_time": 3.5201416015625,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: s"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical'\nRETURN n.id, s.id, n.name as maintenance_task, s.name as service, s.status as service_status\nORDER BY service_status DESC",
+        "processed_query": "",
+        "execution_time": 0.0022668838500976562,
+        "generation_time": 3.5201416015625
+      }
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical' OR s.status = 'high'\nRETURN n.name AS maintenance_needed, collect(s.name) AS services_affected",
+      "processed_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical' OR s.status = 'high'\nRETURN n.name AS maintenance_needed, collect(s.name) AS services_affected",
+      "generation_time": 3.3511288166046143,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: s"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node {name:'Maintenance'})-[:REQUIRES]->(s:Service)\nWHERE s.status = 'critical' OR s.status = 'high'\nRETURN n.name AS maintenance_needed, collect(s.name) AS services_affected",
+        "processed_query": "",
+        "execution_time": 0.0013053417205810547,
+        "generation_time": 3.3511288166046143
+      }
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE n.status = 'critical' AND m.status = 'non-critical' RETURN n, m",
+      "processed_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE n.status = 'critical' AND m.status = 'non-critical' RETURN n, m",
+      "generation_time": 3.0031683444976807,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: m"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE n.status = 'critical' AND m.status = 'non-critical' RETURN n, m",
+        "processed_query": "",
+        "execution_time": 0.0016837120056152344,
+        "generation_time": 3.0031683444976807
+      }
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node)-[:IS_CONNECTED_TO]->(m:Node) WHERE n.location = 'APAC' AND m.location = 'EMEA' OR m.location = 'Americas' RETURN n, m",
+      "processed_query": "MATCH (n:Node)-[:IS_CONNECTED_TO]->(m:Node) WHERE n.location = 'APAC' AND m.location = 'EMEA' OR m.location = 'Americas' RETURN n, m",
+      "generation_time": 5.241026878356934,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: m"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node)-[:IS_CONNECTED_TO]->(m:Node) WHERE n.location = 'APAC' AND m.location = 'EMEA' OR m.location = 'Americas' RETURN n, m",
+        "processed_query": "",
+        "execution_time": 0.001598358154296875,
+        "generation_time": 5.241026878356934
+      }
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.022170782089233,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.022170782089233
+      }
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE m.status = 'Down' RETURN n, m",
+      "processed_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE m.status = 'Down' RETURN n, m",
+      "generation_time": 4.604639053344727,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: m"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (n:Node {name:'Server'})-[:CONNECTED_TO]->(m:Node) WHERE m.status = 'Down' RETURN n, m",
+        "processed_query": "",
+        "execution_time": 0.001233816146850586,
+        "generation_time": 4.604639053344727
+      }
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.905672073364258,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.905672073364258
+      }
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.018347263336182,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.018347263336182
+      }
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.016395807266235,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.016395807266235
+      }
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.90749454498291,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.90749454498291
+      }
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.017597198486328,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.017597198486328
+      }
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.0184245109558105,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.0184245109558105
+      }
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.923302888870239,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.923302888870239
+      }
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.018724203109741,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.018724203109741
+      }
+    },
+    {
+      "query": "Show me the important people",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.01761269569397,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.01761269569397
+      }
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.915496110916138,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.915496110916138
+      }
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.014949798583984,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.014949798583984
+      }
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.014976501464844,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.014976501464844
+      }
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.905991315841675,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.905991315841675
+      }
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.018616437911987,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.018616437911987
+      }
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.019073009490967,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.019073009490967
+      }
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.908863544464111,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.908863544464111
+      }
+    },
+    {
+      "query": "Find team leads",
+      "model": "mistral:7b",
+      "baseline": false,
+      "generated_query": null,
+      "generation_time": 5.019219398498535,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated",
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "",
+        "processed_query": "",
+        "execution_time": 0,
+        "generation_time": 5.019219398498535
+      }
+    }
+  ],
+  "timestamp": "2025-06-23T00:11:09.632783"
+}

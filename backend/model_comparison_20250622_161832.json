@@ -1,0 +1,238 @@
+{
+  "timestamp": "20250622_161832",
+  "results": [
+    {
+      "model": "phi4:14b",
+      "available": true,
+      "model_info": {
+        "parameter_size": "14.7B",
+        "quantization": "unknown",
+        "family": "phi3"
+      },
+      "results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (team:Team {name: 'data'})<-[:MEMBER_OF]-(manager:Person)-[:REPORTS_TO]->(p:Person)\nRETURN p.id AS manager_id, p.name AS manager_name, p.email AS manager_email\nLIMIT 1",
+          "time": 3.156186103820801,
+          "valid": true
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (c:Compliance)\nRETURN c.id AS ComplianceID, c.framework AS Framework, c.version AS Version, \n       c.jurisdiction AS Jurisdiction, c.geographic_scope AS GeographicScope, \n       c.type AS Type, c.status AS Status\nLIMIT 100",
+          "time": 3.1060969829559326,
+          "valid": true
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill)\nWHERE toLower(s.name) = 'python'\nRETURN p.id AS person_id, p.name AS person_name, p.email AS email_address, p.department AS department, p.role AS role, p.location AS location, s.category AS skill_category\nLIMIT 100",
+          "time": 3.6819162368774414,
+          "valid": true
+        },
+        {
+          "query": "What are the critical security policies and who's responsible for them?",
+          "cypher": "MATCH (p:Policy {category: 'security'}) WHERE toLower(p.severity) = 'critical'\nOPTIONAL MATCH (responsible)-[:RESPONSIBLE_FOR]->(p)\nWITH p, COLLECT(DISTINCT responsible) AS responsibilities\nRETURN p.id AS PolicyID, p.name AS PolicyName, p.description AS Description, \n       [r IN responsibilities | type(r)] AS ResponsibleTypes,\n       [r IN responsibilities WHERE r:Person | r.name] AS ResponsiblePersons,\n       [r IN responsibilities WHERE r:Team | r.name] AS ResponsibleTeams,\n       [r IN responsibilities WHERE r:Group | r.name] AS ResponsibleGroups\nLIMIT 100",
+          "time": 6.5194032192230225,
+          "valid": true
+        },
+        {
+          "query": "Find all senior engineers in Europe who know React and TypeScript",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s1:Skill {name: 'React'}),\n      (p)-[:HAS_SKILL]->(s2:Skill {name: 'TypeScript'}),\n      (p)-[:WORKS_AT]->(o:Office)\nWHERE toLower(p.role) = 'engineer' \n  AND p.seniority = 'senior'\n  AND o.region = 'Europe'\nRETURN DISTINCT p.id, p.name, p.department, p.email, p.location, s1.name AS skill1, s2.name AS skill2\nLIMIT 100",
+          "time": 5.98630428314209,
+          "valid": true
+        }
+      ],
+      "summary": {
+        "total_queries": 5,
+        "valid_queries": 5,
+        "success_rate": 1.0,
+        "average_time": 4.489981365203858,
+        "errors": 0
+      },
+      "vram_usage": {
+        "before": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "after": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "delta": 0
+      }
+    },
+    {
+      "model": "granite3.3:8b",
+      "available": true,
+      "model_info": {
+        "parameter_size": "8.2B",
+        "quantization": "unknown",
+        "family": "granite"
+      },
+      "results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'data'})<-[:MEMBER_OF {is_lead: true}]-(p:Person)\nRETURN p.name AS Manager, p.email, p.department, p.role, p.seniority, p.location, p.timezone\nLIMIT 1",
+          "time": 15.808705806732178,
+          "valid": true
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy) RETURN pol.id, pol.name, pol.category, pol.description, pol.severity LIMIT 100;",
+          "time": 1.1818222999572754,
+          "valid": true
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name =~ 'python.*' \n  RETURN p.id, p.name, p.email LIMIT 10;",
+          "time": 1.5152342319488525,
+          "valid": true
+        },
+        {
+          "query": "What are the critical security policies and who's responsible for them?",
+          "cypher": "MATCH (pol:Policy WHERE pol.category CONTAINS 'security' AND pol.severity = 'critical')\n          (entity)-[:RESPONSIBLE_FOR]->(pol)\n          RETURN pol.name AS PolicyName, entity.name AS ResponsibleParty LIMIT 10;",
+          "time": 1.9250316619873047,
+          "valid": true
+        },
+        {
+          "query": "Find all senior engineers in Europe who know React and TypeScript",
+          "cypher": "MATCH (p:Person)\n  WHERE p.role = 'senior engineer' AND p.location CONTAINS 'Europe' AND toLower(p.skills) CONTAINS 'react' AND toLower(p.skills) CONTAINS 'typescript'\n  WITH p\n  RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date, p.skills LIMIT 100;",
+          "time": 3.3366942405700684,
+          "valid": true
+        }
+      ],
+      "summary": {
+        "total_queries": 5,
+        "valid_queries": 5,
+        "success_rate": 1.0,
+        "average_time": 4.753497648239136,
+        "errors": 0
+      },
+      "vram_usage": {
+        "before": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "after": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "delta": 0
+      }
+    },
+    {
+      "model": "granite3.3:8b-largectx",
+      "available": true,
+      "model_info": {
+        "parameter_size": "8.2B",
+        "quantization": "unknown",
+        "family": "granite"
+      },
+      "results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'data'})<-[:MEMBER_OF {is_lead: true}]-(p:Person)\nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 1;",
+          "time": 8.894806861877441,
+          "valid": true
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nRETURN pol.id, pol.name, pol.category, pol.description, pol.severity\nORDER BY pol.name\nLIMIT 100;",
+          "time": 1.3829116821289062,
+          "valid": true
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) \nWHERE toLower(s.name) CONTAINS 'python' \nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 10;",
+          "time": 2.5686306953430176,
+          "valid": true
+        },
+        {
+          "query": "What are the critical security policies and who's responsible for them?",
+          "cypher": "MATCH (pol:Policy WHERE pol.severity = 'Critical' OR pol.category CONTAINS 'Security')\nOPTIONAL MATCH (p:Person)-[:RESPONSIBLE_FOR]->(pol)\nRETURN DISTINCT pol.name AS PolicyName, p.name AS ResponsibleParty LIMIT 10",
+          "time": 1.9743471145629883,
+          "valid": true
+        },
+        {
+          "query": "Find all senior engineers in Europe who know React and TypeScript",
+          "cypher": "MATCH (p:Person)\n  WHERE p.role = 'engineer' AND p.seniority = 'senior' AND toLowerCase(p.location) CONTAINS 'europe'\n    AND EXISTS(s:Skill WHERE s.name IN ['react', 'typescript'])\n  RETURN DISTINCT p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date,\n           collect(s) AS skills LIMIT 100;",
+          "time": 3.471571207046509,
+          "valid": true
+        }
+      ],
+      "summary": {
+        "total_queries": 5,
+        "valid_queries": 5,
+        "success_rate": 1.0,
+        "average_time": 3.6584535121917723,
+        "errors": 0
+      },
+      "vram_usage": {
+        "before": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "after": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "delta": 0
+      }
+    },
+    {
+      "model": "mistral:7b",
+      "available": false,
+      "skipped": true,
+      "results": [],
+      "summary": {},
+      "vram_usage": {
+        "before": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "after": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "delta": 0
+      }
+    },
+    {
+      "model": "qwen2.5-coder:7b",
+      "available": false,
+      "skipped": true,
+      "results": [],
+      "summary": {},
+      "vram_usage": {
+        "before": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "after": {
+          "used_mb": 0,
+          "total_mb": 0,
+          "percentage": 0,
+          "note": "nvidia-smi not available in container"
+        },
+        "delta": 0
+      }
+    }
+  ]
+}

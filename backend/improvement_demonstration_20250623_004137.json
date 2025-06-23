@@ -1,0 +1,147 @@
+{
+  "timestamp": "2025-06-23T00:41:37.298646",
+  "model": "granite3.3:8b-largectx",
+  "improvement_tests": [
+    {
+      "test": "Function name fix - LOWER to toLower",
+      "generated_query": "MATCH (p:Person) WHERE toLower(p.name) = 'john' RETURN p",
+      "processed_query": "MATCH (p:Person) WHERE toLower(p.name) = 'john' RETURN p",
+      "improvements_applied": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "removed_multiple_statements": false,
+        "any_fix_applied": false
+      },
+      "validation_valid": true,
+      "exec_before": true,
+      "exec_after": true,
+      "improvement_worked": false,
+      "fixes_applied": []
+    },
+    {
+      "test": "Function name fix - UPPER to toUpper",
+      "generated_query": "MATCH (t:Team) WHERE toLower(t.name) CONTAINS 'data' RETURN t",
+      "processed_query": "MATCH (t:Team) WHERE toLower(t.name) CONTAINS 'data' RETURN t",
+      "improvements_applied": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "removed_multiple_statements": false,
+        "any_fix_applied": false
+      },
+      "validation_valid": true,
+      "exec_before": true,
+      "exec_after": true,
+      "improvement_worked": false,
+      "fixes_applied": []
+    },
+    {
+      "test": "Semicolon removal",
+      "generated_query": "MATCH (p:Person {role: 'cto'}) RETURN p",
+      "processed_query": "MATCH (p:Person {role: 'cto'}) RETURN p",
+      "improvements_applied": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "removed_multiple_statements": false,
+        "any_fix_applied": false
+      },
+      "validation_valid": true,
+      "exec_before": true,
+      "exec_after": true,
+      "improvement_worked": false,
+      "fixes_applied": []
+    },
+    {
+      "test": "Multiple statements fix",
+      "generated_query": "MATCH (p:Person) RETURN p;",
+      "processed_query": "MATCH (p:Person) RETURN p",
+      "improvements_applied": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "removed_multiple_statements": true,
+        "any_fix_applied": true
+      },
+      "validation_valid": true,
+      "exec_before": true,
+      "exec_after": true,
+      "improvement_worked": false,
+      "fixes_applied": [
+        "removed_multiple_statements"
+      ]
+    },
+    {
+      "test": "Complex query with multiple issues",
+      "generated_query": "MATCH (p:Person)\nWHERE toLower(p.department) = 'engineering'\nRETURN p ORDER BY p.name;",
+      "processed_query": "MATCH (p:Person)\nWHERE toLower(p.department) = 'engineering'\nRETURN p ORDER BY p.name",
+      "improvements_applied": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "removed_multiple_statements": true,
+        "any_fix_applied": true
+      },
+      "validation_valid": true,
+      "exec_before": true,
+      "exec_after": true,
+      "improvement_worked": false,
+      "fixes_applied": [
+        "removed_multiple_statements"
+      ]
+    }
+  ],
+  "realistic_tests": [
+    {
+      "query": "Find the CTO",
+      "generated": "MATCH (p:Person) WHERE p.role = 'CTO' RETURN p.name",
+      "processed": null,
+      "baseline_success": true,
+      "improved_success": true,
+      "improvement": false,
+      "fixes": null
+    },
+    {
+      "query": "List all teams in engineering department",
+      "generated": "MATCH (p:Person)-[:MEMBER_OF]->(t:Team)\nWHERE toLower(p.department) CONTAINS \"engineering\"\nAND p.role STARTS WITH \"team\"\nRETURN t.name AS Team",
+      "processed": null,
+      "baseline_success": true,
+      "improved_success": true,
+      "improvement": false,
+      "fixes": null
+    },
+    {
+      "query": "Show senior engineers with Python skills",
+      "generated": "MATCH (p:Person)\nWHERE p.role CONTAINS 'senior' AND 'python' IN LOWER(p.skills)\nRETURN p.name AS SeniorEngineerWithPythonSkills",
+      "processed": "MATCH (p:Person)\nWHERE p.role CONTAINS 'senior' AND 'python' IN toLower(p.skills)\nRETURN p.name AS SeniorEngineerWithPythonSkills",
+      "baseline_success": false,
+      "improved_success": true,
+      "improvement": true,
+      "fixes": [
+        "function_name: \\blower\\s*\\( -> toLower("
+      ]
+    },
+    {
+      "query": "Count people by department",
+      "generated": "MATCH (p:Person)\nRETURN toLower(p.department) AS department, count(p) AS person_count\nORDER BY person_count DESC\nLIMIT 100;",
+      "processed": "MATCH (p:Person)\nRETURN toLower(p.department) AS department, count(p) AS person_count\nORDER BY person_count DESC\nLIMIT 100",
+      "baseline_success": true,
+      "improved_success": true,
+      "improvement": false,
+      "fixes": [
+        "removed_multiple_statements"
+      ]
+    },
+    {
+      "query": "Find people who report to the CTO",
+      "generated": "MATCH (p1:Person {role:'CTO'})<-[:REPORTS_TO]-(p2:Person) WHERE toLower(p2.role) = 'chief technology officer' RETURN p2.name",
+      "processed": null,
+      "baseline_success": true,
+      "improved_success": true,
+      "improvement": false,
+      "fixes": null
+    }
+  ],
+  "summary": {
+    "specific_improvements_demonstrated": 0,
+    "baseline_success_rate": 80.0,
+    "improved_success_rate": 100.0,
+    "queries_fixed": 1
+  }
+}

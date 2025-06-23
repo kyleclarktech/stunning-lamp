@@ -1,0 +1,65 @@
+{
+  "test_date": "2025-06-22T23:57:02.276044",
+  "total_models": 9,
+  "total_queries": 27,
+  "total_execution_time": 0.12990140914916992,
+  "overall_baseline_success_rate": 0,
+  "overall_improved_success_rate": 0,
+  "overall_improvement": 0,
+  "model_results": [
+    {
+      "model": "mistral:7b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "mistral-nemo:12b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "qwen2.5:7b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "qwen2.5:14b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "qwq:32b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "granite3-dense:8b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "granite3.1-moe:3b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "granite3.3:8b-largectx",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    },
+    {
+      "model": "phi4:14b",
+      "available": false,
+      "baseline_results": [],
+      "improved_results": []
+    }
+  ]
+}

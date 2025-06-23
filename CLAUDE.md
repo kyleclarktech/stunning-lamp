@@ -11,7 +11,7 @@ This is an AI-powered conversational interface with FalkorDB graph database inte
 ### Development Commands
 
 ```bash
-# Start all services (API, Frontend, FalkorDB, Ollama)
+# Start all services (API, Frontend, FalkorDB, Ollama, Redis)
 docker-compose up -d
 
 # Start services with live reload
@@ -31,8 +31,14 @@ docker-compose up -d --build
 ### Testing
 
 ```bash
-# Test WebSocket connection and query processing
+# Run backend tests
 cd backend
+pytest tests/
+
+# Run specific test file
+pytest tests/test_websocket.py -v
+
+# Test WebSocket connection and query processing
 python test_websocket.py
 
 # Access services
@@ -86,6 +92,7 @@ docker exec -it stunning-lamp-falkordb-1 redis-cli
 - **FalkorDB Schema**: Graph database with organizational data (People, Teams, Groups, Policies)
 - **Prompt Templates**: Jinja2-based templates for AI model instructions
 - **Real-time Communication**: WebSocket-based bidirectional messaging
+- **Dashboard API**: Analytics endpoints with real-time metrics (`api/dashboard.py`)
 - **Docker Composition**: Multi-service orchestration with health checks
 
 ### Data Model
@@ -104,6 +111,8 @@ OLLAMA_HOST=http://ollama:11434
 OLLAMA_MODEL=granite3.3:8b
 FALKOR_HOST=falkordb
 FALKOR_PORT=6379
+REDIS_HOST=redis
+REDIS_PORT=6379
 ```
 
 ## Common Tasks
@@ -132,4 +141,25 @@ FALKOR_PORT=6379
 - Query timeout: 15 seconds (configurable in `execute_custom_query`)
 - WebSocket timeout: 60 seconds for AI processing
 - Connection pooling via FalkorDB client
+- Redis caching layer for frequently accessed data
 - Async execution for database operations
+
+### Frontend Development
+
+```bash
+# Start frontend development server with hot reload
+cd frontend
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+### Key Frontend Routes
+
+- `/`: Chat interface for conversational queries
+- `/dashboard`: Analytics dashboard with organizational metrics
+- Components use Vue 3 Composition API with reactive state management

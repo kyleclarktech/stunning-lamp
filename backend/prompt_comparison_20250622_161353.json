@@ -1,0 +1,142 @@
+{
+  "timestamp": "20250622_161353",
+  "current_env_setting": "true",
+  "simple": {
+    "configuration": "simple",
+    "results": [
+      {
+        "query": "Who manages the data team?",
+        "cypher": "MATCH (person:Person)-[:MEMBER_OF {is_lead: true}]->(team:Team {name: 'Data'})\nRETURN person.name AS ManagerName, person.email AS Email, person.department AS Department\nLIMIT 1;",
+        "time": 4.867634296417236,
+        "valid": true
+      },
+      {
+        "query": "List all compliance policies",
+        "cypher": "MATCH (c:Compliance)-[:RESPONSIBLE_FOR]->(p:Policy)\nRETURN p.id AS PolicyID, p.name AS PolicyName, p.category AS Category, p.description AS Description, p.severity AS Severity\nLIMIT 1000",
+        "time": 2.8123278617858887,
+        "valid": true
+      },
+      {
+        "query": "Find people with Python skills",
+        "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill)\nWHERE toLower(s.name) = 'python'\nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone\nLIMIT 100",
+        "time": 3.0376977920532227,
+        "valid": true
+      },
+      {
+        "query": "What are the critical security policies and who's responsible for them?",
+        "cypher": "MATCH (pol:Policy)-[:RESPONSIBLE_FOR]->(entity)\nWHERE toLower(pol.category) = 'security' AND pol.severity = 'critical'\nRETURN pol.name AS PolicyName, \n       pol.description AS Description, \n       CASE WHEN type(entity) = 'Team' THEN entity.name ELSE entity.id END AS ResponsibleEntity,\n       CASE WHEN type(entity) = 'Person' THEN entity.name ELSE NULL END AS EntityName\nLIMIT 100;",
+        "time": 4.374678134918213,
+        "valid": true
+      },
+      {
+        "query": "Find all senior engineers in Europe who know React and TypeScript",
+        "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s1:Skill {name: 'React'}),\n      (p)-[:HAS_SKILL]->(s2:Skill {name: 'TypeScript'})\nWHERE p.role = 'Engineer' \n  AND toLower(p.seniority) = 'senior'\n  AND p.location CONTAINS 'Europe'\nRETURN p.id, p.name, p.email, p.department, p.location\nLIMIT 100",
+        "time": 4.470118522644043,
+        "valid": true
+      },
+      {
+        "query": "Which teams are working on customer-facing projects?",
+        "cypher": "MATCH (t:Team)-[:RESPONSIBLE_FOR]->(p:Project {type: 'customer-facing'})\nRETURN t.name AS TeamName, p.name AS ProjectName LIMIT 25;",
+        "time": 2.261000871658325,
+        "valid": true
+      },
+      {
+        "query": "Show me the org structure",
+        "cypher": "MATCH (p:Person)-[:REPORTS_TO]->(manager:Person), \n      (p)-[:MEMBER_OF]-(team:Team),\n      (p)-[:WORKS_AT]->(office:Office)\nRETURN p.name AS Employee, manager.name AS Manager, team.name AS Team, office.city AS OfficeLocation\nORDER BY manager.name, team.name",
+        "time": 5.417805194854736,
+        "valid": true
+      },
+      {
+        "query": "Who should I talk to about data privacy?",
+        "cypher": "MATCH (pol:Policy {category: 'Data Privacy'})\nOPTIONAL MATCH (entity)<-[r:RESPONSIBLE_FOR]-(pol)\nWITH entity\nUNWIND [node IN CASE WHEN TYPE(entity) = 'Person' THEN [entity] ELSE COLLECT(DISTINCT n IN NODES(r) WHERE TYPE(n) = 'Person') END | node] AS person\nRETURN DISTINCT person.name, person.email, person.department \nORDER BY person.seniority DESC, person.hire_date ASC\nLIMIT 5;",
+        "time": 4.934642791748047,
+        "valid": true
+      },
+      {
+        "query": "What's our compliance status?",
+        "cypher": "MATCH (c:Compliance)\nRETURN c.id AS ComplianceID, c.framework AS Framework, c.version AS Version, \n       c.jurisdiction AS Jurisdiction, c.geographic_scope AS GeographicScope, \n       c.type AS Type, c.status AS Status\nLIMIT 10",
+        "time": 2.9941327571868896,
+        "valid": true
+      }
+    ],
+    "summary": {
+      "total_queries": 9,
+      "valid_queries": 9,
+      "success_rate": 1.0,
+      "average_time": 3.9077820248074002,
+      "errors": 0
+    }
+  },
+  "complex": {
+    "configuration": "complex",
+    "results": [
+      {
+        "query": "Who manages the data team?",
+        "cypher": "MATCH (p:Person)-[:MANAGES]->(t:Team {name: 'Data'}) RETURN p.name AS manager_name",
+        "time": 5.52443528175354,
+        "valid": true
+      },
+      {
+        "query": "List all compliance policies",
+        "cypher": "MATCH (p:Policy) WHERE p.type = 'compliance' RETURN p.name as policy, p.category, labels(p) as labels ORDER BY p.name",
+        "time": 5.674239873886108,
+        "valid": true
+      },
+      {
+        "query": "Find people with Python skills",
+        "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python' RETURN p.id, p.name, p.email, collect(s.name) AS skills",
+        "time": 5.99457311630249,
+        "valid": true
+      },
+      {
+        "query": "What are the critical security policies and who's responsible for them?",
+        "cypher": "MATCH (t:Team)-[:RESPONSIBLE_FOR]->(p:Policy) WHERE p.severity = 'critical' RETURN t.name as team, collect(p.name) as owned_policies ORDER BY count(p) DESC",
+        "time": 6.2990405559539795,
+        "valid": true
+      },
+      {
+        "query": "Find all senior engineers in Europe who know React and TypeScript",
+        "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill {name: 'React' OR name: 'TypeScript'}) \nWHERE p.title CONTAINS 'senior engineer' AND ANY(tz IN p.time_zone_preferences WHERE tz STARTS WITH 'Europe/') \nRETURN DISTINCT p.id, p.name, p.email, collect(s.name) AS skills, labels(p)",
+        "time": 7.786021709442139,
+        "valid": true
+      },
+      {
+        "query": "Which teams are working on customer-facing projects?",
+        "cypher": "MATCH (t:Team)-[:WORKS_ON]->(p:Project) WHERE p.customer_facing = true RETURN t.name AS team_name, collect(p.name) AS projects ORDER BY t.name",
+        "time": 6.129824161529541,
+        "valid": true
+      },
+      {
+        "query": "Show me the org structure",
+        "cypher": "MATCH (p:Person)-[:REPORTS_TO]->(m:Manager), (m)-[:MANAGES_TEAM]->(t:Team)<-[:MEMBER_OF]-(e:Employee) RETURN p.name, m.name, t.name, collect(e.name) as team_members ORDER BY p.name, m.name, t.name",
+        "time": 7.248091697692871,
+        "valid": true
+      },
+      {
+        "query": "Who should I talk to about data privacy?",
+        "cypher": "MATCH (p:Person)-[:RESPONSIBLE_FOR]->(p:Policy {category: 'Data Privacy'}) RETURN p.id AS person_id, p.name AS person_name, labels(p) AS person_labels",
+        "time": 8.024632930755615,
+        "valid": true
+      },
+      {
+        "query": "What's our compliance status?",
+        "cypher": "MATCH (c:Compliance)-[:APPLIES_TO]->(a:App) RETURN c.status AS ComplianceStatus, a.name AS ApplicationName ORDER BY a.name",
+        "time": 6.223270654678345,
+        "valid": true
+      }
+    ],
+    "summary": {
+      "total_queries": 9,
+      "valid_queries": 9,
+      "success_rate": 1.0,
+      "average_time": 6.544903331332737,
+      "errors": 0
+    }
+  },
+  "comparison": {
+    "simple_success_rate": 1.0,
+    "complex_success_rate": 1.0,
+    "simple_avg_time": 3.9077820248074002,
+    "complex_avg_time": 6.544903331332737
+  }
+}

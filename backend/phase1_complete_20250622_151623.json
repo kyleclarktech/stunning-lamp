@@ -1,0 +1,1514 @@
+{
+  "phase": "1-complete",
+  "timestamp": "2025-06-22T14:59:05.389968",
+  "models_tested": [
+    {
+      "model": "phi4:14b",
+      "config": {
+        "name": "phi4:14b",
+        "priority": 1,
+        "type": "general"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "14.7B",
+        "quantization": "Q4_K_M",
+        "family": "phi3",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 5.177520275115967,
+        "average_time": 3.8526845216751098,
+        "median_time": 3.590443730354309,
+        "p95_time": 6.462975025177002,
+        "min_time": 2.437405586242676,
+        "max_time": 6.462975025177002,
+        "throughput_qps": 0.18400449159523666,
+        "syntax_validity_rate": 0.9,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 2059,
+        "vram_during_mb": 12906,
+        "vram_peak_mb": 12934,
+        "vram_delta_mb": 10875
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'data'})<-[:MEMBER_OF {is_lead: true}]-(manager:Person)\nRETURN manager.name AS ManagerName, manager.email AS ManagerEmail, manager.department AS Department, manager.role AS Role\nLIMIT 1;",
+          "time": 5.177520275115967,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (c:Compliance)\nRETURN c.id AS ComplianceID, \n       c.framework AS Framework, \n       c.version AS Version, \n       c.jurisdiction AS Jurisdiction, \n       c.geographic_scope AS GeographicScope, \n       c.type AS Type, \n       c.status AS Status\nLIMIT 1000",
+          "time": 3.4823923110961914,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill)\nWHERE toLower(s.name) = 'python'\nRETURN p.id AS PersonID, p.name AS Name, p.email AS Email, p.department AS Department, p.role AS Role, p.seniority AS Seniority, p.location AS Location\nLIMIT 100",
+          "time": 3.6984951496124268,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy)-[:RESPONSIBLE_FOR]->(entity)\nWHERE toLower(pol.category) = 'security' AND pol.severity IN ['critical', 'high']\nRETURN DISTINCT pol.id, pol.name, pol.description, pol.severity, \n       CASE \n         WHEN type(entity) = 'Person' THEN entity.name\n         ELSE collect(DISTINCT entity.name)\n       END AS responsible_entity\nLIMIT 100",
+          "time": 4.2685699462890625,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill {name: 'React'})\nWHERE p.seniority = 'senior' AND p.role = 'engineer'\nAND EXISTS((o:Office)<-[:WORKS_AT]-(p) WHERE o.region = 'Europe')\nRETURN DISTINCT p.id, p.name, p.email, p.department, p.location\nLIMIT 100",
+          "time": 4.15009331703186,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (t:Team)-[:RESPONSIBLE_FOR]->(p:Project {type: 'customer'})\nRETURN DISTINCT t.id AS TeamID, t.name AS TeamName, p.id AS ProjectID, p.name AS ProjectName\nLIMIT 100",
+          "time": 2.910632371902466,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (p1:Person)-[:REPORTS_TO]->(p2:Person)\nWITH p1 AS employee, p2 AS manager\nOPTIONAL MATCH (employee)-[:MEMBER_OF]->(team:Team), \n               (manager)-[:MEMBER_OF]->(team),\n               (employee)-[:WORKS_AT]->(office:Office),\n               (manager)-[:WORKS_AT]->(office)\nRETURN employee.id AS EmployeeID, \n       employee.name AS EmployeeName, \n       manager.id AS ManagerID, \n       manager.name AS ManagerName,\n       team.id AS TeamID, team.name AS TeamName,\n       office.id AS OfficeID, office.name AS OfficeName\nLIMIT 1000",
+          "time": 6.462975025177002,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH path=(cto:Person {role: 'CTO'})-[*]-(dtm:Person)-[:MEMBER_OF]->(team:Team)\nWHERE toLower(team.name) CONTAINS 'data'\nRETURN path, cto.name AS CTO_Name, dtm.name AS Data_Team_Member_Name",
+          "time": 3.449855089187622,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "RETURN null AS result;",
+          "time": 2.437405586242676,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": null
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person)\nWHERE toLower(p.department) = 'quantum'\nRETURN p.id, p.name, p.email, p.role, p.seniority, p.location, p.timezone\nLIMIT 100",
+          "time": 2.488906145095825,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nWHERE pol.category = 'compliance'\nRETURN pol.id AS PolicyID, pol.name AS Name, pol.description AS Description, pol.severity AS Severity\nLIMIT 1000",
+          "time": 6.1793482303619385,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill)\nWHERE toLower(s.name) = 'python'\nRETURN p.id AS person_id, p.name AS name, p.email AS email, p.department AS department\nLIMIT 100;",
+          "time": 3.625664234161377,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy)-[:RESPONSIBLE_FOR]->(entity)\nWHERE toLower(pol.category) = 'security' AND pol.severity IN ['critical', 'high']\nRETURN pol.id AS PolicyID, pol.name AS PolicyName, \n       collect(DISTINCT entity {id: ID(entity), type: labels(entity)[0], name: CASE WHEN exists((entity:Person).name) THEN (entity:Person).name ELSE (entity:Team).name END}) AS ResponsibleEntities\nLIMIT 100;",
+          "time": 6.265113115310669,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "timestamp": "2025-06-22T14:22:59.938457"
+    },
+    {
+      "model": "granite3.3:8b",
+      "config": {
+        "name": "granite3.3:8b",
+        "priority": 1,
+        "type": "general"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "8.2B",
+        "quantization": "Q4_K_M",
+        "family": "granite",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 8.67526650428772,
+        "average_time": 3.2881614685058596,
+        "median_time": 2.329047441482544,
+        "p95_time": 8.67526650428772,
+        "min_time": 1.4250502586364746,
+        "max_time": 8.67526650428772,
+        "throughput_qps": 0.20554354306163258,
+        "syntax_validity_rate": 0.9,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 12949,
+        "vram_during_mb": 8792,
+        "vram_peak_mb": 8871,
+        "vram_delta_mb": -4078
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'data'})<-[:MEMBER_OF {is_lead: true}]-(p:Person) RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone LIMIT 1;",
+          "time": 8.67526650428772,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\n  RETURN pol.id, pol.name, pol.category, pol.description, pol.severity\n  LIMIT 100;",
+          "time": 1.4250502586364746,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python'\n    RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 10;",
+          "time": 2.305302619934082,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy WHERE pol.severity = 'critical' OR pol.category CONTAINS 'security')\n      WITH pol\n      MATCH (entity<-[:RESPONSIBLE_FOR] - (p:Person))\n      RETURN DISTINCT pol.name AS PolicyName, p.name AS ResponsiblePerson LIMIT 10;",
+          "time": 2.184544324874878,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person)\n  WHERE p.role = 'engineer' \n    AND p.seniority = 'senior' \n    AND p.location = 'Europe' \n    AND toLower(p.skills) CONTAINS 'react'\n  RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\n  LIMIT 10;",
+          "time": 3.120076894760132,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (p:Person)-[:ALLOCATED_TO]->(project:Project)<-[:MEMBER_OF {role: 'team member'}]-(team:Team)\nWHERE project.type = 'customer'\nRETURN DISTINCT team.name AS Team, COUNT(DISTINCT p) AS TeamMembers\nORDER BY TeamMembers DESC\nLIMIT 10;",
+          "time": 2.352792263031006,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (m:Person)-[:REPORTS_TO*1..]->(p:Person)\nWHERE NOT m.id = p.id\nWITH collect(distinct m) as managers, collect(distinct p) as people\nUNWIND managers AS manager\nUNWIND people AS person\nWHERE NOT manager-[:REPORTS_TO]-person LOOP\n  MATCH path = shortestPath(\n    (manager)-[:REPORTS_TO*]->(person)\n  )\n  WITH collect(node(x)-[:REPORTS_TO]->(n)) as subordinates, node(path)[0] AS head, node(path)[-1] AS leaf, length(path) - 1 AS level\n  OPTIONAL MATCH (head)<-[:WORKS_AT]-office\n  RETURN head.name AS Manager, head.email, head.department, head.role, head.seniority, office.city, office.country,\n         collect(subordinates) AS Subordinates,\n         collect(level) AS Level,\n         collect(leaf) AS Leaf,\n         path\nLIMIT 100;",
+          "time": 6.116821527481079,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH path = shortestPath((ct:Person {name:'CTO'}), \n                  p:Person)-[:MEMBER_OF|REPORTS_TO*]->(dt:Person)\n   WHERE dt.department CONTAINS 'data' AND ct.name = 'CTO'\n   RETURN path ORDER BY length(path) ASC LIMIT 10;",
+          "time": 2.170637369155884,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "// No valid query can be generated from the given input \"xyz123 nonexistent query\"",
+          "time": 2.525780200958252,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": null
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person) WHERE toLower(p.department) CONTAINS 'quantum' RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 100;",
+          "time": 2.005342721939087,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nRETURN pol.id AS PolicyID, pol.name AS PolicyName, pol.category AS PolicyCategory, pol.description AS PolicyDescription, pol.severity AS Severity\nLIMIT 100;",
+          "time": 2.2283101081848145,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python'\n  RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 10;",
+          "time": 4.57511830329895,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy WHERE pol.severity = 'critical' OR toLower(pol.name) CONTAINS 'security')-[:RESPONSIBLE_FOR]-(responsible) \nRETURN DISTINCT pol.name AS Policy, responsible.name AS Responsible \nLIMIT 10;",
+          "time": 2.99454402923584,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "timestamp": "2025-06-22T14:25:29.499791"
+    },
+    {
+      "model": "granite3.3:8b-largectx",
+      "config": {
+        "name": "granite3.3:8b-largectx",
+        "priority": 1,
+        "type": "general"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "8.2B",
+        "quantization": "Q4_K_M",
+        "family": "granite",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 8.572265863418579,
+        "average_time": 3.3097996950149535,
+        "median_time": 2.403313994407654,
+        "p95_time": 8.572265863418579,
+        "min_time": 1.462461233139038,
+        "max_time": 8.572265863418579,
+        "throughput_qps": 0.20821075238754852,
+        "syntax_validity_rate": 1.0,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 8864,
+        "vram_during_mb": 10733,
+        "vram_peak_mb": 10806,
+        "vram_delta_mb": 1942
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'data'})<-[:MEMBER_OF {is_lead: true}]-(p:Person) RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 1",
+          "time": 8.572265863418579,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\n  RETURN pol.id, pol.name, pol.category, pol.description, pol.severity\n  ORDER BY pol.id DESC\n  LIMIT 100;",
+          "time": 1.462461233139038,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE toLower(s.name) CONTAINS 'python' RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 10;",
+          "time": 2.4382004737854004,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy WHERE pol.severity = 'critical' AND pol.category = 'security')\n    WITH pol\n    MATCH (entity)-[:RESPONSIBLE_FOR]->(pol)\n    RETURN distinct entity.name AS responsible, pol.name AS policy_name, pol.description, pol.severity\n    ORDER BY policy_name\n    LIMIT 10;",
+          "time": 2.271982192993164,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person)\n  WHERE p.role = 'engineer' AND p.seniority = 'senior' AND p.location CONTAINS 'Europe'\n    AND EXISTS(s:Skill WHERE s.name = 'React' AND p-->>(:HAS_SKILL)-(:Skill)-s)\n  RETURN DISTINCT p.name AS Engineer, p.email, p.department, p.country LIMIT 10",
+          "time": 2.746462821960449,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (p:Person)-[:ALLOCATED_TO]->(project:Project)<-[:MEMBER_OF {role, is_lead: true}]-(team:Team)\nWHERE project.type = 'customer'\nRETURN team.name AS Team, p.name AS Member\nLIMIT 100;",
+          "time": 2.1151373386383057,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (m:Person)-[:REPORTS_TO*1..]->(p:Person)\nWHERE NOT m.id = p.id\nWITH collect(distinct m) AS managers, collect(distinct p) AS people\nUNWIND managers AS manager\nUNWIND people AS person\nOPTIONAL MATCH (manager)-[:REPORTS_TO]->(subManager:<Person>)\nWITH managers, subManagers, people, collect({manager.name, subManager.name, person.name}) AS orgStructure\nRETURN orgStructure LIMIT 100;",
+          "time": 3.397071123123169,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH (cto:Person {name: 'CTO'})-[:REPORTS_TO|MANAGES]->(manager)<-[:REPORTS_TO|MANAGES]-(dataTeamMember:Person),\n  path = allShortestPaths((cto)-[*..20]-(dataTeamMember))\nRETURN distinct cto, dataTeamMember, path\nLIMIT 50;",
+          "time": 2.3684275150299072,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "MATCH (n)\nWHERE NOT 'xyz123' IN toLower(n.id) AND NOT 'nonexistent' IN toLower(n.name)\nRETURN n LIMIT 10;",
+          "time": 5.477036476135254,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person) WHERE toLower(p.department) CONTAINS 'quantum' RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 10;",
+          "time": 2.2489519119262695,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy) \nRETURN pol.id, pol.name, pol.category, pol.description, pol.severity\nLIMIT 100;",
+          "time": 1.7145764827728271,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE toLower(s.name) CONTAINS 'python' RETURN DISTINCT p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 100",
+          "time": 4.291669607162476,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy WHERE pol.severity = 'critical' AND pol.category = 'security')-[:RESPONSIBLE_FOR]->(responsible)\nRETURN DISTINCT pol.name AS Policy, responsible.name AS Responsible, pol.description AS Description\nLIMIT 10;",
+          "time": 2.7570974826812744,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "timestamp": "2025-06-22T14:28:09.243912"
+    },
+    {
+      "model": "granite-code:8b",
+      "config": {
+        "name": "granite-code:8b",
+        "priority": 2,
+        "type": "coding"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "8.1B",
+        "quantization": "Q4_0",
+        "family": "llama",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 2.618440866470337,
+        "average_time": 1.867419385910034,
+        "median_time": 1.907524585723877,
+        "p95_time": 3.711230754852295,
+        "min_time": 0.6961658000946045,
+        "max_time": 3.711230754852295,
+        "throughput_qps": 0.23706388103322895,
+        "syntax_validity_rate": 0.9,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 2249,
+        "vram_during_mb": 8527,
+        "vram_peak_mb": 8561,
+        "vram_delta_mb": 6312
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'Data'})<-[:MEMBER_OF {is_lead: true}]-(p:Person) RETURN p.name AS manager",
+          "time": 2.618440866470337,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nRETURN pol",
+          "time": 0.7758297920227051,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)\nWHERE p.name CONTAINS 'Python' OR p.role CONTAINS 'Python'\nRETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date\nLIMIT 1000",
+          "time": 2.3768718242645264,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy) WHERE pol.category = 'security' OR pol.name CONTAINS 'security' RETURN pol.id, pol.name, pol.severity, pol.description, pol.category, pol.response_plan, pol.implementation_status, pol.last_reviewed, pol.last_updated",
+          "time": 2.1954400539398193,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person)\nWHERE p.role = 'Engineer' AND p.seniority = 'Senior' AND p.location IN ['Europe']\nAND ANY(sk IN p.skills WHERE sk.name CONTAINS 'React')\nRETURN DISTINCT p.name, p.email, p.role, p.department, p.timezone\n\n\nThis query will find all senior engineers in Europe who have React skills and return their names, emails, roles, departments, and timezones. The use of DISTINCT ensures that duplicate results are removed. The WHERE clause filters the results based on the specified criteria, and the ANY() function checks if any of the person's skills contain 'React'.",
+          "time": 3.711230754852295,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (p:Person)-[:ALLOCATED_TO]->(pr:Project) WHERE pr.type CONTAINS 'customer' RETURN p.name, pr.name, p.department, pr.start_date, pr.end_date, pr.budget, pr.priority ORDER BY pr.start_date DESC LIMIT 10",
+          "time": 2.1558761596679688,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (p:Person) OPTIONAL MATCH (p)-[:REPORTS_TO]->(manager:Person) RETURN p.name as employee, manager.name as manager ORDER BY employee",
+          "time": 1.3590381145477295,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH p = (ctom:Person {name: 'cto'})-[:REPORTS_TO*..3]-(teammates:Person)\nWHERE teammates.department = 'data'\nRETURN DISTINCT p\nLIMIT 10",
+          "time": 1.6591730117797852,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "Match (pol:Policy) where pol.category = 'X' or pol.name CONTAINS 'X'",
+          "time": 1.1261274814605713,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": null
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person) WHERE p.department = 'quantum' RETURN p",
+          "time": 0.6961658000946045,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nRETURN pol\nLIMIT 100",
+          "time": 2.3000669479370117,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person) WHERE p.name CONTAINS 'Python' RETURN p",
+          "time": 1.4474585056304932,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy) WHERE pol.category = 'security' OR pol.name CONTAINS 'critical'\nRETURN pol.id, pol.name, pol.description, pol.severity, pol.category, pol.status",
+          "time": 2.504345178604126,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "timestamp": "2025-06-22T15:02:44.896207"
+    },
+    {
+      "model": "deepseek-coder:1.3b",
+      "config": {
+        "name": "deepseek-coder:1.3b",
+        "priority": 2,
+        "type": "coding"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "1B",
+        "quantization": "Q4_0",
+        "family": "llama",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 1.2633743286132812,
+        "average_time": 0.8501115798950195,
+        "median_time": 0.6905025243759155,
+        "p95_time": 1.8148503303527832,
+        "min_time": 0.48575687408447266,
+        "max_time": 1.8148503303527832,
+        "throughput_qps": 0.26304792033691776,
+        "syntax_validity_rate": 1.0,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 8629,
+        "vram_during_mb": 11252,
+        "vram_peak_mb": 11245,
+        "vram_delta_mb": 2616
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (p1:Person)-[:MEMBER_OF {is_lead : true}]->(t2:Team) WHERE toLower(p1.name) = 'x' RETURN p1, t2 LIMIT 1;",
+          "time": 1.2633743286132812,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy) WHERE pol.category = 'Compliance' RETURN DISTINCT(pol).name AS policyName ORDER BY [policyName] LIMIT 10;",
+          "time": 0.5550582408905029,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person) WHERE id(s:Skill) IN [x | x in relationships(['HAS_SKILL' , 'name']) @> {'value': toLower('Python'),}] AND s.type = \"language\" RETURN p LIMIT 10;",
+          "time": 0.519554615020752,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol1:Policy {category:'Security Policies', is_critical : true})-[:RESPONSIBLE_FOR]->(entity) RETURN entity.name AS ResponsibleEntity ORDER BY [START WITH POLICY NAME] ASC LIMIT 5;",
+          "time": 0.5262942314147949,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person) WHERE p.role = 'Senior Engineer' AND TOLOWER(p.location)='europe' and toLower(substring(toString((p.skills)), 2)) CONTAINS ['React'] RETURN count(distinct p), collect(p);",
+          "time": 0.8238458633422852,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (p:Person)-[:WORKS_AT]->(o:Office) WHERE o.name CONTAINS 'customer' RETURN DISTINCT p.team AS team, count(*) as total  ORDER BY total DESC;   LIMIT 10",
+          "time": 0.7381842136383057,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (p1:Person)<-(r1)-(t:Team {name:'X'})->(p2:Person),\n      (g:Group)<--((s:Schedule))-(o:Office ) , \n        ((m:Policy):ID(m) IN ['Y','Z'] OR m.category CONTAINS 'XY') WHERE NOT p1=p2 AND s.[start_datetime]>'YY/MM/DD HH:MI:SS'(RETURN COUNT(*) AS Total)) LIMIT 50",
+          "time": 1.8148503303527832,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH (p1:Person {name:'CTO'}), \n      (t2:Team),  \n     ((cto)-[:MEMBER_OF]->(pt))-[*]-(dteam)    --(0,3)-->  p4:(Person{role:'data team member'});         \nRETURN collect(p1.name + ' - '+ dteam.name), 2;   // Return paths with limit of two for follow up queries later on     LIMIT 5 OFFSET (page_no-1)*limit    ;// offset querying page number by one less than the current as per pagination",
+          "time": 1.1313762664794922,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "Cypher Query (Based on User's question): \"MATCH(t:Team {name:'X', toLower(t.name) CONTAINS 'Y'} )<-[:MEMBER_OF  {isLead : true}]-(p:Person)\" LIMIT 10;\";",
+          "time": 0.6428208351135254,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person) WHERE p.department = 'Quantum' RETURN p LIMIT 10;",
+          "time": 0.48575687408447266,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy) WHERE pol.category IN ['Compliance'] OR pol.name CONTAINS 'policy' RETURN DISTINCT pol ORDER BY pol.severity DESC, pol.creation_date ASC LIMIT 10;",
+          "time": 1.277756690979004,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)<-[:HAS_SKILL]->(s:Skill {name:'Python'}) RETURN p LIMIT 10;   -- Query to find persons that have python skill. The result is limited to the first ten people found in this way based on your schema and relationships defined above",
+          "time": 1.0902516841888428,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "RETURN collect(pol) as Policies ORDER BY size((pol)-[:RESPONSIBLE_FOR]-(entity)) DESC LIMIT 10;",
+          "time": 0.7345075607299805,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": null
+        }
+      ],
+      "timestamp": "2025-06-22T15:05:21.752242"
+    },
+    {
+      "model": "codeqwen:7b",
+      "config": {
+        "name": "codeqwen:7b",
+        "priority": 2,
+        "type": "coding"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "7.3B",
+        "quantization": "Q4_0",
+        "family": "qwen2",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 4.34937047958374,
+        "average_time": 2.946438527107239,
+        "median_time": 3.4952034950256348,
+        "p95_time": 4.692507982254028,
+        "min_time": 0.8453807830810547,
+        "max_time": 4.692507982254028,
+        "throughput_qps": 0.2476866733598768,
+        "syntax_validity_rate": 1.0,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 11224,
+        "vram_during_mb": 9529,
+        "vram_peak_mb": 9576,
+        "vram_delta_mb": -1648
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'Data Team'})<-[:MEMBER_OF {role: 'Manager'}]-(p:Person)\nRETURN p.name, p.email, p.role, p.department",
+          "time": 4.34937047958374,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (c:Compliance)\nRETURN c.name",
+          "time": 0.8453807830810547,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill)\nWHERE s.name = 'Python'\nRETURN p.name AS Name, p.email AS Email",
+          "time": 1.4211044311523438,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (p:Person)-[:MEMBER_OF]->(t:Team)-[:RESPONSIBLE_FOR]->(pol:Policy)\nWHERE t.department = 'Security' AND pol.category = 'Critical'\nRETURN p, pol ORDER BY p.name ASC;",
+          "time": 3.779864549636841,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person)-[:MEMBER_OF]->(t:Team)-[:RESPONSIBLE_FOR]->(pol:Policy)\nWHERE t.department = 'Europe' AND ANY(skill IN p.skills WHERE skill.name = 'React') AND p.seniority >= 2\nRETURN DISTINCT p, t, pol",
+          "time": 1.9191176891326904,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (t:Team)-[:RESPONSIBLE_FOR]->(p:Policy) WHERE p.name CONTAINS 'customer project'\nRETURN t.id, t.name\nLIMIT 10;",
+          "time": 3.4382576942443848,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (p:Person)-[:MEMBER_OF]->(t:Team)\nWITH p, t\nOPTIONAL MATCH (p2:Person)-[:REPORTS_TO]->(p)\nRETURN p.name AS employee, t.name AS team, p2.name AS manager",
+          "time": 3.8343536853790283,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH (p1:Person)-[:REPORTS_TO*]->(p2:Person)\nWHERE p1.role = 'CTO' AND ANY(t IN ['Data', 'Analytics'] WHERE t IN p2.department OR t IN collect(p2.name))\nRETURN p1, p2\n\nExplanation: \nThis query searches for all paths from a person with the role \"CTO\" and any department that includes 'Data' or 'Analytics', then finds all paths to those employees who are reporting to other employees. The result is a list of pairs (p1, p2) where p1 is the CTO and p2 is a data team member.",
+          "time": 3.5521492958068848,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "MATCH (p:Person)\nWHERE p.department = 'Sales' AND p.role = 'Manager' AND p.seniority > 5\nRETURN p.name, p.email, p.location, p.hire_date\nORDER BY p.hire_date DESC\nLIMIT 10",
+          "time": 4.692507982254028,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person)-[:MEMBER_OF]->(t:Team) WHERE t.department = 'Quantum' RETURN p.name, p.email, p.role, p.location, p.timezone, p.hire_date",
+          "time": 1.6322786808013916,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nRETURN pol.name, pol.category, pol.description, pol.severity",
+          "time": 1.5373129844665527,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python' RETURN p",
+          "time": 1.9769747257232666,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "SELECT DISTINCT p1.name AS Manager_Name, t2.name AS Team_Name FROM Person p1 JOIN Team t1 ON p1.id = t1.manager_id JOIN Policy p2 ON t1.id = p2.responsible_for_id",
+          "time": 3.128417491912842,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": null
+        }
+      ],
+      "timestamp": "2025-06-22T15:09:21.701228"
+    },
+    {
+      "model": "mistral:7b",
+      "config": {
+        "name": "mistral:7b",
+        "priority": 3,
+        "type": "general"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "7.2B",
+        "quantization": "Q4_0",
+        "family": "llama",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 3.0542659759521484,
+        "average_time": 2.0345268726348875,
+        "median_time": 1.9020581245422363,
+        "p95_time": 3.4581539630889893,
+        "min_time": 1.0077767372131348,
+        "max_time": 3.4581539630889893,
+        "throughput_qps": 0.23689031756627693,
+        "syntax_validity_rate": 0.9,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 6880,
+        "vram_during_mb": 12483,
+        "vram_peak_mb": 12505,
+        "vram_delta_mb": 5625
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name:'Data'})-[:MEMBER_OF {is_lead: true}]-(p:Person)\nRETURN p.name, p.email, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date",
+          "time": 3.0542659759521484,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy) RETURN pol.name, pol.category, pol.description, pol.severity",
+          "time": 1.0077767372131348,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python' RETURN p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date LIMIT 10;",
+          "time": 1.979050636291504,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy)\nWHERE pol.severity = 'critical' AND (pol)-[:RESPONSIBLE_FOR]-(entity)\nRETURN pol.name, entity.name",
+          "time": 1.357250452041626,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person)\nWHERE p.role = 'engineer' AND p.seniority = 'senior' AND p.location.country IN ['France', 'Germany', 'United Kingdom', 'Spain', 'Italy'] AND p.location.region =~ 'Europe'\nAND (p)-[:HAS_SKILL]->(sk:Skill) AND sk.name = 'React'\nRETURN p.name, p.email, sk.name",
+          "time": 2.4645588397979736,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (p:Person)-[:ALLOCATED_TO]->(proj:Project)\nWHERE proj.type = 'customer'\nWITH DISTINCT proj.allocatedTo AS teamNames\nMATCH (t:Team {name: ANY(teamNames)})\nRETURN t.name, t.focus",
+          "time": 1.7647883892059326,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": null
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (root:Person) -[:REPORTS_TO*]->(root)<-[:REPORTS_TO|MEMBER_OF]-(teams:Team)<-[:MEMBER_OF{is_lead: false}]-(members:Person)\nWITH root, collect(distinct members) AS teamMembers, collect(distinct teams) AS teamList\nRETURN root.name as Root, teamList as Teams, [teamMembers] as TeamMembers;",
+          "time": 2.257171392440796,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH path = (cto:Person {name:'CTO'})-[:REPORTS_TO*]->(manager)<-[:MEMBER_OF {role:'CTO'}]-(teams:*Team)<-[:MEMBER_OF {role:'DATA TEAM MEMBER'}]-(dataMembers:Person)\nRETURN distinct(path), collect(dataMembers.name) AS dataMembers, collect(cto.name) AS cto\nWHERE all(x IN relationships(path) WHERE type = 'REPORTS_TO') AND size(nodes(path)) > 1\nWITH path, dataMembers, cto ORDER BY length(paths) ASC\nRETURN path, dataMembers[0], cto[0]",
+          "time": 3.4581539630889893,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "MATCH (p:Person) WHERE p.name =~ '.*xyz123.*' LIMIT 10 RETURN p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date",
+          "time": 1.8250656127929688,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person) WHERE p.department = 'quantum' RETURN p.name, p.email, p.department",
+          "time": 1.1771867275238037,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (c:Compliance)\nRETURN c.name, c.category, c.description, c.severity",
+          "time": 1.4697372913360596,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(sk:Skill) WHERE sk.name = 'Python' RETURN p.name, p.email",
+          "time": 2.641355514526367,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy) WHERE pol.severity = 'critical' AND (pol)-[:RESPONSIBLE_FOR]-(entity)\nRETURN pol.name, entity.name, pol.description, entity.department;",
+          "time": 2.3374693393707275,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "timestamp": "2025-06-22T15:12:58.394555"
+    },
+    {
+      "model": "llama3.2:3b",
+      "config": {
+        "name": "llama3.2:3b",
+        "priority": 3,
+        "type": "general"
+      },
+      "available": true,
+      "model_info": {
+        "parameter_size": "3.2B",
+        "quantization": "Q4_K_M",
+        "family": "llama",
+        "format": "gguf"
+      },
+      "metrics": {
+        "cold_start_time": 2.2011935710906982,
+        "average_time": 1.0972601890563964,
+        "median_time": 1.0503082275390625,
+        "p95_time": 2.2011935710906982,
+        "min_time": 0.8050932884216309,
+        "max_time": 2.2011935710906982,
+        "throughput_qps": 0.25403970985607477,
+        "syntax_validity_rate": 1.0,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 12503,
+        "vram_during_mb": 10654,
+        "vram_peak_mb": 10693,
+        "vram_delta_mb": -1810
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": "MATCH (t:Team {name: 'data team'})<-[:MEMBER_OF {is_lead: true}]-(p:Person) RETURN p.name, p.email, p.role, t.name AS team_name LIMIT 1",
+          "time": 2.2011935710906982,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nWHERE toLower(pol.category) CONTAINS 'compliance' OR toLower(pol.name) CONTAINS 'compliance'\nRETURN pol.id, pol.name, pol.description, pol.severity",
+          "time": 0.8129138946533203,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(s:Skill) WHERE s.name = 'Python' RETURN p.id, p.name, p.email, p.department, p.role, p.seniority, p.location, p.timezone, p.manager_id, p.hire_date",
+          "time": 1.0504493713378906,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (pol:Policy)\n  WHERE pol.name CONTAINS 'critical' OR pol.severity = 'high'\n  WITH pol, (\n    MATCH (p:Person)-[:RESPONSIBLE_FOR]->(entity)\n    RETURN entity\n  ) AS responsible\nRETURN pol, toLower(responsible)",
+          "time": 1.0905249118804932,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": "MATCH (p:Person)-[:ALLOCATED_TO]->(proj:Project)-[:HAS_SKILL]->(skill:Skill)\nWHERE skill.name = 'React' AND p.role = 'Senior Engineer' AND p.location IN ['Europe']",
+          "time": 1.0501670837402344,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": "MATCH (t:Team)-[:RESPONSIBLE_FOR]->(pol:Policy), (p:Person)-[:ALLOCATED_TO]->(proj:Project)\nWHERE toLower(proj.type) = 'customer'\nRETURN t.name, proj.name",
+          "time": 0.9156398773193359,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": "MATCH (p:Person)-[:REPORTS_TO|MEMBER_OF {role: 'lead'}]->(m:Person)\nWITH p, COLLECT(m) AS reports\nRETURN p.id, p.name, p.department, p.role, p.seniority, reports",
+          "time": 1.0642070770263672,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": "MATCH p=(cto:Person)-[r]-(*), (team:Team {name: 'data'})-[*]-(member:Person)\nWHERE r IN ['MEMBER_OF', 'REPORTS_TO']\nRETURN cto, member, TYPE(r), r, team",
+          "time": 1.0784330368041992,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": "MATCH (p:Person) WHERE p.name =~ 'x%' OR p.department =~ 'x%' OR p.location =~ 'x%' RETURN p.id, p.name, p.email, p.manager_id LIMIT 10",
+          "time": 0.9039797782897949,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": "MATCH (p:Person) WHERE lower(p.department) = 'quantum' OR lower(p.location) = 'quantum' RETURN p.*",
+          "time": 0.8050932884216309,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": "MATCH (pol:Policy)\nWHERE lower(pol.name) CONTAINS 'compliance'\nRETURN pol.id, pol.name, pol.description, pol.severity",
+          "time": 1.0122692584991455,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": "MATCH (p:Person)-[:HAS_SKILL]->(skill:Skill {name: 'Python'})\nWITH p, skill\nRETURN p.name AS name, p.email AS email, skill.category AS skill_category",
+          "time": 1.7865381240844727,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": "MATCH (p:Person)-[:RESPONSIBLE_FOR]->(pol:Policy {severity: 'CRITICAL'})\nWITH p, pol\nOPTIONAL MATCH (pol)<-[:RESPONSIBLE_FOR]-(entity)\nRETURN p.name AS person_name, entity.name AS team_or_group_name, pol.name AS policy_name, pol.severity",
+          "time": 1.646925926208496,
+          "syntax_valid": true,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "execution_error": "Error -3 connecting to falkordb:6379. Temporary failure in name resolution."
+        }
+      ],
+      "timestamp": "2025-06-22T15:16:06.284913"
+    },
+    {
+      "model": "phi3-mini:3.8b",
+      "config": {
+        "name": "phi3-mini:3.8b",
+        "priority": 3,
+        "type": "general"
+      },
+      "available": true,
+      "model_info": {},
+      "metrics": {
+        "cold_start_time": 0.015274524688720703,
+        "average_time": 0.016042470932006836,
+        "median_time": 0.015202164649963379,
+        "p95_time": 0.02280569076538086,
+        "min_time": 0.014541149139404297,
+        "max_time": 0.02280569076538086,
+        "throughput_qps": 74.58838871830135,
+        "syntax_validity_rate": 0.0,
+        "execution_success_rate": 0.0,
+        "has_results_rate": 0.0
+      },
+      "resource_usage": {
+        "vram_before_mb": 10693,
+        "vram_during_mb": 10703,
+        "vram_peak_mb": 10703,
+        "vram_delta_mb": 10
+      },
+      "detailed_results": [
+        {
+          "query": "Who manages the data team?",
+          "cypher": null,
+          "time": 0.015274524688720703,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": true,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "List all compliance policies",
+          "cypher": null,
+          "time": 0.015129804611206055,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": null,
+          "time": 0.014541149139404297,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": null,
+          "time": 0.014958858489990234,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "Find senior engineers in Europe with React skills",
+          "cypher": null,
+          "time": 0.014795303344726562,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "Which teams are working on customer projects?",
+          "cypher": null,
+          "time": 0.014737606048583984,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "Show the complete org structure with reporting lines",
+          "cypher": null,
+          "time": 0.016141414642333984,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "Find all paths between the CTO and data team members",
+          "cypher": null,
+          "time": 0.02280569076538086,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "xyz123 nonexistent query",
+          "cypher": null,
+          "time": 0.015744924545288086,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "Find people in the quantum department",
+          "cypher": null,
+          "time": 0.016295433044433594,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        }
+      ],
+      "concurrent_results": [
+        {
+          "query": "List all compliance policies",
+          "cypher": null,
+          "time": 0.0399472713470459,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "Find people with Python skills",
+          "cypher": null,
+          "time": 0.02737736701965332,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        },
+        {
+          "query": "What are the critical security policies and who's responsible?",
+          "cypher": null,
+          "time": 0.015271186828613281,
+          "syntax_valid": false,
+          "execution_success": false,
+          "has_results": false,
+          "is_cold_start": false,
+          "error": "Model returned status 404"
+        }
+      ],
+      "timestamp": "2025-06-22T15:16:23.756114"
+    }
+  ],
+  "summary": {}
+}

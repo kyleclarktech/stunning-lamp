@@ -1,0 +1,984 @@
+{
+  "model": "llama3.2:3b",
+  "available": true,
+  "baseline_success_rate": 96.29629629629629,
+  "improved_success_rate": 100.0,
+  "improvement_percentage": 3.7037037037037033,
+  "baseline_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": null,
+      "generation_time": 5.017265558242798,
+      "generation_error": "Timeout",
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "No query generated"
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8746438026428223,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8728375434875488,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 1.8717942237854004,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8736705780029297,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'in_progress' RETURN c.id, t.name, count(DISTINCT p) as project_count",
+      "generation_time": 2.818950653076172,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name, labels(c) as client_type ORDER BY c.id LIMIT 25",
+      "generation_time": 1.9929938316345215,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND p.status = 'active' RETURN c.id, c.name, t.name, t.department, p.name as project ORDER BY c.id",
+      "generation_time": 1.923983097076416,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND t.name IN ['Customer Success', 'Data Science'] RETURN p.name as project, t.name as team, c.name as client, c.tier, labels(p) as project_labels ORDER BY c.tier",
+      "generation_time": 2.0982742309570312,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "generation_time": 2.6331725120544434,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8706347942352295,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8755898475646973,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8642997741699219,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8841724395751953,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND t.name IN ['Customer Success', 'Data Science'] RETURN p.name as project, t.name as team, count(c) as client_count",
+      "generation_time": 1.9351084232330322,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 1.8621432781219482,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 1.877640962600708,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 1.8620586395263672,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Show me the important people",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN c.id, t.name, t.department, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.894897699356079,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name, r.name",
+      "generation_time": 1.871490478515625,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8671488761901855,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name, r.name",
+      "generation_time": 1.8795721530914307,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8881726264953613,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)<-[:SUPPORTS_REGION]-(c) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.864088773727417,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND p.status = 'active' RETURN c.id, c.name, t.name, t.department, p.name as project ORDER BY c.id LIMIT 25",
+      "generation_time": 1.9675014019012451,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8822641372680664,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    },
+    {
+      "query": "Find team leads",
+      "model": "llama3.2:3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT c) as strategic_customers ORDER BY strategic_customers DESC",
+      "generation_time": 1.9695582389831543,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0
+    }
+  ],
+  "improved_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "generation_time": 0.9052042961120605,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+        "processed_query": "",
+        "execution_time": 0.0016629695892333984,
+        "generation_time": 0.9052042961120605
+      }
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.878478765487671,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0013282299041748047,
+        "generation_time": 1.878478765487671
+      }
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 1.869248390197754,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+        "processed_query": "",
+        "execution_time": 0.0015261173248291016,
+        "generation_time": 1.869248390197754
+      }
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.879852533340454,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0012509822845458984,
+        "generation_time": 1.879852533340454
+      }
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name, r.name",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name, r.name",
+      "generation_time": 1.8725190162658691,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name, r.name",
+        "processed_query": "",
+        "execution_time": 0.0014023780822753906,
+        "generation_time": 1.8725190162658691
+      }
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8845741748809814,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0014443397521972656,
+        "generation_time": 1.8845741748809814
+      }
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)<-[:SUPPORTS_REGION]-(c) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)<-[:SUPPORTS_REGION]-(c) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "generation_time": 1.8726904392242432,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)<-[:SUPPORTS_REGION]-(c) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+        "processed_query": "",
+        "execution_time": 0.0014450550079345703,
+        "generation_time": 1.8726904392242432
+      }
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "generation_time": 1.8844690322875977,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+        "processed_query": "",
+        "execution_time": 0.0015790462493896484,
+        "generation_time": 1.8844690322875977
+      }
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 1.9496088027954102,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+        "processed_query": "",
+        "execution_time": 0.0015783309936523438,
+        "generation_time": 1.9496088027954102
+      }
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name",
+      "generation_time": 1.8443028926849365,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name",
+        "processed_query": "",
+        "execution_time": 0.001466989517211914,
+        "generation_time": 1.8443028926849365
+      }
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.name as team, collect(p.name) as projects ORDER BY count(p) DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.name as team, collect(p.name) as projects ORDER BY count(p) DESC",
+      "generation_time": 1.8917043209075928,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.name as team, collect(p.name) as projects ORDER BY count(p) DESC",
+        "processed_query": "",
+        "execution_time": 0.0014712810516357422,
+        "generation_time": 1.8917043209075928
+      }
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT p) as project_count ORDER BY project_count DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT p) as project_count ORDER BY project_count DESC",
+      "generation_time": 1.935234785079956,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT p) as project_count ORDER BY project_count DESC",
+        "processed_query": "",
+        "execution_time": 0.0014553070068359375,
+        "generation_time": 1.935234785079956
+      }
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "generation_time": 2.8809869289398193,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+        "processed_query": "",
+        "execution_time": 0.0014832019805908203,
+        "generation_time": 2.8809869289398193
+      }
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name",
+      "generation_time": 1.8361859321594238,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.name IN ['Data Science', 'Product Management'] RETURN c.id, p.name, t.name",
+        "processed_query": "",
+        "execution_time": 0.0013637542724609375,
+        "generation_time": 1.8361859321594238
+      }
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8815529346466064,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0017309188842773438,
+        "generation_time": 1.8815529346466064
+      }
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)<-[:SUPPORTS_REGION]-(c) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)<-[:SUPPORTS_REGION]-(c) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "generation_time": 1.8697052001953125,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)<-[:SUPPORTS_REGION]-(c) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+        "processed_query": "",
+        "execution_time": 0.0013575553894042969,
+        "generation_time": 1.8697052001953125
+      }
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 1.8649206161499023,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+        "processed_query": "",
+        "execution_time": 0.0011816024780273438,
+        "generation_time": 1.8649206161499023
+      }
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "generation_time": 1.9414629936218262,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+        "processed_query": "",
+        "execution_time": 0.0011687278747558594,
+        "generation_time": 1.9414629936218262
+      }
+    },
+    {
+      "query": "Show me the important people",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8619840145111084,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0012466907501220703,
+        "generation_time": 1.8619840145111084
+      }
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND p.status = 'active' RETURN c.id, c.name, t.name, t.department, p.name as project ORDER BY c.id",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND p.status = 'active' RETURN c.id, c.name, t.name, t.department, p.name as project ORDER BY c.id",
+      "generation_time": 2.5856220722198486,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND p.status = 'active' RETURN c.id, c.name, t.name, t.department, p.name as project ORDER BY c.id",
+        "processed_query": "",
+        "execution_time": 0.0012543201446533203,
+        "generation_time": 2.5856220722198486
+      }
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+      "generation_time": 2.8309133052825928,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, r, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(r:Region) WHERE r.name = 'APAC' AND t.department = 'Customer Success' RETURN c.id, p.name, t.name, r.name ORDER BY c.id",
+        "processed_query": "",
+        "execution_time": 0.0012066364288330078,
+        "generation_time": 2.8309133052825928
+      }
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8825864791870117,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0012066364288330078,
+        "generation_time": 1.8825864791870117
+      }
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT p) as project_count ORDER BY project_count DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT p) as project_count ORDER BY project_count DESC",
+      "generation_time": 1.9451563358306885,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, count(DISTINCT p) as project_count ORDER BY project_count DESC",
+        "processed_query": "",
+        "execution_time": 0.0012028217315673828,
+        "generation_time": 1.9451563358306885
+      }
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8772566318511963,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0012047290802001953,
+        "generation_time": 1.8772566318511963
+      }
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+      "generation_time": 1.8899478912353516,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'Strategic' AND p.status = 'active' RETURN c.id, t.name, p.name as project ORDER BY c.mrr DESC",
+        "processed_query": "",
+        "execution_time": 0.0010690689086914062,
+        "generation_time": 1.8899478912353516
+      }
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+      "generation_time": 1.8790159225463867,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, count(DISTINCT c) as enterprise_customers",
+        "processed_query": "",
+        "execution_time": 0.0012500286102294922,
+        "generation_time": 1.8790159225463867
+      }
+    },
+    {
+      "query": "Find team leads",
+      "model": "llama3.2:3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "processed_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+      "generation_time": 1.952622652053833,
+      "syntax_valid": false,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: p, t"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client)-[:HAS_PROJECT]->(p:Project), (t:Team)-[:SUPPORTS_REGION]->(c:Client) WHERE c.tier = 'enterprise' AND p.status = 'active' RETURN t.id, t.name, t.department, count(c) as enterprise_customers ORDER BY enterprise_customers DESC",
+        "processed_query": "",
+        "execution_time": 0.0012972354888916016,
+        "generation_time": 1.952622652053833
+      }
+    }
+  ],
+  "timestamp": "2025-06-23T00:40:14.775556"
+}

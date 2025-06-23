@@ -1,0 +1,58 @@
+{
+  "timestamp": "20250622_162124",
+  "results": [
+    {
+      "test": "Syntax Error - Invalid Property",
+      "query": "MATCH (p:Person) WHERE p.invalid_property = 'test' RETURN p",
+      "error_handled": false,
+      "fallback_attempted": false,
+      "error_message": null,
+      "suggestions": [],
+      "success": true,
+      "result_count": 0
+    },
+    {
+      "test": "Syntax Error - Invalid Relationship",
+      "query": "MATCH (p:Person)-[:INVALID_REL]->(t:Team) RETURN p",
+      "error_handled": false,
+      "fallback_attempted": false,
+      "error_message": null,
+      "suggestions": [],
+      "success": true,
+      "result_count": 0
+    },
+    {
+      "test": "No Results - Very Specific Query",
+      "query": "MATCH (p:Person {name: 'NonExistentPerson12345'}) RETURN p",
+      "error_handled": false,
+      "fallback_attempted": false,
+      "error_message": null,
+      "suggestions": [],
+      "success": true,
+      "result_count": 0
+    },
+    {
+      "test": "Ambiguous Natural Language",
+      "natural_language": "Find the xyz123 quantum department",
+      "generated_query": "MATCH (t:Team {name: 'xyz123'})<-[:MEMBER_OF]-(p:Person)\nWHERE toLower(t.department) = toLower('quantum')\nRETURN t.name AS TeamName, t.department AS Department, collect(p.name) AS Members\nLIMIT 10;",
+      "fallback_used": true,
+      "error_handled": false,
+      "success": true,
+      "result_count": 0,
+      "fallback_query": "MATCH (t:Team), (p:Person)\nWHERE t.name CONTAINS 'xyz123' OR p.department CONTAINS 'quantum'\nRETURN DISTINCT t.name AS TeamName, t.department AS Department, collect(DISTINCT p.name) AS Members\nLIMIT 50",
+      "fallback_result_count": 0
+    },
+    {
+      "test": "Timeout Handling",
+      "timeout_triggered": false,
+      "error_message": null,
+      "success": true
+    }
+  ],
+  "summary": {
+    "total_tests": 5,
+    "errors_handled": 0,
+    "fallbacks_used": 1,
+    "timeouts_handled": 0
+  }
+}

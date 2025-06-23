@@ -1,0 +1,969 @@
+{
+  "model": "deepseek-coder:1.3b",
+  "available": true,
+  "baseline_success_rate": 66.66666666666666,
+  "improved_success_rate": 70.37037037037037,
+  "improvement_percentage": 3.7037037037037033,
+  "baseline_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+      "generation_time": 3.056142568588257,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WHERE s.category = 'Data' AND hs.proficiency_level IN ['advanced', 'expert'] RETURN p.id, p.name, \n    labels(p) as \"Person\", o.region AS OfficeRegion FROM ALL OTHER VERTEX (v:Team), COLLECT([DISTINCT v]) WHERE ID(t) <> ID(v) WITH t, count(*) as team_counts ORDER BY strategic_customers DESC",
+      "generation_time": 2.1632466316223145,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "errMsg: Invalid input '\"': expected an identifier line: 3, column: 18, offset: 340 errCtx:     labels(p) as \"Person\", o.region AS OfficeRegion FROM ALL OTHER VERTEX (v:... errCtxOffset: 17",
+      "result_count": 0
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as PrimaryRegion, c.industry as IndustryType",
+      "generation_time": 1.1740617752075195,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1078853607177734,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as average_monthly_revenue RETURN t.name AS teamName , COUNT ( DISTINCT  c )AS customerCount , AVG ( c . mrr )as monthlyRevenue",
+      "generation_time": 1.3582584857940674,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "WITH clause projections must be aliased",
+      "result_count": 0
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WHERE s.category = 'Data' AND hs.proficiency_level IN ['advanced', 'expert'] RETURN p.id, p.name, \n    labels(p) as labels LIMIT 25;",
+      "generation_time": 1.7451865673065186,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "'hs' not defined",
+      "result_count": 0
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName , c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, labels(c)",
+      "generation_time": 1.1476244926452637,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1022415161132812,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.0993258953094482,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.096472978591919,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1047794818878174,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WITH p, s, o, count(*) as teamwork RETURN t.name AS TeamName , strategic_customers, totalteamwork;",
+      "generation_time": 1.6075778007507324,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "'t' not defined",
+      "result_count": 0
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WITH p, s, o, count(*) as teamwork RETURN t.name AS TeamName , strategic_customers, totalteamwork;",
+      "generation_time": 1.6120343208312988,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "'t' not defined",
+      "result_count": 0
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, c.industry as IndustryType",
+      "generation_time": 1.157616138458252,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as averageRevenue MATCH (p:Person)-[hs:HAS_SKILL {proficiencyLevel : 'expert'}]->(s:Skill){category:'Data'} WHERE hs.skills = s WITH p, count(DISTinct c), avg(c.annualValue) as averageAnnualRevenue MATCH (t)-[:SUPPORTS_REGION]->(o:Office {timezone : 'Asia/Tokyo'}) WHERE o.officeType = \"Business\" WITH t, count(DISTINCT c), avg(c.dataVolumeGB) as averageDataProcessing MATCH (t)-[:SUPPORTS_REGION]->(o:Office {timezone : 'Asia/Tokyo'}) WHERE o.officeType = \"Business\" WITH t, count(DISTINCT c), avg(c.dataVolumeGB) as averageDataProcessing MATCH (t)-[:SUPPORTS",
+      "generation_time": 2.6311914920806885,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "errMsg: Invalid input '{': expected '<', '-', ',', USING INDEX, USING JOIN ON, USING SCAN, WHERE, ';', call clause or a clause line: 1, column: 204, offset: 203 errCtx: ...ficiencyLevel : 'expert'}]->(s:Skill){category:'Data'} WHERE hs.skills = s... errCtxOffset: 40",
+      "result_count": 0
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WHERE s.category = 'Data' AND hs.proficiency_level IN ['advanced', 'expert'] RETURN p.id, p.name, \n    o.region as office_location ORDER BY strategic_customers DESC;",
+      "generation_time": 1.793100357055664,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "'hs' not defined",
+      "result_count": 0
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, c.industry as IndustryType",
+      "generation_time": 1.1822268962860107,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+      "generation_time": 1.0425302982330322,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Show me the important people",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1078126430511475,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WITH p, s, o, count(*) as work_count RETURN t.name AS teamName, strategic_customers, work_count ORDER BY strategycust",
+      "generation_time": 1.6795942783355713,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "'t' not defined",
+      "result_count": 0
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, c.industry as IndustryType",
+      "generation_time": 1.1671223640441895,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1102707386016846,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1012589931488037,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 2.0402984619140625,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1099462509155273,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+      "generation_time": 1.0434205532073975,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4
+    },
+    {
+      "query": "Find team leads",
+      "model": "deepseek-coder:1.3b",
+      "baseline": true,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS average_monthly_revenue RETURN t.name as teamName, COUNT(DISTINCT C) as customerCount, AVG(C.MRR) as AvgMonthRevenue ORDER BY AVGMONTHREVENUE DESC",
+      "generation_time": 1.4586350917816162,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "WITH clause projections must be aliased",
+      "result_count": 0
+    }
+  ],
+  "improved_results": [
+    {
+      "query": "Who is the CTO?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client) WHERE c.primary_region = 'APAC' OR ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/') RETURN c.id AS clientID, c.name AS customerName;  // Output ONLY the Cypher query on one line",
+      "processed_query": "MATCH (c:Client) WHERE c.primary_region = 'APAC' OR ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/') RETURN c.id AS clientID, c.name AS customerName",
+      "generation_time": 2.1184964179992676,
+      "syntax_valid": true,
+      "execution_success": false,
+      "execution_error": "Type mismatch: expected List or Null but was String",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'ANY()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [],
+        "post_processing_applied": true,
+        "original_query": "MATCH (c:Client) WHERE c.primary_region = 'APAC' OR ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/') RETURN c.id AS clientID, c.name AS customerName;  // Output ONLY the Cypher query on one line",
+        "processed_query": "MATCH (c:Client) WHERE c.primary_region = 'APAC' OR ANY(tz IN c.time_zone_preferences WHERE tz STARTS WITH 'Asia/') RETURN c.id AS clientID, c.name AS customerName",
+        "execution_time": 0.0013599395751953125,
+        "generation_time": 2.1184964179992676
+      }
+    },
+    {
+      "query": "List all teams in the engineering department",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS average_monthly_revenue RETURN t.name as teamName, COUNT(DISTINCT C) as customerCount, AVG(C.MRR) as AvgMonthRevenue ORDER BY AVGMONTHREVENUE DESC",
+      "processed_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS average_monthly_revenue RETURN t.name as teamName, COUNT(DISTINCT C) as customerCount, AVG(C.MRR) as AvgMonthRevenue ORDER BY AVGMONTHREVENUE DESC",
+      "generation_time": 1.4599254131317139,
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "WITH clause projections must be aliased",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'COUNT()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'AVG()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [
+          "Undefined variables: C, c"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS average_monthly_revenue RETURN t.name as teamName, COUNT(DISTINCT C) as customerCount, AVG(C.MRR) as AvgMonthRevenue ORDER BY AVGMONTHREVENUE DESC",
+        "processed_query": "",
+        "execution_time": 0.0012364387512207031,
+        "generation_time": 1.4599254131317139
+      }
+    },
+    {
+      "query": "Find employees in the Berlin office",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client) WHERE c.data_volume_gb > 10000 RETURN c.id, c.name, c.industry, c.data_volume_gb, c.support_tier, c.primary_region;",
+      "processed_query": "MATCH (c:Client) WHERE c.data_volume_gb > 10000 RETURN c.id, c.name, c.industry, c.data_volume_gb, c.support_tier, c.primary_region",
+      "generation_time": 1.0686917304992676,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 14,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": true,
+        "original_query": "MATCH (c:Client) WHERE c.data_volume_gb > 10000 RETURN c.id, c.name, c.industry, c.data_volume_gb, c.support_tier, c.primary_region;",
+        "processed_query": "MATCH (c:Client) WHERE c.data_volume_gb > 10000 RETURN c.id, c.name, c.industry, c.data_volume_gb, c.support_tier, c.primary_region",
+        "execution_time": 0.0017483234405517578,
+        "generation_time": 1.0686917304992676
+      }
+    },
+    {
+      "query": "Show me senior engineers with Python and React skills",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+      "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry",
+      "generation_time": 1.036712646484375,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": true,
+        "original_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+        "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry",
+        "execution_time": 0.0013782978057861328,
+        "generation_time": 1.036712646484375
+      }
+    },
+    {
+      "query": "Find all critical security policies updated this year",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID , c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, labels(c)",
+      "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID , c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, labels(c)",
+      "generation_time": 1.1436636447906494,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID , c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, labels(c)",
+        "processed_query": "",
+        "execution_time": 0.001461029052734375,
+        "generation_time": 1.1436636447906494
+      }
+    },
+    {
+      "query": "Which teams have more than 10 members?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.0970854759216309,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0012676715850830078,
+        "generation_time": 1.0970854759216309
+      }
+    },
+    {
+      "query": "How many people work in each department?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as averageRevenue MATCH (p:Person)-[hs:HAS_SKILL {proficiencyLevel : 'expert'}]->(s:Skill), \n    (p)-[:WORKS_AT]->(o:Office {timezone STARTS WITH 'Asia/Tokyo'}) WHERE s.category =~ 'Data' RETURN p.id, p.name AS name, o.region as region ORDER BY averageRevenue DESC",
+      "processed_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as averageRevenue MATCH (p:Person)-[hs:HAS_SKILL {proficiencyLevel : 'expert'}]->(s:Skill), \n    (p)-[:WORKS_AT]->(o:Office {timezone STARTS WITH 'Asia/Tokyo'}) WHERE s.category =~ 'Data' RETURN p.id, p.name AS name, o.region as region ORDER BY averageRevenue DESC",
+      "generation_time": 1.8121371269226074,
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "errMsg: Invalid input 'S': expected ':' line: 2, column: 42, offset: 247 errCtx: ...(p)-[:WORKS_AT]->(o:Office {timezone STARTS WITH 'Asia/Tokyo'}) WHERE s.ca... errCtxOffset: 40",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Undefined variables: c, o, s"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as averageRevenue MATCH (p:Person)-[hs:HAS_SKILL {proficiencyLevel : 'expert'}]->(s:Skill), \n    (p)-[:WORKS_AT]->(o:Office {timezone STARTS WITH 'Asia/Tokyo'}) WHERE s.category =~ 'Data' RETURN p.id, p.name AS name, o.region as region ORDER BY averageRevenue DESC",
+        "processed_query": "",
+        "execution_time": 0.0012545585632324219,
+        "generation_time": 1.8121371269226074
+      }
+    },
+    {
+      "query": "What's the average team size across all departments?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WITH p, s, o WHERE NOT EXISTS((SELECT t FROM Team AS a JOIN a.members as m ON id(m)=id(t))) AND ((s.category = \"Data\" OR (NOT exists((select * from sys.objects where type_desc like '%function%') limit 1)) ) RETURN p, s",
+      "processed_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WITH p, s, o WHERE NOT EXISTS((SELECT t FROM Team AS a JOIN a.members as m ON id(m)=id(t))) AND ((s.category = \"Data\" OR (NOT exists((select * from sys.objects where type_desc like '%function%') limit 1)) ) RETURN p, s",
+      "generation_time": 1.9031906127929688,
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "errMsg: Invalid input 't': expected a label, '{', a parameter, ')', '.', '(', AND, OR, XOR, NOT, '=~', '=', '<>', '+', '-', '*', '/', '%', '^', IN, CONTAINS, STARTS WITH, ENDS WITH, '<=', '>=', '<', '>', IS NULL, IS NOT NULL or '[' line: 2, column: 96, offset: 262 errCtx: ...ITH p, s, o WHERE NOT EXISTS((SELECT t FROM Team AS a JOIN a.members as m ... errCtxOffset: 40",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'EXISTS()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'AND()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'OR()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'exists()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [
+          "Undefined variables: a, sys",
+          "Unclosed '(' at position 320"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WITH p, s, o WHERE NOT EXISTS((SELECT t FROM Team AS a JOIN a.members as m ON id(m)=id(t))) AND ((s.category = \"Data\" OR (NOT exists((select * from sys.objects where type_desc like '%function%') limit 1)) ) RETURN p, s",
+        "processed_query": "",
+        "execution_time": 0.001310586929321289,
+        "generation_time": 1.9031906127929688
+      }
+    },
+    {
+      "query": "Show the distribution of seniority levels by location",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.108752727508545,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.001196146011352539,
+        "generation_time": 1.108752727508545
+      }
+    },
+    {
+      "query": "Find all people who report to someone in the data team",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WHERE s.category = 'Data' AND hs.proficiency_level IN ['advanced', 'expert'] RETURN p.id, p.name, \n    labels(p) as \"Person\", o.region AS OfficeRegion FROM ALL OTHER VERTEX (v:Team), COLLECT([DISTINCT v]) WHERE ID(t) <> ID(v) WITH t, count(*) -1 as team_count RETURN \n    labels(t) as \"Strategic Team\", strategic_customers AS CustomersSupportingTierInTokyo FROM ALL OTHER VERTEX (w:Team), COLLECT([DISTINCT w]) WHERE ID(c) <> ID(w) WITH t, count(*)-1 \n    as team_count RETURN labels(t) as \"Strategic Team\", strategic_customers AS CustomersSupport",
+      "processed_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WHERE s.category = 'Data' AND hs.proficiency_level IN ['advanced', 'expert'] RETURN p.id, p.name, \n    labels(p) as \"Person\", o.region AS OfficeRegion FROM ALL OTHER VERTEX (v:Team), COLLECT([DISTINCT v]) WHERE ID(t) <> ID(v) WITH t, count(*) -1 as team_count RETURN \n    labels(t) as \"Strategic Team\", strategic_customers AS CustomersSupportingTierInTokyo FROM ALL OTHER VERTEX (w:Team), COLLECT([DISTINCT w]) WHERE ID(c) <> ID(w) WITH t, count(*)-1 \n    as team_count RETURN labels(t) as \"Strategic Team\", strategic_customers AS CustomersSupport",
+      "generation_time": 2.809438467025757,
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "errMsg: Invalid input '\"': expected an identifier line: 3, column: 18, offset: 340 errCtx:     labels(p) as \"Person\", o.region AS OfficeRegion FROM ALL OTHER VERTEX (v:... errCtxOffset: 17",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'VERTEX()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'COLLECT()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'ID()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'ID()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'VERTEX()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'COLLECT()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'ID()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'ID()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [
+          "Undefined variables: hs, o, s"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c) as strategic_customers MATCH (p:Person)-[:HAS_SKILL]->(s:Skill), \n    (p)-[:WORKS_AT]-(o:Office {timezone : 'Asia/Tokyo'}) WHERE s.category = 'Data' AND hs.proficiency_level IN ['advanced', 'expert'] RETURN p.id, p.name, \n    labels(p) as \"Person\", o.region AS OfficeRegion FROM ALL OTHER VERTEX (v:Team), COLLECT([DISTINCT v]) WHERE ID(t) <> ID(v) WITH t, count(*) -1 as team_count RETURN \n    labels(t) as \"Strategic Team\", strategic_customers AS CustomersSupportingTierInTokyo FROM ALL OTHER VERTEX (w:Team), COLLECT([DISTINCT w]) WHERE ID(c) <> ID(w) WITH t, count(*)-1 \n    as team_count RETURN labels(t) as \"Strategic Team\", strategic_customers AS CustomersSupport",
+        "processed_query": "",
+        "execution_time": 0.001312255859375,
+        "generation_time": 2.809438467025757
+      }
+    },
+    {
+      "query": "Which policies affect teams working on customer projects?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as averageRevenue ORDER BY averageRevenue DESC",
+      "processed_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as averageRevenue ORDER BY averageRevenue DESC",
+      "generation_time": 1.122828483581543,
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "Query cannot conclude with WITH (must be a RETURN clause, an update clause, a procedure call or a non-returning subquery)",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Query must have a RETURN clause",
+          "Undefined variables: c"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) as averageRevenue ORDER BY averageRevenue DESC",
+        "processed_query": "",
+        "execution_time": 0.0014166831970214844,
+        "generation_time": 1.122828483581543
+      }
+    },
+    {
+      "query": "Show me engineers who work with clients in the financial sector",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 2.0825936794281006,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.001291036605834961,
+        "generation_time": 2.0825936794281006
+      }
+    },
+    {
+      "query": "What's the reporting chain from junior developers to the CEO?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+      "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry",
+      "generation_time": 1.0281126499176025,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": true,
+        "original_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+        "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry",
+        "execution_time": 0.0013947486877441406,
+        "generation_time": 1.0281126499176025
+      }
+    },
+    {
+      "query": "Find all connections between the security team and compliance policies",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1077766418457031,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0011897087097167969,
+        "generation_time": 1.1077766418457031
+      }
+    },
+    {
+      "query": "Show how the product team collaborates with engineering",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+      "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry",
+      "generation_time": 1.0330886840820312,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": true,
+        "original_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry;",
+        "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id, c.name, c.mrr, c.annual_value, c.primary_region, c.industry",
+        "execution_time": 0.0012257099151611328,
+        "generation_time": 1.0330886840820312
+      }
+    },
+    {
+      "query": "Find circular reporting structures (people who indirectly report to themselves)",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1103086471557617,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0019428730010986328,
+        "generation_time": 1.1103086471557617
+      }
+    },
+    {
+      "query": "Which teams have members with skills that no other team has?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.111816644668579,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.00146484375,
+        "generation_time": 1.111816644668579
+      }
+    },
+    {
+      "query": "Identify skill gaps: skills needed by projects but not possessed by allocated team members",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, c.industry as IndustryType",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, c.industry as IndustryType",
+      "generation_time": 1.164555311203003,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, c.industry as IndustryType",
+        "processed_query": "",
+        "execution_time": 0.0014069080352783203,
+        "generation_time": 1.164555311203003
+      }
+    },
+    {
+      "query": "Show me the important people",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1116321086883545,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0011360645294189453,
+        "generation_time": 1.1116321086883545
+      }
+    },
+    {
+      "query": "Find problematic areas in the organization",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS average_monthly_revenue RETURN t.name as teamName, COUNT(DISTINCT C) as customerCount, AVG(C.MRR) as AvgMonthRevenue ORDER BY AVGMONTHREVENUE DESC",
+      "processed_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS average_monthly_revenue RETURN t.name as teamName, COUNT(DISTINCT C) as customerCount, AVG(C.MRR) as AvgMonthRevenue ORDER BY AVGMONTHREVENUE DESC",
+      "generation_time": 1.462007999420166,
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "WITH clause projections must be aliased",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [
+          "Unknown function 'COUNT()'. Ensure it's available in FalkorDB.",
+          "Unknown function 'AVG()'. Ensure it's available in FalkorDB."
+        ],
+        "validation_errors": [
+          "Undefined variables: C, c"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS average_monthly_revenue RETURN t.name as teamName, COUNT(DISTINCT C) as customerCount, AVG(C.MRR) as AvgMonthRevenue ORDER BY AVGMONTHREVENUE DESC",
+        "processed_query": "",
+        "execution_time": 0.0011982917785644531,
+        "generation_time": 1.462007999420166
+      }
+    },
+    {
+      "query": "Who should I talk to about AI stuff?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS averageRevenue ORDER BY averageRevenue DESC",
+      "processed_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS averageRevenue ORDER BY averageRevenue DESC",
+      "generation_time": 1.130786657333374,
+      "syntax_valid": false,
+      "execution_success": false,
+      "execution_error": "Query cannot conclude with WITH (must be a RETURN clause, an update clause, a procedure call or a non-returning subquery)",
+      "result_count": 0,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [
+          "Query must have a RETURN clause",
+          "Undefined variables: c"
+        ],
+        "post_processing_applied": false,
+        "original_query": "MATCH (t:Team {support_tier : 'Strategic'})-[:SUPPORTS_REGION]->(c:Client) WITH t, count(DISTINCT c), avg(c.mrr) AS averageRevenue ORDER BY averageRevenue DESC",
+        "processed_query": "",
+        "execution_time": 0.0012841224670410156,
+        "generation_time": 1.130786657333374
+      }
+    },
+    {
+      "query": "What's the bus factor for critical projects? (how many people would need to leave to endanger the project)",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1167101860046387,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0014340877532958984,
+        "generation_time": 1.1167101860046387
+      }
+    },
+    {
+      "query": "Find potential compliance violations: teams without required policy training",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1023261547088623,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0012166500091552734,
+        "generation_time": 1.1023261547088623
+      }
+    },
+    {
+      "query": "Identify knowledge silos: skills possessed by only one person in a team",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.111994743347168,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0012505054473876953,
+        "generation_time": 1.111994743347168
+      }
+    },
+    {
+      "query": "Find people named John or Jon (handle name variations)",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1157307624816895,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.0012433528900146484,
+        "generation_time": 1.1157307624816895
+      }
+    },
+    {
+      "query": "What happens if everyone in the data team leaves?",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID , c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, labels(c)",
+      "processed_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID , c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, labels(c)",
+      "generation_time": 1.1580650806427002,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client  {support_tier: 'Strategic'}) RETURN c.id AS ClientID , c.name as CustomerName, c.mrr as MonthlyRevenue, c.annual_value as AnnualValue, c.primary_region as PrimaryRegion, labels(c)",
+        "processed_query": "",
+        "execution_time": 0.0015766620635986328,
+        "generation_time": 1.1580650806427002
+      }
+    },
+    {
+      "query": "Find team leads",
+      "model": "deepseek-coder:1.3b",
+      "baseline": false,
+      "generated_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "processed_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+      "generation_time": 1.1058008670806885,
+      "syntax_valid": true,
+      "execution_success": true,
+      "execution_error": "",
+      "result_count": 4,
+      "improvements": {
+        "function_names_fixed": false,
+        "semicolons_removed": false,
+        "validation_warnings": [],
+        "validation_errors": [],
+        "post_processing_applied": false,
+        "original_query": "MATCH (c:Client {support_tier:'Strategic'}) RETURN c.id AS ClientID, c.name AS CustomerName, c.mrr AS MonthlyRevenue, c.annual_value AS AnnualValue, c.primary_region as RegionTier",
+        "processed_query": "",
+        "execution_time": 0.001270294189453125,
+        "generation_time": 1.1058008670806885
+      }
+    }
+  ],
+  "timestamp": "2025-06-23T00:38:25.916241"
+}
