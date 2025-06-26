@@ -37,11 +37,12 @@ An enterprise knowledge graph system that enables natural language queries to fi
 
 #### 3. Module System
 Clear boundaries between:
-- **@query-interface**: Natural language entry point
-- **@graph-engine**: Cypher query generation
-- **@schema-registry**: Data model management
-- **@query-executor**: Database operations
-- **@response-formatter**: Output formatting
+- **@api-gateway**: The primary REST API entry point.
+- **@query-engine**: Natural language to Cypher generation.
+- **@graph-executor**: Database connection and query execution.
+- **@pm-assistant**: Interactive project management assistance.
+- **@response-formatter**: Output formatting.
+- **@context-manager**: Smart context loading and touchpoints.
 
 #### 4. Reference Touchpoint System
 - Semantic connections between code, docs, and examples
