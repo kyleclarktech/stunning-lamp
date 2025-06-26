@@ -1,50 +1,37 @@
 # Enterprise Knowledge Graph & PM Assistant System - Build PRD
-## Product Requirements Document v2.0
+## Product Requirements Document v2.2
 
 ### Executive Summary
 
-This PRD outlines the build of a comprehensive system that combines an Enterprise Knowledge Graph with an Agentic PM Assistant. The system enables natural language queries against organizational data (people, policies, processes) while also serving as an autonomous project manager for teams without dedicated human PMs. It leverages Neo4j as the core graph database to store ALL system data - both organizational knowledge and project management entities - enabling unified queries and intelligent connections.
+This PRD outlines the build of a comprehensive system that combines an Enterprise Knowledge Graph with an interactive, state-aware Project Management Assistant. The system is designed as a Proof of Concept (PoC) to validate the architecture and core functionality. It enables natural language queries against organizational data and assists Project Managers by allowing them to "chat with their projects" to create new, non-redundant tasks. It leverages Neo4j as the core graph database.
 
 ### Core Value Proposition
 
 **Dual Purpose System**:
-1. **Knowledge Graph**: Enable employees to quickly find the right people, policies, and processes through natural language queries
-2. **PM Assistant**: Provide autonomous project management including task breakdown, intelligent assignment, and progress tracking
+1. **Knowledge Graph**: Enable employees to quickly find the right people, policies, and processes through natural language queries.
+2. **Interactive PM Assistant**: Provide a state-aware tool for Project Managers to interact with project data, understand the current state of work, and create new tasks without introducing redundancy.
 
 **Key Differentiators**:
-- Unified organizational intelligence platform
-- Natural language interface for both queries and project management
-- Automatic task decomposition with skill-based assignment
-- Real-time progress tracking and bottleneck detection
-- AI-agent friendly architecture with lazy loading
-- Self-documenting codebase with reference touchpoints
+- Unified organizational intelligence platform.
+- **Agent-First Architecture**: Designed primarily for agentic coding assistants, with a secondary human-friendly API.
+- **State-Aware Task Creation**: Reads from the graph to ensure new tasks are relevant to the project's current state.
+- Self-documenting codebase via agent-maintained touchpoints.
 
 ---
 
 ## Architecture Principles
 
 ### 1. Modular Design
-Each module is a self-contained unit with:
-- Clear API boundaries
-- Own documentation index
-- Independent testing
-- Minimal dependencies
+Each module is a self-contained unit with clear API boundaries, its own documentation, and independent tests.
 
-### 2. AI-Agent First Development
-- Machine-readable module manifests
-- Structured documentation with semantic markers
-- Query-able capability maps
-- Context-aware loading patterns
+### 2. Agent-First Development
+The primary interface is designed for programmatic use by AI agents, with machine-readable manifests and context-aware loading. A human-friendly gateway serves as a secondary interface.
 
-### 3. Progressive Enhancement
-- Core functionality works standalone
-- Features added through module composition
-- Graceful degradation when modules unavailable
+### 3. Proof of Concept Focus
+This build prioritizes functional correctness and architectural validation over production-grade performance and scalability. The schema and components are designed to prove the concept.
 
 ### 4. Graph-First Design
-- All data stored in Neo4j graph database
-- PM entities are graph nodes, not separate systems
-- Unified query interface for all functionality
+All data is stored in the Neo4j graph database, making it the single source of truth and enabling unified queries.
 
 ---
 
@@ -53,68 +40,45 @@ Each module is a self-contained unit with:
 ### Database Choice: Neo4j
 
 **Why Neo4j over FalkorDB:**
-- Better representation in AI training data
-- More mature ecosystem and tooling
-- Standard Cypher query language
-- Better documentation and community support
-- Native graph database (not Redis-based)
+- Better representation in AI training data and more mature tooling.
+- Standard Cypher query language and strong community support.
+- Native graph database, ideal for the PoC's focus on relationships.
 
-### Core Modules (Simplified to 5)
+### Core Modules (Expanded to 6)
 
 #### 1. Query Engine (`@query-engine`)
-**Purpose**: Convert natural language to graph queries for both knowledge and PM data
-
-**Key Components**:
-- Natural Language Parser
-- Intent Classifier (knowledge queries vs PM commands)
-- Cypher Generator
-- Query Optimizer
+**Purpose**: Convert natural language to graph queries.
+**Components**: NL Parser, Intent Classifier, Cypher Generator.
 
 #### 2. Graph Executor (`@graph-executor`)
-**Purpose**: Execute queries against Neo4j, manage connections and transactions
-
-**Key Components**:
-- Connection Pool Manager
-- Query Executor
-- Transaction Handler
-- Result Streamer
+**Purpose**: Execute Cypher queries against Neo4j.
+**Components**: Connection Pool, Query Executor, Transaction Handler.
 
 #### 3. PM Assistant (`@pm-assistant`)
-**Purpose**: Project management logic using graph queries
-
+**Purpose**: Interactive, state-aware project management assistance.
 **Key Features**:
-- Project breakdown into graph nodes
-- Task assignment via graph queries
-- Progress tracking through graph traversal
-- Bottleneck detection using graph analysis
+- Reads existing project data from the graph to understand context.
+- Interacts with a PM to define and create new tasks.
+- **Analyzes new task requests to prevent duplication and suggests modifications or consolidation with existing work items.**
+- **Is not an autonomous agent.**
 
 #### 4. Response Formatter (`@response-formatter`)
-**Purpose**: Format query results for different consumers
-
-**Features**:
-- JSON/Markdown/Table formatting
-- Pagination support
-- Localization
-- Template rendering
+**Purpose**: Format query results for different consumers (JSON, Markdown, etc.).
 
 #### 5. Context Manager (`@context-manager`)
-**Purpose**: Smart loading with touchpoints and dynamic sizing
+**Purpose**: Smart context loading with touchpoints and model-aware sizing.
 
-**Capabilities**:
-- Model-aware context sizing
-- Touchpoint-based loading
-- Predictive caching
-- Memory management
+#### 6. API Gateway (`@api-gateway`)
+**Purpose**: Provide a stable, human-friendly REST API.
+**Key Features**:
+- Exposes core functionalities of other modules.
+- Provides endpoints for UI clients and external integrations.
+- Handles authentication and rate limiting (future).
 
-The following modules have been merged into the 5 core modules:
+The following modules have been merged or redefined:
 
-- **Schema Registry** → Part of Graph Executor (schema stored in graph)
-- **Project Planner** → Part of PM Assistant (graph-based planning)
-- **Task Manager** → Part of PM Assistant (tasks as graph nodes)
-- **Skill Matcher** → Part of PM Assistant (graph queries for skills)
-- **Bandwidth Tracker** → Part of PM Assistant (availability as node properties)
-- **Progress Monitor** → Part of PM Assistant (graph traversal for status)
-- **Response Orchestrator** → Merged with Response Formatter
+- **Schema Registry** → Part of Graph Executor for the PoC.
+- **Response Orchestrator** → Merged with Response Formatter.
 
 ---
 
@@ -514,6 +478,8 @@ export interface ContextAwareModule extends Module {
 ## Testing Strategy
 
 ### 1. Module Testing
+Standard unit and integration tests will be applied to all modules to ensure functional correctness.
+
 ```typescript
 // Each module includes test manifests
 {
@@ -525,33 +491,30 @@ export interface ContextAwareModule extends Module {
     "integration": {
       "pattern": "**/*.integration.ts",
       "requires": ["@test-database"]
-    },
-    "performance": {
-      "pattern": "**/*.perf.ts",
-      "benchmarks": {
-        "query_parsing": "< 50ms p95",
-        "cypher_generation": "< 100ms p95"
-      }
     }
   }
 }
 ```
 
-### 2. AI-Agent Testing
-```typescript
-// Test AI agents can discover and use modules
-describe("AI Agent Integration", () => {
-  test("discovers available modules", async () => {
-    const modules = await agent.discoverModules();
-    expect(modules).toContainModule("@graph-engine");
-  });
-  
-  test("loads minimal context for query", async () => {
-    const context = await agent.prepareContext("find John");
-    expect(context.loaded_modules).toEqual(["@schema-registry/person"]);
-  });
-});
-```
+### 2. LLM Component Validation
+For non-deterministic components like the `@pm-assistant`, a specific validation strategy will be used during development.
+
+- **Schema Adherence**: The primary check is to ensure the LLM's JSON output strictly conforms to the defined response schemas (e.g., `TaskDraft`).
+- **Agent-Assisted Semantic Review**: During development, the engineer will use their agentic pair programmer as a "semantic judge." The engineer will prompt the agent with the user request and the module's output and ask it to validate if the output logically and contextually satisfies the request. This formalizes the human-in-the-loop validation process.
+
+---
+
+## User Interaction Model & Configuration
+
+### 1. Primary Client: Command-Line Interface (CLI)
+For the PoC, the primary user interface will be a CLI. This client will be responsible for:
+- Taking user input.
+- Calling the `@api-gateway`.
+- Displaying the formatted results.
+- **Managing Conversational State**: The CLI will be responsible for managing conversation history. To accommodate local models with smaller context windows, the CLI will provide a mechanism for the user to control how much history is sent with each request (e.g., the last 3 turns, the last 5 turns, etc.).
+
+### 2. Configuration Management
+All module and system configuration will be managed via a single `.env` file at the project root. This file will contain database credentials, API ports, and other environment-specific variables. It will be excluded from version control.
 
 ---
 

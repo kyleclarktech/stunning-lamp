@@ -21,7 +21,7 @@ Modules own their data and expose it only through defined interfaces.
 ### 5. Async-First
 All module interfaces are asynchronous to support streaming and lazy loading.
 
-## Core Module Definitions (5 Total)
+## Core Module Definitions (6 Total)
 
 ### 1. Query Engine Module (`@query-engine`)
 
@@ -47,21 +47,6 @@ export interface QueryEngineModule extends BaseModule {
   // Validate Cypher syntax
   validateCypher(cypher: string): ValidationResult;
 }
-
-export interface QueryRequest {
-  id: string;
-  query: string;
-  user?: UserContext;
-  options?: QueryOptions;
-}
-
-export interface QueryResponse {
-  id: string;
-  status: 'success' | 'partial' | 'error';
-  results?: any[];
-  error?: ErrorInfo;
-  metadata: QueryMetadata;
-}
 ```
 
 **Module Contract**:
@@ -69,26 +54,14 @@ export interface QueryResponse {
 module: "@query-engine"
 version: "2.0.0"
 stability: "stable"
-
 provides:
   - capability: "natural-language-to-cypher"
     interface: "QueryEngineModule"
-    sla:
-      latency_p95: 50ms
-      availability: 99.9%
-
 requires:
   - "@context-manager": "^2.0.0"  # For touchpoint context
-
 events:
-  emits:
-    - "query.parsed"
-    - "cypher.generated"
-    - "intent.classified"
-  
-  subscribes:
-    - "schema.updated"  # Graph schema changes
-    - "touchpoint.added"
+  emits: [query.parsed, cypher.generated, intent.classified]
+  subscribes: [schema.updated, touchpoint.added]
 ```
 
 ### 2. Graph Executor Module (`@graph-executor`)
@@ -103,30 +76,10 @@ events:
 ```typescript
 // @graph-executor/types.ts
 export interface GraphExecutorModule extends BaseModule {
-  // Execute single query
   execute(query: CypherQuery): Promise<QueryResult>;
-  
-  // Execute transaction
   executeTransaction(queries: CypherQuery[]): Promise<TransactionResult>;
-  
-  // Stream large results
   stream(query: CypherQuery): AsyncIterator<ResultChunk>;
-  
-  // Get query execution plan
   explain(query: CypherQuery): Promise<ExecutionPlan>;
-}
-
-export interface CypherQuery {
-  statement: string;
-  parameters: Record<string, any>;
-  timeout?: number;
-  database?: string;
-}
-
-export interface QueryResult {
-  records: any[];
-  summary: QuerySummary;
-  metadata: QueryMetadata;
 }
 ```
 
@@ -134,55 +87,64 @@ export interface QueryResult {
 ```yaml
 module: "@graph-executor"
 version: "2.0.0"
-
 provides:
   - capability: "neo4j-execution"
     interface: "GraphExecutorModule"
-    sla:
-      query_timeout: 30s
-      connection_pool: 50
-
 requires:
   - "neo4j-driver": "^5.0.0"
-
 events:
-  emits:
-    - "query.executed"
-    - "connection.created"
-    - "transaction.completed"
+  emits: [query.executed, connection.created, transaction.completed]
 ```
 
 ### 3. PM Assistant Module (`@pm-assistant`)
 
-**Purpose**: All project management logic using graph queries
+**Purpose**: Provides interactive, state-aware assistance for project management.
 
 **Boundaries**:
-- Owns: Project planning, task assignment, progress tracking, bottleneck detection
-- Does NOT own: Direct database access, query generation, UI formatting
+- Owns: The orchestration logic for "chatting with a project." It reads the current project state from the graph, interacts with a PM via natural language, and uses an LLM to help create new, non-redundant tasks.
+- Does NOT own: Autonomous decision-making. It is a tool to augment a human PM, not replace them.
 
 **Public Interface**:
 ```typescript
 // @pm-assistant/types.ts
 export interface PMAssistantModule extends BaseModule {
-  // Project management operations
-  createProject(description: string): Promise<Project>;
-  breakdownProject(projectId: string): Promise<Task[]>;
-  assignTask(taskId: string, criteria?: AssignmentCriteria): Promise<Assignment>;
-  
-  // Progress tracking
-  getProjectStatus(projectId: string): Promise<ProjectStatus>;
-  detectBottlenecks(projectId: string): Promise<Bottleneck[]>;
-  
-  // Team insights
-  findAvailableResources(skills: string[], timeframe: DateRange): Promise<Person[]>;
-  suggestTeamFormation(projectRequirements: Requirements): Promise<Team>;
+  /**
+   * Retrieves the current state of a project to provide context for a conversation.
+   */
+  getProjectContext(projectId: string): Promise<ProjectContext>;
+
+  /**
+   * Given a project context and a user's request to create a new task,
+   * this method drafts a new task, checking for redundancy against the current state.
+   */
+  draftNewTask(context: ProjectContext, taskRequest: string): Promise<TaskDraft>;
+
+  /**
+   * Commits a drafted task to the graph database.
+   */
+  commitTask(draft: TaskDraft): Promise<Task>;
 }
 
-// All PM operations work through graph queries
-export interface PMOperation {
+export interface ProjectContext {
+  projectId: string;
+  projectName: string;
+  existingTasks: Task[]; // A list of tasks already in the project
+  summary: string; // An LLM-generated summary of the current state
+}
+
+export interface TaskDraft {
+  projectId: string;
+  title: string;
   description: string;
-  cypherQueries: CypherQuery[];  // Queries to execute
-  resultProcessor: (results: QueryResult[]) => any;
+  estimatedHours: number;
+  dependencies: string[]; // IDs of existing tasks
+
+  // The assistant's analysis of the draft
+  analysis: {
+    status: 'NEW' | 'DUPLICATE' | 'MODIFICATION'; // The core suggestion
+    reason: string; // Explanation for the status
+    targetTaskId?: string; // The ID of the task to modify, if status is 'MODIFICATION'
+  };
 }
 ```
 
@@ -190,20 +152,15 @@ export interface PMOperation {
 ```yaml
 module: "@pm-assistant"
 version: "2.0.0"
-
 provides:
-  - capability: "project-management"
+  - capability: "interactive-project-assistance"
     interface: "PMAssistantModule"
-
 requires:
-  - "@query-engine": "^2.0.0"  # Generate queries
-  - "@graph-executor": "^2.0.0"  # Execute queries
-
+  - "@query-engine": "^2.0.0"
+  - "@graph-executor": "^2.0.0"
+  - "@context-manager": "^2.0.0"
 events:
-  emits:
-    - "project.created"
-    - "task.assigned"
-    - "bottleneck.detected"
+  emits: [task.created, task.drafted]
 ```
 
 ### 4. Response Formatter Module (`@response-formatter`)
@@ -218,25 +175,8 @@ events:
 ```typescript
 // @response-formatter/types.ts
 export interface ResponseFormatterModule extends BaseModule {
-  // Format results based on options
   format(results: QueryResult, options: FormatOptions): Promise<FormattedResponse>;
-  
-  // Register custom formatter
-  registerFormatter(type: string, formatter: Formatter): void;
-  
-  // Stream formatted results
-  streamFormat(results: AsyncIterator<any>, options: FormatOptions): AsyncIterator<string>;
-  
-  // Get available formats
   getAvailableFormats(): string[];
-}
-
-export interface FormatOptions {
-  format: 'json' | 'table' | 'markdown' | 'csv' | 'html';
-  locale?: string;
-  template?: string;
-  pagination?: PaginationOptions;
-  includeMetadata?: boolean;
 }
 ```
 
@@ -244,17 +184,12 @@ export interface FormatOptions {
 ```yaml
 module: "@response-formatter"
 version: "2.0.0"
-
 provides:
   - capability: "result-formatting"
     interface: "ResponseFormatterModule"
-
-requires: []  # No dependencies, pure formatting
-
+requires: []
 events:
-  emits:
-    - "format.completed"
-    - "format.failed"
+  emits: [format.completed, format.failed]
 ```
 
 ### 5. Context Manager Module (`@context-manager`)
@@ -269,25 +204,9 @@ events:
 ```typescript
 // @context-manager/types.ts
 export interface ContextManagerModule extends BaseModule {
-  // Load context for query with model awareness
   loadContext(query: string, model: string): Promise<Context>;
-  
-  // Manage touchpoints
-  addTouchpoint(touchpoint: Touchpoint): Promise<void>;
   updateTouchpoints(file: string): Promise<Touchpoint[]>;
-  
-  // Get model-specific limits
-  getMaxContextSize(model: string): number;
-  
-  // Search touchpoints
   searchTouchpoints(query: string): Promise<Touchpoint[]>;
-}
-
-export interface Context {
-  touchpoints: Touchpoint[];
-  size: number;
-  relevanceScore: number;
-  model: string;
 }
 ```
 
@@ -295,56 +214,73 @@ export interface Context {
 ```yaml
 module: "@context-manager"
 version: "2.0.0"
-
 provides:
   - capability: "context-management"
     interface: "ContextManagerModule"
-
-requires: []  # Self-contained
-
+requires: []
 events:
-  emits:
-    - "context.loaded"
-    - "touchpoint.updated"
-  subscribes:
-    - "code.modified"  # Auto-update touchpoints
+  emits: [context.loaded, touchpoint.updated]
+  subscribes: [code.modified]
+```
+
+### 6. API Gateway Module (`@api-gateway`)
+
+**Purpose**: Provide a stable, human-friendly REST API as a primary entry point for UIs and external services.
+
+**Boundaries**:
+- Owns: The REST API surface (e.g., using Fastify or Express), request/response validation, and routing to other modules.
+- Does NOT own: Core business logic, which is delegated to other modules.
+- **Statelessness**: The API is stateless. Clients (e.g., the CLI) are responsible for maintaining conversational context and sending relevant history with each request.
+
+**Public Interface**:
+```typescript
+// Example Endpoints
+// POST /api/v1/query
+// GET /api/v1/projects/{projectId}/context
+// POST /api/v1/projects/{projectId}/tasks/draft
+```
+
+**Module Contract**:
+```yaml
+module: "@api-gateway"
+version: "2.0.0"
+provides:
+  - capability: "rest-api"
+    interface: "Standard REST/HTTP"
+requires:
+  - "@query-engine": "^2.0.0"
+  - "@pm-assistant": "^2.0.0"
+  - "@response-formatter": "^2.0.0"
+events:
+  emits: [api.request.received]
 ```
 
 ## Simplified Communication Patterns
 
 ### 1. Query Pipeline Flow
 
-Main flow through the 5 modules:
+Main flow for a knowledge graph query:
 
 ```typescript
-// User Query → Query Engine → Graph Executor → Response Formatter
+// User Query -> API Gateway -> Query Engine -> Graph Executor -> Response Formatter
 class QueryPipeline {
-  constructor(
-    private queryEngine: QueryEngineModule,
-    private graphExecutor: GraphExecutorModule,
-    private pmAssistant: PMAssistantModule,
-    private formatter: ResponseFormatterModule,
-    private contextManager: ContextManagerModule
-  ) {}
-  
   async processQuery(userQuery: string, model: string): Promise<FormattedResponse> {
-    // Load context based on model
     const context = await this.contextManager.loadContext(userQuery, model);
-    
-    // Generate Cypher
     const intent = await this.queryEngine.classifyIntent(userQuery);
     const cypher = await this.queryEngine.generateCypher(userQuery, intent);
-    
-    // Route PM queries through PM Assistant
-    if (intent.type.startsWith('pm.')) {
-      return this.pmAssistant.handleQuery(userQuery, cypher);
-    }
-    
-    // Execute query
     const results = await this.graphExecutor.execute(cypher);
-    
-    // Format response
     return this.formatter.format(results, { format: 'json' });
+  }
+}
+```
+
+Main flow for a PM interaction:
+```typescript
+// User Request -> API Gateway -> PM Assistant -> (Query Engine & Graph Executor)
+class PMPipeline {
+  async draftTask(projectId: string, taskRequest: string): Promise<TaskDraft> {
+    const context = await this.pmAssistant.getProjectContext(projectId);
+    return this.pmAssistant.draftNewTask(context, taskRequest);
   }
 }
 ```
@@ -357,16 +293,12 @@ All modules emit events for system-wide coordination:
 // Event bus for touchpoint and schema synchronization
 class SystemEventBus {
   async emit(event: SystemEvent): Promise<void> {
-    // All interested modules receive the event
     switch (event.type) {
       case 'code.modified':
         await this.contextManager.updateTouchpoints(event.payload.file);
         break;
       case 'schema.updated':
         await this.queryEngine.refreshSchema();
-        break;
-      case 'task.assigned':
-        await this.notifyRelevantModules(event);
         break;
     }
   }
@@ -375,28 +307,15 @@ class SystemEventBus {
 
 ### 3. Graph-First Data Access
 
-All data operations go through the graph:
+All data operations go through the graph, orchestrated by the relevant module.
 
 ```typescript
-// PM Assistant uses graph queries, not separate data store
+// PM Assistant uses graph queries to read state and write new tasks
 class PMAssistant implements PMAssistantModule {
-  async assignTask(taskId: string): Promise<Assignment> {
-    // Generate Cypher to find best assignee
-    const cypher = `
-      MATCH (t:Task {id: $taskId})
-      MATCH (p:Person)-[:HAS_SKILL]->(s:Skill)
-      WHERE s.name IN t.required_skills
-      AND NOT EXISTS((p)-[:ASSIGNED_TO]->(:Task {status: 'active'}))
-      RETURN p ORDER BY p.availability DESC LIMIT 1
-    `;
-    
-    const result = await this.graphExecutor.execute({
-      statement: cypher,
-      parameters: { taskId }
-    });
-    
-    // Create assignment in graph
-    return this.createAssignment(taskId, result.records[0].p.id);
+  async getProjectContext(projectId: string): Promise<ProjectContext> {
+    const cypher = `MATCH (t:Task)-[:BELONGS_TO]->(:Project {id: $projectId}) RETURN t`;
+    const results = await this.graphExecutor.execute({ statement: cypher, parameters: { projectId } });
+    // ... process results
   }
 }
 ```
@@ -405,32 +324,62 @@ class PMAssistant implements PMAssistantModule {
 
 ```mermaid
 graph TD
-    QE[Query Engine] --> CM[Context Manager]
-    PA[PM Assistant] --> QE
-    PA --> GE[Graph Executor]
-    GE --> Neo4j[(Neo4j Database)]
-    RF[Response Formatter] --> None
-    CM --> None
+    subgraph "User/Client Facing"
+        direction LR
+        AG["@api-gateway"]
+    end
+
+    subgraph "Core Logic"
+        direction TB
+        PA["@pm-assistant"]
+        QE["@query-engine"]
+    end
+
+    subgraph "Data & Infrastructure"
+        direction TB
+        GE["@graph-executor"]
+        CM["@context-manager"]
+        DB[(Neo4j Database)]
+    end
+    
+    subgraph "Formatting"
+        direction LR
+        RF["@response-formatter"]
+    end
+
+    AG --> QE
+    AG --> PA
+    AG --> RF
+    
+    PA --> QE
+    PA --> GE
+    PA --> CM
+    
+    QE --> CM
+    GE --> DB
 ```
 
 ### Module Dependencies
 
 ```yaml
 # Minimal dependencies between modules
+@api-gateway:
+  requires: ["@query-engine", "@pm-assistant", "@response-formatter"]
+
 @query-engine:
-  requires: [@context-manager]
+  requires: ["@context-manager"]
   
 @graph-executor:
-  requires: [neo4j-driver]
+  requires: ["neo4j-driver"]
   
 @pm-assistant:
-  requires: [@query-engine, @graph-executor]
+  requires: ["@query-engine", "@graph-executor", "@context-manager"]
   
 @response-formatter:
-  requires: []  # No dependencies
-  
+  requires: []
+
 @context-manager:
-  requires: []  # Self-contained
+  requires: []
 ```
 
 ### 2. Dependency Injection
@@ -443,19 +392,8 @@ class ModuleContainer {
   async loadModule(moduleId: string): Promise<Module> {
     const manifest = await this.loadManifest(moduleId);
     const dependencies = await this.loadDependencies(manifest);
-    
     const ModuleClass = await this.importModule(moduleId);
     return new ModuleClass(dependencies);
-  }
-  
-  private async loadDependencies(manifest: Manifest): Promise<Dependencies> {
-    const deps: Dependencies = {};
-    
-    for (const [name, version] of Object.entries(manifest.dependencies.required)) {
-      deps[name] = await this.loadModule(name);
-    }
-    
-    return deps;
   }
 }
 ```

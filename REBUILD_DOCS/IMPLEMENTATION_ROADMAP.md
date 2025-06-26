@@ -1,641 +1,240 @@
-# Implementation Roadmap - Agentic PM Assistant
+# Implementation Roadmap - Agentic PM Assistant PoC
 
 ## Overview
 
-This roadmap outlines a phased approach to building the Agentic PM Assistant System, designed to serve as an autonomous project manager for teams without dedicated human PMs. The system leverages an enterprise knowledge graph for intelligent task breakdown, skill-based assignment, and progress tracking.
+This roadmap outlines a phased approach to building the Agentic PM Assistant System Proof of Concept (PoC). The system leverages an enterprise knowledge graph for natural language queries and provides a bounded, LLM-driven tool to assist in project decomposition. The primary goal is to validate the architecture and core functionality.
 
-## Phase 1: Foundation & Infrastructure (Weeks 1-2)
+---
 
-### Goals
-- Establish modular architecture for PM system
-- Set up team and skill graph database
-- Create core infrastructure for task management
+## Phase 0: Vertical Slice & Integration Test (Week 1)
+
+### Goal
+- De-risk the architecture by building a single, end-to-end functional slice that touches every core module.
 
 ### Deliverables
-
-#### Week 1: Architecture Setup
 ```yaml
 tasks:
   - name: "Project Scaffolding"
     components:
       - Module system framework
-      - TypeScript configuration  
-      - Build pipeline (esbuild/vite)
+      - TypeScript configuration
       - Testing framework (Vitest)
-    
-  - name: "Module Container"
+      - Basic logging and error handling
+
+  - name: "End-to-End 'Find Person' Query"
     components:
-      - Module loader
-      - Dependency injection
-      - Module lifecycle management
-      - Hot module reloading
-      
-  - name: "Base Infrastructure"
+      - `@api-gateway`: Stub with a single `/query` endpoint.
+      - `@query-engine`: Stub that returns a hardcoded Cypher query for "find person by name".
+      - `@graph-executor`: Connects to Neo4j and executes the hardcoded query.
+      - `@response-formatter`: Stub that returns raw JSON from the database.
+      - `@context-manager`: Stubbed out, not used in this phase.
+      - `@pm-assistant`: Stubbed out, not used in this phase.
+
+  - name: "Configuration Management Setup"
     components:
-      - Logging system
-      - Error handling framework
-      - Configuration management
-      - Metrics collection
+      - Create root `.env.example` file with all required configurations
+      - Implement configuration loader module
+      - Document all environment variables
+  
+  - name: "Integration Test Suite"
+    components:
+      - A single integration test that sends a request to the gateway and asserts a valid JSON response.
 ```
 
-#### Week 2: Core Systems
+### Success Criteria
+- [ ] A single command (`npm test`) can run the integration test, which starts the necessary modules and successfully queries the database.
+- [ ] The test proves that all 6 core modules can be loaded and can communicate with each other.
+
+---
+
+## Phase 1: Foundation & Infrastructure (Weeks 2-3)
+
+### Goals
+- Establish the full modular architecture.
+- Set up the graph database with the PoC schema.
+- Create core infrastructure for agent-driven development.
+
+### Deliverables
+
+#### Week 2: Architecture & Tooling
+```yaml
+tasks:
+  - name: "Module Container"
+    components: [Module loader, Dependency injection, Lifecycle management]
+  - name: "Development Tools"
+    components: [Module generator CLI, Touchpoint update script, CI check for stale touchpoints]
+```
+
+#### Week 3: Core Systems
 ```yaml
 tasks:
   - name: "AI-Agent Indexing System"
-    components:
-      - Index structure definition
-      - Index generator
-      - Index server
-      - Search capabilities
-      
+    components: [Index structure, Index generator, Search capabilities]
   - name: "Context Management Foundation"
-    components:
-      - Context loader interface
-      - Memory management
-      - Cache layer
-      - Context scoring engine
-      
-  - name: "Development Tools"
-    components:
-      - Module generator CLI
-      - Testing utilities
-      - Documentation generator
-      - Performance profiler
+    components: [Context loader interface, Caching layer, Context scoring]
 ```
 
 ### Success Criteria
-- [ ] Module system can load and unload modules dynamically
-- [ ] AI agents can discover available modules via index
-- [ ] Context can be loaded lazily based on relevance
-- [ ] All infrastructure has 90%+ test coverage
-
-### Technical Decisions
-```typescript
-// Technology Stack
-{
-  runtime: "Node.js 20+",
-  language: "TypeScript 5.0+",
-  build: "Vite",
-  test: "Vitest",
-  database: "Neo4j 5.0",
-  cache: "Redis 7.0",
-  container: "Docker"
-}
-
-// Module System Choice
-{
-  type: "Custom ESM-based",
-  reasoning: "Full control over loading, AI-agent friendly",
-  alternatives_considered: ["Nx", "Rush", "Lerna"]
-}
-```
+- [ ] Module system can load and unload all modules dynamically.
+- [ ] `npm run update-touchpoints` command is functional.
+- [ ] CI pipeline fails if code comments with `@touchpoint` are changed without running the update script.
 
 ---
 
-## Phase 2: Core Modules (Weeks 3-4)
+## Phase 2: Core Modules & API (Weeks 4-5)
 
 ### Goals
-- Implement essential modules
-- Establish module communication patterns
-- Create initial touchpoint system
+- Implement essential modules for querying and data handling.
+- Establish the human-friendly API Gateway.
 
 ### Deliverables
 
-#### Week 3: Data Layer
+#### Week 4: Data Layer
 ```yaml
 modules:
-  - id: "@schema-registry"
-    features:
-      - Entity definitions (Person, Team, Policy, etc.)
-      - Relationship mappings
-      - Schema validation
-      - Migration support
-    touchpoints:
-      - Schema documentation
-      - Entity examples
-      - Relationship patterns
-      
-  - id: "@database-connector"
-    features:
-      - Neo4j connection management
-      - Query execution
-      - Transaction support
-      - Connection pooling
-    touchpoints:
-      - Connection patterns
-      - Error handling
-      - Performance tuning
+  - id: "@graph-executor"
+    features: [Neo4j connection, Query execution, Transaction support]
+    touchpoints: [Connection patterns, Error handling]
 ```
 
-#### Week 4: Interface Layer
+#### Week 5: Interface Layer
 ```yaml
 modules:
-  - id: "@query-interface"
-    features:
-      - WebSocket server
-      - Request validation
-      - Response formatting
-      - Error handling
-    touchpoints:
-      - API documentation
-      - Message formats
-      - Error codes
-      
+  - id: "@api-gateway"
+    features: [REST server (Fastify/Express), Stateless API design, Route handlers for core functions, OpenAPI/Swagger documentation]
   - id: "@response-formatter"
+    features: [JSON formatting, Markdown rendering, Table generation]
+  - id: "CLI Client"
     features:
-      - JSON formatting
-      - Markdown rendering
-      - Table generation
-      - Pagination support
-    touchpoints:
-      - Format examples
-      - Template system
-      - Localization
+      - Command-line interface for API interaction
+      - Conversation history management with configurable context window
+      - Interactive mode for PM assistance
 ```
 
 ### Success Criteria
-- [ ] Schema registry serves complete data model
-- [ ] Database connector handles 100 concurrent queries
-- [ ] Query interface processes requests < 50ms overhead
-- [ ] All modules have manifest.json and are AI-discoverable
+- [ ] `@graph-executor` can handle 100 concurrent queries in testing.
+- [ ] `@api-gateway` exposes at least three functional endpoints (e.g., `/query`, `/modules`, `/status`).
+- [ ] API documentation is auto-generated and accessible via a browser.
 
 ---
 
-## Phase 3: PM Intelligence Engine (Weeks 5-6)
+## Phase 3: Intelligence Engines (Weeks 6-8)
 
 ### Goals
-- Build natural language project planning interface
-- Implement task breakdown and assignment algorithms
-- Create skill matching and bandwidth tracking
+- Build the natural language query engine.
+- Implement the bounded PM Decomposer.
 
 ### Deliverables
 
-#### Week 5: PM Intelligence Core
+#### Week 6-7: Query Intelligence
 ```yaml
 modules:
-  - id: "@project-analyzer"
-    features:
-      - Project scope parsing
-      - Requirement extraction
-      - Complexity assessment
-      - Timeline estimation
-    ai_integration:
-      - Task breakdown prompts
-      - Pattern recognition
-      - Historical learning
-      
-  - id: "@task-decomposer"
-    features:
-      - Hierarchical breakdown
-      - Dependency mapping
-      - Effort estimation
-      - Risk identification
-    patterns:
-      - Common project types
-      - Task templates
-      - Anti-patterns detection
+  - id: "@query-engine"
+    features: [NL parsing, Intent classification, Cypher generation]
+    ai_integration: [LLM-driven query generation prompts]
 ```
 
-#### Week 6: Assignment & Tracking
+#### Week 8: PM Assistant
 ```yaml
 modules:
-  - id: "@skill-matcher"
+  - id: "@pm-assistant"
     features:
-      - Skill similarity scoring
-      - Experience matching
-      - Availability checking
-      - Growth opportunity detection
-    algorithms:
-      - Weighted scoring
-      - Constraint satisfaction
-      - Load balancing
-      
-  - id: "@assignment-engine"
-    features:
-      - Optimal assignment
-      - Workload balancing
-      - Conflict resolution
-      - Alternative suggestions
-    strategies:
-      - Best match
-      - Load balance
-      - Growth oriented
-      - Risk mitigation
-```
-
-### Test Suite Requirements
-```typescript
-// PM-specific test scenarios
-const testScenarios = {
-  project_planning: [
-    "Break down a new API integration project",
-    "Plan a 2-week bug fix sprint",
-    "Create mobile app development timeline"
-  ],
-  task_assignment: [
-    "Find best developer for React task",
-    "Assign urgent bug fix with limited team",
-    "Balance workload across team"  
-  ],
-  progress_tracking: [
-    "Show current sprint progress",
-    "Identify project bottlenecks",
-    "Forecast project completion date"
-  ],
-  edge_cases: [
-    "All team members at capacity",
-    "No exact skill match available",
-    "Conflicting task dependencies"
-  ]
-};
+      - Reads existing project state from the graph
+      - Interactive task creation with redundancy detection
+      - Generates structured task drafts (NEW/DUPLICATE/MODIFICATION)
+    ai_integration: [State-aware LLM prompts for task assistance]
 ```
 
 ### Success Criteria
-- [ ] 90%+ assignment satisfaction rate
-- [ ] Task breakdown completes < 5 seconds
-- [ ] Skill matching accuracy > 85%
-- [ ] Workload variance < 20% across team
+- [ ] `@query-engine` can successfully convert 70%+ of test queries into valid Cypher.
+- [ ] `@pm-assistant` can read project context and draft new tasks with proper redundancy analysis.
+- [ ] Agent-assisted semantic validation confirms output quality for PM tasks.
 
 ---
 
-## Phase 4: Smart Features (Weeks 7-8)
+## Phase 4: Smart Features & Agent Integration (Weeks 9-10)
 
 ### Goals
-- Add semantic understanding
-- Implement pattern matching
-- Build adaptive learning
+- Add semantic understanding to improve query success.
+- Complete AI-agent compatibility features.
 
 ### Deliverables
-
-#### Week 7: Semantic Layer
 ```yaml
 modules:
   - id: "@semantic-mapper"
-    features:
-      - Synonym recognition
-      - Concept mapping
-      - Role categorization
-      - Context understanding
-    data:
-      - Semantic dictionaries
-      - Concept hierarchies
-      - Domain ontologies
-      
+    features: [Synonym recognition, Role categorization]
   - id: "@pattern-matcher"
-    features:
-      - Query pattern recognition
-      - Template matching
-      - Fuzzy matching
-      - Pattern learning
-    patterns:
-      - Common query types
-      - User intent patterns
-      - Success patterns
+    features: [Query pattern recognition, Fuzzy matching]
 ```
-
-#### Week 8: Adaptive Features
-```yaml
-modules:
-  - id: "@learning-engine"
-    features:
-      - Usage analytics
-      - Pattern detection
-      - Performance tracking
-      - Feedback incorporation
-    capabilities:
-      - Query success tracking
-      - Pattern evolution
-      - Index optimization
-      
-  - id: "@suggestion-engine"
-    features:
-      - Query completion
-      - Related queries
-      - Correction suggestions
-      - Next actions
-    ml_models:
-      - Embedding model
-      - Ranking model
-      - Personalization
-```
-
-### Success Criteria
-- [ ] Semantic matching improves success rate by 20%
-- [ ] Pattern matching reduces ambiguous queries by 50%
-- [ ] Suggestion relevance > 80%
-- [ ] Learning shows measurable improvement over time
-
----
-
-## Phase 5: AI Integration (Weeks 9-10)
-
-### Goals
-- Complete AI-agent compatibility
-- Implement touchpoint system
-- Enable self-documentation
-
-### Deliverables
-
-#### Week 9: AI-Agent Features
 ```yaml
 features:
-  - name: "Discovery API"
-    endpoints:
-      - GET /modules
-      - GET /capabilities
-      - GET /touchpoints
-      - POST /context/prepare
-      
-  - name: "Context API"
-    endpoints:
-      - POST /context/load
-      - GET /context/status
-      - DELETE /context/unload
-      - GET /context/suggestions
-      
-  - name: "Navigation API"
-    endpoints:
-      - POST /navigate/to
-      - GET /navigate/path
-      - GET /navigate/related
-```
-
-#### Week 10: Self-Documentation
-```yaml
-generators:
-  - name: "API Documentation"
-    outputs:
-      - OpenAPI spec
-      - GraphQL schema
-      - AsyncAPI spec
-      
-  - name: "Module Documentation"
-    outputs:
-      - Module catalog
-      - Capability matrix
-      - Dependency graph
-      
-  - name: "Touchpoint Map"
-    outputs:
-      - Interactive visualization
-      - Search interface
-      - Connection explorer
-```
-
-### AI Agent Test Suite
-```typescript
-describe('AI Agent Compatibility', () => {
-  test('discovers all modules without loading', async () => {
-    const modules = await agent.discover('/modules');
-    expect(modules.length).toBeGreaterThan(10);
-    expect(agent.memoryUsed()).toBeLessThan(1_000_000); // 1MB
-  });
-  
-  test('loads optimal context for query', async () => {
-    const context = await agent.prepareContext(
-      'How do I find policy owners?'
-    );
-    expect(context.modules).toContain('@schema-registry/policy');
-    expect(context.touchpoints).toContain('policy-ownership-pattern');
-  });
-  
-  test('navigates to solution efficiently', async () => {
-    const path = await agent.navigate({
-      from: 'user-query',
-      to: 'working-solution'
-    });
-    expect(path.steps).toBeLessThan(5);
-  });
-});
+  - name: "Agent Discovery API"
+    endpoints: [GET /modules, GET /capabilities, GET /touchpoints]
+  - name: "Agent Context API"
+    endpoints: [POST /context/load, GET /context/status]
 ```
 
 ### Success Criteria
-- [ ] AI agents can discover and use all features
-- [ ] Context loading is relevance-optimized
-- [ ] Documentation is auto-generated and current
-- [ ] Touchpoint navigation works for 90%+ queries
+- [ ] Semantic features improve query success rate by at least 15%.
+- [ ] An AI agent can programmatically discover all modules and their capabilities via the API.
 
 ---
 
-## Phase 6: Migration & Launch (Weeks 11-12)
+## Phase 5: PoC Finalization & Documentation (Weeks 11-12)
 
 ### Goals
-- Migrate existing data
-- Ensure feature parity
-- Launch to production
+- Ensure feature parity for the PoC scope.
+- Create comprehensive documentation for the development team handover.
 
 ### Deliverables
-
-#### Week 11: Migration
 ```yaml
 tasks:
-  - name: "Data Migration"
-    steps:
-      - Export from FalkorDB
-      - Transform to Neo4j format
-      - Validate data integrity
-      - Performance testing
-      
-  - name: "Feature Parity"
-    checklist:
-      - All query types supported
-      - Performance meets/exceeds current
-      - Error handling comprehensive
-      - Monitoring in place
-      
-  - name: "Compatibility Layer"
-    components:
-      - Legacy API adapter
-      - Query translation
-      - Response mapping
-```
-
-#### Week 12: Production Launch
-```yaml
-tasks:
-  - name: "Deployment"
-    steps:
-      - Container images built
-      - Kubernetes manifests ready
-      - Secrets management
-      - Load balancer configuration
-      
-  - name: "Monitoring"
-    components:
-      - Prometheus metrics
-      - Grafana dashboards
-      - Alert rules
-      - SLO tracking
-      
-  - name: "Documentation"
+  - name: "PoC Feature Lock"
+    checklist: [All core query types supported, PM assistant is functional, API is stable, CLI client operational]
+  - name: "Handover Documentation"
     deliverables:
-      - Operations guide
-      - Troubleshooting guide
-      - API reference
-      - Migration guide
+      - System Architecture Guide
+      - Module-by-Module Breakdown
+      - API Reference
+      - CLI Usage Guide
+      - "Getting Started" guide for new developers
+  - name: "Final Demo"
+    components:
+      - Live demonstration of the vertical slice
+      - Query engine natural language processing
+      - PM assistant interactive task creation
+      - CLI client showcasing conversation management
 ```
 
 ### Launch Criteria
-- [ ] All tests passing in staging
-- [ ] Performance benchmarks met
-- [ ] Security audit completed
-- [ ] Documentation complete
-- [ ] Rollback plan tested
+- [ ] All tests for the PoC scope are passing.
+- [ ] Documentation is complete and reviewed.
+- [ ] A successful final demo is presented.
 
 ---
 
 ## Risk Mitigation
 
 ### Technical Risks
-
 ```yaml
 risks:
-  - risk: "Neo4j performance issues"
-    mitigation: 
-      - Benchmark early and often
-      - Have PostgreSQL+AGE as backup
-      - Design database-agnostic interface
-    
-  - risk: "Module system complexity"
+  - risk: "LLM-driven components are unreliable"
     mitigation:
-      - Start simple, evolve gradually
-      - Extensive testing
-      - Clear documentation
-      
-  - risk: "AI model compatibility"  
+      - Use strict, version-controlled prompts.
+      - Implement validation layers for LLM outputs.
+      - Define clear, simple protocols for LLM interaction.
+  - risk: "Module system integration is complex"
     mitigation:
-      - Abstract LLM interface
-      - Test multiple models
-      - Have fallback strategies
+      - The "Vertical Slice" phase is designed to de-risk this early.
+      - Use contract testing between modules.
 ```
 
 ### Timeline Risks
-
 ```yaml
 risks:
-  - risk: "Scope creep"
+  - risk: "Scope creep beyond PoC"
     mitigation:
-      - Strict phase boundaries
-      - Feature freeze periods
-      - Regular stakeholder reviews
-      
-  - risk: "Technical debt"
-    mitigation:
-      - 20% time for refactoring
-      - Code review standards
-      - Regular dependency updates
+      - Adhere strictly to the phased deliverables.
+      - Defer all performance and scalability work.
+      - Maintain a "Post-PoC" backlog for future ideas.
 ```
-
----
-
-## Success Metrics
-
-### Phase Metrics
-
-| Phase | Success Metric | Target |
-|-------|---------------|---------|
-| 1 | Module load time | < 50ms |
-| 2 | API response time | < 100ms |
-| 3 | Query success rate | > 90% |
-| 4 | Semantic match rate | > 80% |
-| 5 | AI context relevance | > 85% |
-| 6 | Zero downtime migration | 100% |
-
-### Overall Metrics
-
-```yaml
-performance:
-  query_latency_p95: < 2s
-  throughput: > 100 qps
-  availability: > 99.9%
-  
-quality:
-  test_coverage: > 90%
-  documentation_coverage: > 95%
-  ai_discoverability: 100%
-  
-adoption:
-  user_satisfaction: > 4.5/5
-  query_success_rate: > 95%
-  time_to_insight: < 30s
-```
-
----
-
-## Team Structure
-
-### Recommended Roles
-
-```yaml
-team:
-  - role: "Tech Lead"
-    responsibilities:
-      - Architecture decisions
-      - Code review
-      - Technical mentoring
-      
-  - role: "Backend Engineers (2)"
-    responsibilities:
-      - Module implementation
-      - Testing
-      - Documentation
-      
-  - role: "AI/ML Engineer"
-    responsibilities:
-      - LLM integration
-      - Semantic features
-      - Learning engine
-      
-  - role: "DevOps Engineer"
-    responsibilities:
-      - CI/CD pipeline
-      - Deployment
-      - Monitoring
-```
-
----
-
-## Post-Launch Roadmap
-
-### Immediate (Months 1-3)
-- Performance optimization based on real usage
-- Additional semantic mappings
-- Enhanced error recovery
-
-### Medium-term (Months 4-6)
-- Multi-language support
-- Advanced analytics
-- GraphQL API
-
-### Long-term (Months 7-12)
-- Multi-tenant support
-- Real-time collaboration
-- AI-powered insights
-
----
-
-## Implementation Checklist
-
-### Pre-Implementation
-- [ ] Team assembled
-- [ ] Development environment ready
-- [ ] Architecture review completed
-- [ ] Dependencies evaluated
-
-### During Implementation
-- [ ] Weekly progress reviews
-- [ ] Continuous integration running
-- [ ] Documentation kept current
-- [ ] Performance benchmarks tracked
-
-### Pre-Launch
-- [ ] Security audit completed
-- [ ] Load testing performed
-- [ ] Disaster recovery tested
-- [ ] User training prepared
-
-### Post-Launch
-- [ ] Monitoring dashboards active
-- [ ] Feedback loop established
-- [ ] Performance baselines set
-- [ ] Improvement backlog created
