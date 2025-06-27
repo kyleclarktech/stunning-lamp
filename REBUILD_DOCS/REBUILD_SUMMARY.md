@@ -54,6 +54,8 @@ Clear boundaries between:
 
 ### Phase Timeline (12 weeks)
 
+Before starting the numbered phases below, the roadmap calls for **Phase 0: Vertical Slice & Integration Test** as outlined in [IMPLEMENTATION_ROADMAP.md](./IMPLEMENTATION_ROADMAP.md). This initial step builds a minimal end-to-end slice to prove that all core modules integrate correctly.
+
 1. **Foundation (Weeks 1-2)**
    - Module system architecture
    - AI-agent indexing
