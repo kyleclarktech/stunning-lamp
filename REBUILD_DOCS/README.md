@@ -36,7 +36,7 @@ The **[development_tools/](./development_tools/)** folder contains tools used du
 ## Key Design Decisions
 
 1. **Neo4j Database** - Chosen for better AI training data representation
-2. **5 Core Modules** - Simplified from original 10+ module design
+2. **6 Core Modules** - Simplified from original 10+ module design
 3. **Graph-First Architecture** - All data (knowledge + PM) in one graph
 4. **Event-Driven Sync** - Automatic coordination between components
 5. **Auto-Maintained Touchpoints** - Claude Code maintains navigation system
@@ -54,7 +54,7 @@ For developers new to the project:
 ## Quick Reference
 
 - **Database**: Neo4j (all data in one graph)
-- **Core Modules**: Query Engine, Graph Executor, PM Assistant, Response Formatter, Context Manager
+- **Core Modules**: Query Engine, Graph Executor, PM Assistant, Response Formatter, Context Manager, API Gateway
 - **Languages**: TypeScript (primary), Python (tools)
 - **Architecture**: Event-driven, graph-first, AI-agent friendly
 - **Development Timeline**: 12 weeks for full implementation
