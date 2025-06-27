@@ -149,6 +149,10 @@ The system understands natural language queries like:
 3. Add appropriate relationships and properties
 4. Regenerate the database
 
+## Implementation Roadmap
+
+Development follows the [IMPLEMENTATION_ROADMAP.md](./REBUILD_DOCS/IMPLEMENTATION_ROADMAP.md). It begins with **Phase 0: Vertical Slice & Integration Test**, which verifies that all core modules connect end-to-end before moving on to later phases.
+
 ## Performance Considerations
 
 - **Query Timeout**: 15 seconds (configurable)
