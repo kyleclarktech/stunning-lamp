@@ -80,7 +80,6 @@ Clear boundaries between:
    - Self-documentation
 
 6. **Migration & Launch (Weeks 11-12)**
-   - Data migration
    - Feature parity
    - Production deployment
 
