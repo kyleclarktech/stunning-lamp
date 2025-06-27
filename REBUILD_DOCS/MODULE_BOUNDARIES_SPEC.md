@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines clear boundaries between the 5 core modules, their interfaces, and communication patterns. The system has been simplified from the original design to reduce complexity while maintaining all functionality through a graph-first approach where ALL data (knowledge and PM) lives in Neo4j.
+This document defines clear boundaries between the 6 core modules, their interfaces, and communication patterns. The system has been simplified from the original design to reduce complexity while maintaining all functionality through a graph-first approach where ALL data (knowledge and PM) lives in Neo4j.
 
 ## Module Design Principles
 

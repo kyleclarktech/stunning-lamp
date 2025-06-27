@@ -572,7 +572,7 @@ All module and system configuration will be managed via a single `.env` file at 
 
 ### Applied to This Build
 1. Neo4j chosen for better AI training representation
-2. Simplified to 5 core modules with clear boundaries
+2. Simplified to 6 core modules with clear boundaries
 3. Graph-first design stores everything in one place
 4. Dynamic context sizing based on model capabilities
 5. Auto-maintained touchpoints via Claude Code integration

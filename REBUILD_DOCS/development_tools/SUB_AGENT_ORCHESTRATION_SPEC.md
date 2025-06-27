@@ -12,7 +12,7 @@ This tool is used exclusively during development to help build the Enterprise Kn
 
 ### 1. How It Helps Development
 
-The orchestration system helps developers build the system's 5 core modules more efficiently:
+The orchestration system helps developers build the system's 6 core modules more efficiently:
 
 ```mermaid
 graph TD
@@ -21,6 +21,7 @@ graph TD
     O --> PM[PM Assistant]
     O --> RF[Response Formatter]
     O --> CM[Context Manager]
+    O --> AG[API Gateway]
     
     O --> SA1[Sub-Agent 1]
     O --> SA2[Sub-Agent 2]
